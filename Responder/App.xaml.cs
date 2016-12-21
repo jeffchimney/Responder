@@ -8,7 +8,7 @@ namespace Responder
 		{
 			InitializeComponent();
 
-			MainPage = new ResponderPage();
+			MainPage = new MainPage();
 		}
 
 		protected override void OnStart()

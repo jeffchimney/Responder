@@ -1,10 +1,9 @@
 ﻿using Xamarin.Forms;
 using System;
-using Plugin.Geolocator;
 
 namespace Responder
 {
-	public partial class ResponderPage : ContentPage
+	public partial class MainTab : ContentPage
 	{
 		Label lblTitle = new Label
 		{
@@ -17,7 +16,7 @@ namespace Responder
 			Text = "Responding to firehall",
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
-			HeightRequest = 120,
+			HeightRequest = 110,
 			TextColor = Color.Black
 		};
 		Button btnRespondingScene = new Button
@@ -25,7 +24,7 @@ namespace Responder
 			Text = "Responding to Scene",
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
-			HeightRequest = 120,
+			HeightRequest = 110,
 			TextColor = Color.Black
 		};
 		Button btnOnScene = new Button
@@ -33,7 +32,7 @@ namespace Responder
 			Text = "On scene",
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
-			HeightRequest = 120,
+			HeightRequest = 110,
 			TextColor = Color.Black
 		};
 		Button btnUnavailable = new Button
@@ -42,7 +41,7 @@ namespace Responder
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
 			WidthRequest = 165,
-			HeightRequest = 120,
+			HeightRequest = 110,
 			TextColor = Color.Black
 		};
 		Button btnStandDown = new Button
@@ -51,7 +50,7 @@ namespace Responder
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
 			WidthRequest = 165,
-			HeightRequest = 120,
+			HeightRequest = 110,
 			TextColor = Color.Black
 		};
 		Label lblCoords = new Label
@@ -59,11 +58,11 @@ namespace Responder
 			Text = "",
 			FontSize = 20,
 			WidthRequest = 165,
-			HeightRequest = 120,
+			HeightRequest = 110,
 			TextColor = Color.Black
 		};
 
-		public ResponderPage()
+		public MainTab()
 		{
 			//set up touch delegates
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
@@ -101,24 +100,11 @@ namespace Responder
 			btnUnavailable.BackgroundColor = Color.Gray;
 			btnStandDown.BackgroundColor = Color.Gray;
 
-			var locator = CrossGeolocator.Current;
-			locator.DesiredAccuracy = 50;
-
-			try
-			{
-				//locator.StartListeningAsync(100,20.0, false);
-				var position = locator.GetPositionAsync();
-				//locator.StopListeningAsync();
-
-				lblCoords.Text = position.Result.Latitude + ", " + position.Result.Longitude;
-			}
-			catch (Exception ex)
-			{
-				lblCoords.Text = "Couldn't get coordinates";
-			}
+			// call iOS/Android specific code to respond to the button click
+			DependencyService.Get<GetLocationInterface>().GetLocation();
 		}
 
-		private void RespondingSceneButtonPressed(object sender, EventArgs e)
+		public void RespondingSceneButtonPressed(object sender, EventArgs e)
 		{
 			btnRespondingFirehall.BackgroundColor = Color.Gray;
 			btnRespondingScene.BackgroundColor = Color.Green;
