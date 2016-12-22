@@ -44,5 +44,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)SettingsTab.xaml.cs">
       <DependentUpon>SettingsTab.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)SettingsTabInterface.cs" />
   </ItemGroup>
 </Project>

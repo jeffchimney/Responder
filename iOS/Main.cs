@@ -9,7 +9,7 @@ using Responder.iOS;
 
 namespace Responder.iOS
 {
-	public class Application: GetLocationInterface
+	public class Application: GetLocationInterface, SettingsTabInterface
 	{
 		// This is the main entry point of the application.
 		static void Main(string[] args)
@@ -20,6 +20,7 @@ namespace Responder.iOS
 
 		}
 
+		// Get Location Interface Method
 		public void GetLocation()
 		{
 			CLLocationManager locationManager = new CLLocationManager();
@@ -32,6 +33,12 @@ namespace Responder.iOS
 			responder.Responding("Test From Device Co.", UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
 
 			Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
+		}
+
+		// Settings Tab Interface Method
+		public void SubmitAccountInfo()
+		{
+			Console.WriteLine("Called submit info.");
 		}
 	}
 }

@@ -69,6 +69,9 @@ namespace Responder
 
 		public SettingsTab()
 		{
+			//set up touch delegates
+			btnSubmit.Clicked += SubmitButtonPressed;
+
 			Padding = new Thickness(20);
 
 			StackLayout accountID = new StackLayout
@@ -96,6 +99,15 @@ namespace Responder
 			};
 
 			InitializeComponent();
+		}
+
+		private void SubmitButtonPressed(object sender, EventArgs e)
+		{
+			if (txtAccountID.Text != "" && txtUserID.Text != "" && txtPassword.Text != "")
+			{
+				// call iOS/Android specific code to respond to the button click
+				DependencyService.Get<SettingsTabInterface>().SubmitAccountInfo();
+			}
 		}
 	}
 }
