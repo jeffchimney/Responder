@@ -30,15 +30,18 @@ namespace Responder.iOS
 			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
-			responder.Responding("Test From Device Co.", UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
+			responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
 
 			Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
 		}
 
 		// Settings Tab Interface Method
-		public void SubmitAccountInfo()
+		public void SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
-			Console.WriteLine("Called submit info.");
+			firehall.net.WebService1 responder = new firehall.net.WebService1();
+
+			string result = responder.Register(sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			Console.Write(result);
 		}
 	}
 }

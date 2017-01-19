@@ -4,6 +4,6 @@ namespace Responder
 {
 	public interface SettingsTabInterface
 	{
-		void SubmitAccountInfo();
+		void SubmitAccountInfo(string sFireHallID, string sUserID);
 	}
 }

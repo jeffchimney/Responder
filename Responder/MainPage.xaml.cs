@@ -7,32 +7,51 @@ namespace Responder
 {
 	public partial class MainPage : TabbedPage
 	{
+
+		Page mainTab;
+		//Page responderTab;
+		//Page availableTab;
+		Page settingsTab;
+
 		public MainPage()
 		{
 			InitializeComponent();
 
-			var mainTab = new NavigationPage(new MainTab());
+			mainTab = new NavigationPage(new MainTab());
 			mainTab.Title = "Main";
 
-			var responderTab = new NavigationPage(new RespondingTab());
-			responderTab.Title = "Respond";
+			//responderTab = new NavigationPage(new RespondingTab());
+			//responderTab.Title = "Respond";
 
-			var availableTab = new NavigationPage(new AvailabilityTab());
-			availableTab.Title = "Available";
+			//availableTab = new NavigationPage(new AvailabilityTab());
+			//availableTab.Title = "Available";
 
-			var settingsTab = new NavigationPage(new SettingsTab());
+			settingsTab = new NavigationPage(new SettingsTab());
 			settingsTab.Title = "Settings";
 
 			NavigationPage.SetHasNavigationBar(this, false);
 			NavigationPage.SetHasNavigationBar(mainTab, false);
-			NavigationPage.SetHasNavigationBar(responderTab, false);
-			NavigationPage.SetHasNavigationBar(availableTab, false);
+			//NavigationPage.SetHasNavigationBar(responderTab, false);
+			//NavigationPage.SetHasNavigationBar(availableTab, false);
 			NavigationPage.SetHasNavigationBar(settingsTab, false);
 
 			Children.Add(mainTab);
-			Children.Add(responderTab);
-			Children.Add(availableTab);
+			//Children.Add(responderTab);
+			//Children.Add(availableTab);
 			Children.Add(settingsTab);
+
+			CurrentPage = settingsTab;
+		}
+
+		public void SwitchToMainTab()
+		{
+			mainTab = new NavigationPage(new MainTab());
+			mainTab.Title = "Main";
+			CurrentPage = mainTab;
+		}
+		public void SwitchToSettingsTab()
+		{
+			CurrentPage = settingsTab;
 		}
 	}
 }
