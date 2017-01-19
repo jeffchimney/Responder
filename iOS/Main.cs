@@ -41,7 +41,12 @@ namespace Responder.iOS
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 
 			string result = responder.Register(sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
-			Console.Write(result);
+
+			if (result == string.Empty)
+			{
+				// save deviceID to userdefaults
+				// redirect to Main tab
+			}
 		}
 	}
 }
