@@ -17,7 +17,7 @@ namespace Responder
 		{
 			InitializeComponent();
 
-			mainTab = new NavigationPage(new MainTab());
+			mainTab = new NavigationPage(new MainTab(this));
 			mainTab.Title = "Main";
 
 			//responderTab = new NavigationPage(new RespondingTab());
@@ -26,7 +26,7 @@ namespace Responder
 			//availableTab = new NavigationPage(new AvailabilityTab());
 			//availableTab.Title = "Available";
 
-			settingsTab = new NavigationPage(new SettingsTab());
+			settingsTab = new NavigationPage(new SettingsTab(this));
 			settingsTab.Title = "Settings";
 
 			NavigationPage.SetHasNavigationBar(this, false);
@@ -40,13 +40,20 @@ namespace Responder
 			//Children.Add(availableTab);
 			Children.Add(settingsTab);
 
-			CurrentPage = settingsTab;
+			// check if user has firehall id and user id stored on their device already.  If they do, go to main tab, if they don't, go to settings tab.
+			string sFireHallAndUserID = DependencyService.Get<SettingsTabInterface>().GetAccountInfoFromUserDefaults();
+			if (sFireHallAndUserID != ":")
+			{
+				CurrentPage = mainTab;
+			}
+			else
+			{
+				CurrentPage = settingsTab;
+			}
 		}
 
 		public void SwitchToMainTab()
 		{
-			mainTab = new NavigationPage(new MainTab());
-			mainTab.Title = "Main";
 			CurrentPage = mainTab;
 		}
 		public void SwitchToSettingsTab()

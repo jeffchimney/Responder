@@ -8,6 +8,8 @@ namespace Responder
 	public partial class SettingsTab : ContentPage
 	{
 
+		public MainPage parentPage;
+
 		Label lblTitle = new Label
 		{
 			Text = "FH Responder",
@@ -122,8 +124,9 @@ namespace Responder
 			TextColor = Color.Black
 		};
 
-		public SettingsTab()
+		public SettingsTab(MainPage parent)
 		{
+			parentPage = parent;
 			//set up touch delegates
 			btnSubmit.Clicked += SubmitButtonPressed;
 
@@ -161,6 +164,28 @@ namespace Responder
 			txtUserID2.TextChanged += Entry_TextChanged;
 
 			InitializeComponent();
+
+			string sFireHallAndUserID = DependencyService.Get<SettingsTabInterface>().GetAccountInfoFromUserDefaults();
+
+			// prepopulate fields if the device already has firehallid and userid set
+			if (sFireHallAndUserID != ":")
+			{
+				Array aFireHallAndUserID = sFireHallAndUserID.Split(":".ToCharArray());
+				var sFireHallID = aFireHallAndUserID.GetValue(0) as string;
+				var sUserID = aFireHallAndUserID.GetValue(1) as string;
+
+				txtHallID1.Text = sFireHallID.Substring(0, 1);
+				txtHallID2.Text = sFireHallID.Substring(1, 1);
+				txtHallID3.Text = sFireHallID.Substring(2, 1);
+				txtHallID4.Text = sFireHallID.Substring(3, 1);
+				txtHallID5.Text = sFireHallID.Substring(4, 1);
+				txtHallID6.Text = sFireHallID.Substring(5, 1);
+
+				txtUserID1.Text = sUserID.Substring(0, 1);
+				txtUserID2.Text = sUserID.Substring(1, 1);
+
+				btnSubmit.BackgroundColor = Color.Gray;
+			}
 		}
 
 		private void SubmitButtonPressed(object sender, EventArgs e)
@@ -172,12 +197,13 @@ namespace Responder
 				string sUserID = txtUserID1.Text + txtUserID2.Text;
 				// call iOS/Android specific code to respond to the button click
 				DependencyService.Get<SettingsTabInterface>().SubmitAccountInfo(sFireHallID, sUserID);
+				parentPage.SwitchToMainTab();
 			}
 		}
 
 		void Entry_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			Entry thisEntry = sender as Entry;
+			var thisEntry = sender as Entry;
 			string text = thisEntry.Text;      //Get Current Text
 			if (text.Length > 1)
 			{

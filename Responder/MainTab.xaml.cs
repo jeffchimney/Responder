@@ -5,6 +5,8 @@ namespace Responder
 {
 	public partial class MainTab : ContentPage
 	{
+		MainPage parentPage;
+
 		Label lblTitle = new Label
 		{
 			Text = "FH Responder",
@@ -62,8 +64,10 @@ namespace Responder
 			TextColor = Color.Black
 		};
 
-		public MainTab()
+		public MainTab(MainPage parent)
 		{
+			parentPage = parent;
+
 			//set up touch delegates
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
 			btnRespondingScene.Clicked += RespondingSceneButtonPressed;
@@ -100,8 +104,28 @@ namespace Responder
 			btnUnavailable.BackgroundColor = Color.Gray;
 			btnStandDown.BackgroundColor = Color.Gray;
 
-			// call iOS/Android specific code to respond to the button click
-			DependencyService.Get<GetLocationInterface>().GetLocation();
+			var seconds = TimeSpan.FromSeconds(30);
+
+			Device.StartTimer(seconds, () =>
+			{
+
+				//call your method to check for notifications here
+				string result = DependencyService.Get<GetLocationInterface>().GetLocation();
+
+				Console.WriteLine(result.Substring(0, 4));
+
+				// Returning true means you want to repeat this timer, false stops it.
+				if (result.Substring(0, 6).Contains("DONE"))
+				{
+					btnRespondingFirehall.BackgroundColor = Color.Gray;
+					btnRespondingFirehall.Text = "Arrived";
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			});
 		}
 
 		public void RespondingSceneButtonPressed(object sender, EventArgs e)

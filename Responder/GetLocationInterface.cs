@@ -4,6 +4,6 @@ namespace Responder
 {
 	public interface GetLocationInterface
 	{
-		void GetLocation();
+		string GetLocation();
 	}
 }

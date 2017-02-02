@@ -17,11 +17,10 @@ namespace Responder.iOS
 			// if you want to use a different Application Delegate class from "AppDelegate"
 			// you can specify it here.
 			UIApplication.Main(args, null, "AppDelegate");
-
 		}
 
 		// Get Location Interface Method
-		public void GetLocation()
+		public string GetLocation()
 		{
 			CLLocationManager locationManager = new CLLocationManager();
 			locationManager.RequestAlwaysAuthorization();
@@ -30,9 +29,9 @@ namespace Responder.iOS
 			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
-			responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
-
 			Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
+
+			return responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
 		}
 
 		// Settings Tab Interface Method
@@ -45,8 +44,24 @@ namespace Responder.iOS
 			if (result == string.Empty)
 			{
 				// save deviceID to userdefaults
-				// redirect to Main tab
+				var defaults = NSUserDefaults.StandardUserDefaults;
+
+				defaults.SetString(sFirehallID, "FireHallID");
+				defaults.SetString(sUserID, "UserID");
+				defaults.Synchronize();
 			}
+		}
+
+		// Settings Tab Interface Method
+		public string GetAccountInfoFromUserDefaults()
+		{
+			// get account info from userdefaults
+			var defaults = NSUserDefaults.StandardUserDefaults;
+
+			string sFireHallID = defaults.StringForKey("FireHallID");
+			string sUserID = defaults.StringForKey("UserID");
+
+			return sFireHallID + ":" + sUserID;
 		}
 	}
 }
