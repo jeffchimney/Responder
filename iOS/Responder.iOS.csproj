@@ -123,6 +123,7 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Resources\button_background.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
