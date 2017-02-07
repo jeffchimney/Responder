@@ -121,6 +121,7 @@
     <AndroidResource Include="Resources\drawable-xhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable\button_background.png" />
+    <AndroidResource Include="Resources\drawable\firehalllogo.png" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References" />
