@@ -24,6 +24,8 @@ namespace Responder.iOS.firehall.net {
     [System.Web.Services.WebServiceBindingAttribute(Name="WebService1Soap", Namespace="http://tempuri.org/")]
     public partial class WebService1 : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
+        private System.Threading.SendOrPostCallback TestOperationCompleted;
+        
         private System.Threading.SendOrPostCallback RegisterOperationCompleted;
         
         private System.Threading.SendOrPostCallback LoginOperationCompleted;
@@ -40,6 +42,9 @@ namespace Responder.iOS.firehall.net {
         }
         
         /// CodeRemarks
+        public event TestCompletedEventHandler TestCompleted;
+        
+        /// CodeRemarks
         public event RegisterCompletedEventHandler RegisterCompleted;
         
         /// CodeRemarks
@@ -47,6 +52,39 @@ namespace Responder.iOS.firehall.net {
         
         /// CodeRemarks
         public event RespondingCompletedEventHandler RespondingCompleted;
+        
+        /// CodeRemarks
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Test", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public WS_Output Test(string sInput, int iVersion, int iSubVersion) {
+            object[] results = this.Invoke("Test", new object[] {
+                        sInput,
+                        iVersion,
+                        iSubVersion});
+            return ((WS_Output)(results[0]));
+        }
+        
+        /// CodeRemarks
+        public void TestAsync(string sInput, int iVersion, int iSubVersion) {
+            this.TestAsync(sInput, iVersion, iSubVersion, null);
+        }
+        
+        /// CodeRemarks
+        public void TestAsync(string sInput, int iVersion, int iSubVersion, object userState) {
+            if ((this.TestOperationCompleted == null)) {
+                this.TestOperationCompleted = new System.Threading.SendOrPostCallback(this.OnTestOperationCompleted);
+            }
+            this.InvokeAsync("Test", new object[] {
+                        sInput,
+                        iVersion,
+                        iSubVersion}, this.TestOperationCompleted, userState);
+        }
+        
+        private void OnTestOperationCompleted(object arg) {
+            if ((this.TestCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.TestCompleted(this, new TestCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Register", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -150,6 +188,87 @@ namespace Responder.iOS.firehall.net {
         /// CodeRemarks
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class WS_Output {
+        
+        /// <remarks/>
+        public WS_Result Result;
+        
+        /// <remarks/>
+        public string ErrorMessage;
+        
+        /// <remarks/>
+        public WS_Response MyResponse;
+        
+        /// <remarks/>
+        public WS_Response[] Responses;
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.SerializableAttribute()]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public enum WS_Result {
+        
+        /// <remarks/>
+        OK,
+        
+        /// <remarks/>
+        Error,
+        
+        /// <remarks/>
+        Upgrade,
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
+    public partial class WS_Response {
+        
+        /// <remarks/>
+        public string FullName;
+        
+        /// <remarks/>
+        public string TimeToHall;
+        
+        /// <remarks/>
+        public string DistanceToHall;
+    }
+    
+    /// CodeRemarks
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    public delegate void TestCompletedEventHandler(object sender, TestCompletedEventArgs e);
+    
+    /// CodeRemarks
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class TestCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal TestCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// CodeRemarks
+        public WS_Output Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((WS_Output)(this.results[0]));
+            }
         }
     }
     

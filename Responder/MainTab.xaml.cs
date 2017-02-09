@@ -105,13 +105,12 @@ namespace Responder
 			btnStandDown.BackgroundColor = Color.Gray;
 
 			var seconds = TimeSpan.FromSeconds(30);
-
+			string result = DependencyService.Get<GetLocationInterface>().GetLocation();
 			Device.StartTimer(seconds, () =>
 			{
 
 				//call your method to check for notifications here
-				string result = DependencyService.Get<GetLocationInterface>().GetLocation();
-
+				result = DependencyService.Get<GetLocationInterface>().GetLocation();
 				Console.WriteLine(result.Substring(0, 4));
 
 				// Returning true means you want to repeat this timer, false stops it.

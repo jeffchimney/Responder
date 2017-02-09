@@ -198,6 +198,7 @@ namespace Responder
 				// call iOS/Android specific code to respond to the button click
 				DependencyService.Get<SettingsTabInterface>().SubmitAccountInfo(sFireHallID, sUserID);
 				parentPage.SwitchToMainTab();
+				DependencyService.Get<GetLocationInterface>().AskForLocationPermissions();
 			}
 		}
 

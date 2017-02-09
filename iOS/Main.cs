@@ -19,7 +19,7 @@ namespace Responder.iOS
 			UIApplication.Main(args, null, "AppDelegate");
 		}
 
-		// Get Location Interface Method
+		// Get Location Interface Methods
 		public string GetLocation()
 		{
 			CLLocationManager locationManager = new CLLocationManager();
@@ -34,6 +34,51 @@ namespace Responder.iOS
 			return responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
 		}
 
+		public bool AskForLocationPermissions()
+		{
+			CLLocationManager locationManager = new CLLocationManager();
+			locationManager.RequestAlwaysAuthorization();
+
+			var bLocationEnabled = false;
+
+			locationManager.AuthorizationChanged += (object sender, CLAuthorizationChangedEventArgs e) =>
+			{
+				if (e.Status == CLAuthorizationStatus.Denied || e.Status == CLAuthorizationStatus.Restricted)
+				{
+					bLocationEnabled = false;
+				}
+				else if (e.Status == CLAuthorizationStatus.Authorized)
+				{
+					bLocationEnabled = true;
+					// save deviceID to userdefaults
+					var defaults = NSUserDefaults.StandardUserDefaults;
+
+					defaults.SetString(bLocationEnabled.ToString(), "bLocationEnabled");
+					defaults.Synchronize();
+				}
+			};
+
+			return bLocationEnabled;
+		}
+
+		public void RegisterForPushNotifications()
+		{
+			// register for notifications
+			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+			{
+				var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
+								   UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
+								   new NSSet());
+
+				UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
+				UIApplication.SharedApplication.RegisterForRemoteNotifications();
+			}
+			else {
+				UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
+				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
+			}
+		}
+
 		// Settings Tab Interface Method
 		public void SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
@@ -41,7 +86,7 @@ namespace Responder.iOS
 
 			string result = responder.Register(sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
-			if (result == string.Empty)
+			if (result == string.Empty || result == "device already registered")
 			{
 				// save deviceID to userdefaults
 				var defaults = NSUserDefaults.StandardUserDefaults;

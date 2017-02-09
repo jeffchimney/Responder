@@ -83,6 +83,7 @@
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <MtouchTlsProvider>Default</MtouchTlsProvider>
     <PlatformTarget>x86</PlatformTarget>
+    <CodesignProvision>440fea47-1554-4006-bbbe-400d2c82eb2c</CodesignProvision>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -117,13 +118,13 @@
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
+    <None Include="Resources\button_background.png" />
     <None Include="Web References\firehall.net\Respond.wsdl" />
     <None Include="Web References\firehall.net\Respond.disco" />
     <None Include="Web References\firehall.net\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Resources\button_background.png" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

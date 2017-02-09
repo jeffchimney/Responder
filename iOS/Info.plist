@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>Responder</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.jeffsapps.responder</string>
+	<string>com.JeffsApps.Responder</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
@@ -30,8 +30,7 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
@@ -46,5 +45,9 @@
 	<string>To monitor progress to and from the firehall.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>To monitor progress to and from the firehall.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

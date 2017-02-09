@@ -5,5 +5,7 @@ namespace Responder
 	public interface GetLocationInterface
 	{
 		string GetLocation();
+		bool AskForLocationPermissions();
+		void RegisterForPushNotifications();
 	}
 }

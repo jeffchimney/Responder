@@ -50,6 +50,7 @@ namespace Responder
 			{
 				CurrentPage = settingsTab;
 			}
+			DependencyService.Get<GetLocationInterface>().RegisterForPushNotifications();
 		}
 
 		public void SwitchToMainTab()
