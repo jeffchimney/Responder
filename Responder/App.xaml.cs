@@ -19,11 +19,16 @@ namespace Responder
 		protected override void OnSleep()
 		{
 			// Handle when your app sleeps
+			DependencyService.Get<GetLocationInterface>().StartMonitoringLocationInBackground();
 		}
 
 		protected override void OnResume()
 		{
 			// Handle when your app resumes
+			if (MainTab.responding)
+			{
+				DependencyService.Get<GetLocationInterface>().StopMonitoringLocationChanges();
+			}
 		}
 	}
 }

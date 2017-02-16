@@ -53,6 +53,11 @@ namespace Responder
 			DependencyService.Get<GetLocationInterface>().RegisterForPushNotifications();
 		}
 
+		protected override void OnDisappearing()
+		{
+			base.OnDisappearing();
+		}
+
 		public void SwitchToMainTab()
 		{
 			CurrentPage = mainTab;

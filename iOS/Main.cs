@@ -11,6 +11,8 @@ namespace Responder.iOS
 {
 	public class Application: GetLocationInterface, SettingsTabInterface
 	{
+		CLLocationManager locationManager = new CLLocationManager();
+
 		// This is the main entry point of the application.
 		static void Main(string[] args)
 		{
@@ -19,12 +21,15 @@ namespace Responder.iOS
 			UIApplication.Main(args, null, "AppDelegate");
 		}
 
+		public void StartListening()
+		{
+			locationManager.RequestAlwaysAuthorization();
+			locationManager.StartUpdatingLocation();
+		}
+
 		// Get Location Interface Methods
 		public string GetLocation()
 		{
-			CLLocationManager locationManager = new CLLocationManager();
-			locationManager.RequestAlwaysAuthorization();
-
 			Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
 			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
@@ -34,9 +39,48 @@ namespace Responder.iOS
 			return responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
 		}
 
+		public void StartMonitoringLocationInBackground()
+		{
+			Console.WriteLine("Start monitoring in background");
+			locationManager.RequestAlwaysAuthorization();
+
+			if (UIDevice.CurrentDevice.IsMultitaskingSupported)
+			{
+				Console.WriteLine("Multitasking supported");
+				// Code dependent on multitasking.
+				if (CLLocationManager.LocationServicesEnabled)
+				{
+					Console.WriteLine("Location services enabled");
+					locationManager.StartMonitoringSignificantLocationChanges();
+
+					locationManager.LocationsUpdated += (o, e) =>
+					{
+						Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
+						Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
+						firehall.net.WebService1 responder = new firehall.net.WebService1();
+						Console.WriteLine("Noticed change in location");
+						var result = responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
+						Console.WriteLine(result);
+						if (result.Substring(0, 6).Contains("DONE"))
+						{
+							StopMonitoringLocationChanges();
+							locationManager.StopUpdatingLocation();
+						}
+					};
+				}
+				else {
+					Console.WriteLine("Location services not enabled, please enable this in your Settings");
+				}
+			}
+		}
+
+		public void StopMonitoringLocationChanges()
+		{
+			locationManager.StopMonitoringSignificantLocationChanges();
+		}
+
 		public bool AskForLocationPermissions()
 		{
-			CLLocationManager locationManager = new CLLocationManager();
 			locationManager.RequestAlwaysAuthorization();
 
 			var bLocationEnabled = false;

@@ -64,6 +64,8 @@ namespace Responder
 			TextColor = Color.Black
 		};
 
+		public static bool responding = false;
+
 		public MainTab(MainPage parent)
 		{
 			parentPage = parent;
@@ -98,6 +100,8 @@ namespace Responder
 
 		private void RespondingFirehallButtonPressed(object sender, EventArgs e)
 		{
+			responding = true;
+
 			btnRespondingFirehall.BackgroundColor = Color.Green;
 			btnRespondingScene.BackgroundColor = Color.Gray;
 			btnOnScene.BackgroundColor = Color.Gray;
@@ -105,6 +109,7 @@ namespace Responder
 			btnStandDown.BackgroundColor = Color.Gray;
 
 			var seconds = TimeSpan.FromSeconds(30);
+			DependencyService.Get<GetLocationInterface>().StartListening();
 			string result = DependencyService.Get<GetLocationInterface>().GetLocation();
 			Device.StartTimer(seconds, () =>
 			{
@@ -118,6 +123,7 @@ namespace Responder
 				{
 					btnRespondingFirehall.BackgroundColor = Color.Gray;
 					btnRespondingFirehall.Text = "Arrived";
+					responding = false;
 					return false;
 				}
 				else

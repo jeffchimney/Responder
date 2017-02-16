@@ -7,5 +7,8 @@ namespace Responder
 		string GetLocation();
 		bool AskForLocationPermissions();
 		void RegisterForPushNotifications();
+		void StartMonitoringLocationInBackground();
+		void StopMonitoringLocationChanges();
+		void StartListening();
 	}
 }
