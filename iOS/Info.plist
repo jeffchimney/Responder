@@ -47,6 +47,7 @@
 	<string>To monitor progress to and from the firehall.</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 </dict>

@@ -88,25 +88,29 @@ namespace Responder.iOS.firehall.net {
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Register", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string Register(string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
+        public WS_Output Register(int iVersion, int iSubVersion, string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
             object[] results = this.Invoke("Register", new object[] {
+                        iVersion,
+                        iSubVersion,
                         sFireHallRespondID,
                         sStaffRespondID,
                         sDeviceIdentifier});
-            return ((string)(results[0]));
+            return ((WS_Output)(results[0]));
         }
         
         /// CodeRemarks
-        public void RegisterAsync(string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
-            this.RegisterAsync(sFireHallRespondID, sStaffRespondID, sDeviceIdentifier, null);
+        public void RegisterAsync(int iVersion, int iSubVersion, string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
+            this.RegisterAsync(iVersion, iSubVersion, sFireHallRespondID, sStaffRespondID, sDeviceIdentifier, null);
         }
         
         /// CodeRemarks
-        public void RegisterAsync(string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier, object userState) {
+        public void RegisterAsync(int iVersion, int iSubVersion, string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier, object userState) {
             if ((this.RegisterOperationCompleted == null)) {
                 this.RegisterOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRegisterOperationCompleted);
             }
             this.InvokeAsync("Register", new object[] {
+                        iVersion,
+                        iSubVersion,
                         sFireHallRespondID,
                         sStaffRespondID,
                         sDeviceIdentifier}, this.RegisterOperationCompleted, userState);
@@ -121,25 +125,29 @@ namespace Responder.iOS.firehall.net {
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Login", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string Login(string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
+        public WS_Output Login(int iVersion, int iSubVersion, string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
             object[] results = this.Invoke("Login", new object[] {
+                        iVersion,
+                        iSubVersion,
                         sFireHallRespondID,
                         sStaffRespondID,
                         sDeviceIdentifier});
-            return ((string)(results[0]));
+            return ((WS_Output)(results[0]));
         }
         
         /// CodeRemarks
-        public void LoginAsync(string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
-            this.LoginAsync(sFireHallRespondID, sStaffRespondID, sDeviceIdentifier, null);
+        public void LoginAsync(int iVersion, int iSubVersion, string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier) {
+            this.LoginAsync(iVersion, iSubVersion, sFireHallRespondID, sStaffRespondID, sDeviceIdentifier, null);
         }
         
         /// CodeRemarks
-        public void LoginAsync(string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier, object userState) {
+        public void LoginAsync(int iVersion, int iSubVersion, string sFireHallRespondID, string sStaffRespondID, string sDeviceIdentifier, object userState) {
             if ((this.LoginOperationCompleted == null)) {
                 this.LoginOperationCompleted = new System.Threading.SendOrPostCallback(this.OnLoginOperationCompleted);
             }
             this.InvokeAsync("Login", new object[] {
+                        iVersion,
+                        iSubVersion,
                         sFireHallRespondID,
                         sStaffRespondID,
                         sDeviceIdentifier}, this.LoginOperationCompleted, userState);
@@ -154,25 +162,29 @@ namespace Responder.iOS.firehall.net {
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Responding", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public string Responding(string sDeviceIdentifier, decimal dLatitude, decimal dLongitude) {
+        public WS_Output Responding(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude) {
             object[] results = this.Invoke("Responding", new object[] {
+                        iVersion,
+                        iSubVersion,
                         sDeviceIdentifier,
                         dLatitude,
                         dLongitude});
-            return ((string)(results[0]));
+            return ((WS_Output)(results[0]));
         }
         
         /// CodeRemarks
-        public void RespondingAsync(string sDeviceIdentifier, decimal dLatitude, decimal dLongitude) {
-            this.RespondingAsync(sDeviceIdentifier, dLatitude, dLongitude, null);
+        public void RespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude) {
+            this.RespondingAsync(iVersion, iSubVersion, sDeviceIdentifier, dLatitude, dLongitude, null);
         }
         
         /// CodeRemarks
-        public void RespondingAsync(string sDeviceIdentifier, decimal dLatitude, decimal dLongitude, object userState) {
+        public void RespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude, object userState) {
             if ((this.RespondingOperationCompleted == null)) {
                 this.RespondingOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRespondingOperationCompleted);
             }
             this.InvokeAsync("Responding", new object[] {
+                        iVersion,
+                        iSubVersion,
                         sDeviceIdentifier,
                         dLatitude,
                         dLongitude}, this.RespondingOperationCompleted, userState);
@@ -226,6 +238,9 @@ namespace Responder.iOS.firehall.net {
         
         /// <remarks/>
         Upgrade,
+        
+        /// <remarks/>
+        AtHall,
     }
     
     /// <remarks/>
@@ -290,10 +305,10 @@ namespace Responder.iOS.firehall.net {
         }
         
         /// CodeRemarks
-        public string Result {
+        public WS_Output Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
+                return ((WS_Output)(this.results[0]));
             }
         }
     }
@@ -316,10 +331,10 @@ namespace Responder.iOS.firehall.net {
         }
         
         /// CodeRemarks
-        public string Result {
+        public WS_Output Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
+                return ((WS_Output)(this.results[0]));
             }
         }
     }
@@ -342,10 +357,10 @@ namespace Responder.iOS.firehall.net {
         }
         
         /// CodeRemarks
-        public string Result {
+        public WS_Output Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
+                return ((WS_Output)(this.results[0]));
             }
         }
     }

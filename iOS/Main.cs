@@ -36,13 +36,16 @@ namespace Responder.iOS
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 			Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
 
-			return responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
+			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
+
+			return response.Result.ToString();
 		}
 
 		public void StartMonitoringLocationInBackground()
 		{
 			Console.WriteLine("Start monitoring in background");
 			locationManager.RequestAlwaysAuthorization();
+			locationManager.DesiredAccuracy = 1;
 
 			if (UIDevice.CurrentDevice.IsMultitaskingSupported)
 			{
@@ -59,9 +62,9 @@ namespace Responder.iOS
 						Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 						firehall.net.WebService1 responder = new firehall.net.WebService1();
 						Console.WriteLine("Noticed change in location");
-						var result = responder.Responding(UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
+						var result = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
 						Console.WriteLine(result);
-						if (result.Substring(0, 6).Contains("DONE"))
+						if (result.Result.ToString().Contains("DONE"))
 						{
 							StopMonitoringLocationChanges();
 							locationManager.StopUpdatingLocation();
@@ -128,17 +131,17 @@ namespace Responder.iOS
 		{
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 
-			string result = responder.Register(sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			Object result = responder.Register(1, 0, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
-			if (result == string.Empty || result == "device already registered")
-			{
-				// save deviceID to userdefaults
-				var defaults = NSUserDefaults.StandardUserDefaults;
+			//if (result == string.Empty || result == "device already registered")
+			//{
+			//	// save deviceID to userdefaults
+			//	var defaults = NSUserDefaults.StandardUserDefaults;
 
-				defaults.SetString(sFirehallID, "FireHallID");
-				defaults.SetString(sUserID, "UserID");
-				defaults.Synchronize();
-			}
+			//	defaults.SetString(sFirehallID, "FireHallID");
+			//	defaults.SetString(sUserID, "UserID");
+			//	defaults.Synchronize();
+			//}
 		}
 
 		// Settings Tab Interface Method

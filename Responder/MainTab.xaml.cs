@@ -21,48 +21,47 @@ namespace Responder
 			HeightRequest = 110,
 			TextColor = Color.Black
 		};
-		Button btnRespondingScene = new Button
-		{
-			Text = "Responding to Scene",
-			BackgroundColor = Color.Gray,
-			FontSize = 20,
-			HeightRequest = 110,
-			TextColor = Color.Black
-		};
-		Button btnOnScene = new Button
-		{
-			Text = "On scene",
-			BackgroundColor = Color.Gray,
-			FontSize = 20,
-			HeightRequest = 110,
-			TextColor = Color.Black
-		};
+		//Button btnRespondingScene = new Button
+		//{
+		//	Text = "Responding to Scene",
+		//	BackgroundColor = Color.Gray,
+		//	FontSize = 20,
+		//	HeightRequest = 110,
+		//	TextColor = Color.Black
+		//};
+		//Button btnOnScene = new Button
+		//{
+		//	Text = "On scene",
+		//	BackgroundColor = Color.Gray,
+		//	FontSize = 20,
+		//	HeightRequest = 110,
+		//	TextColor = Color.Black
+		//};
 		Button btnUnavailable = new Button
 		{
 			Text = "Unavailable",
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
-			WidthRequest = 165,
 			HeightRequest = 110,
 			TextColor = Color.Black
 		};
-		Button btnStandDown = new Button
-		{
-			Text = "Stand down",
-			BackgroundColor = Color.Gray,
-			FontSize = 20,
-			WidthRequest = 165,
-			HeightRequest = 110,
-			TextColor = Color.Black
-		};
-		Label lblCoords = new Label
-		{
-			Text = "",
-			FontSize = 20,
-			WidthRequest = 165,
-			HeightRequest = 110,
-			TextColor = Color.Black
-		};
+		//Button btnStandDown = new Button
+		//{
+		//	Text = "Stand down",
+		//	BackgroundColor = Color.Gray,
+		//	FontSize = 20,
+		//	WidthRequest = 165,
+		//	HeightRequest = 110,
+		//	TextColor = Color.Black
+		//};
+		//Label lblCoords = new Label
+		//{
+		//	Text = "",
+		//	FontSize = 20,
+		//	WidthRequest = 165,
+		//	HeightRequest = 110,
+		//	TextColor = Color.Black
+		//};
 
 		public static bool responding = false;
 
@@ -72,27 +71,29 @@ namespace Responder
 
 			//set up touch delegates
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
-			btnRespondingScene.Clicked += RespondingSceneButtonPressed;
-			btnOnScene.Clicked += OnSceneButtonPressed;
+			//btnRespondingScene.Clicked += RespondingSceneButtonPressed;
+			//btnOnScene.Clicked += OnSceneButtonPressed;
 			btnUnavailable.Clicked += UnavailableButtonPressed;
-			btnStandDown.Clicked += StandDownButtonPressed;
+			//btnStandDown.Clicked += StandDownButtonPressed;
 
 			Padding = new Thickness(20);
 
-			StackLayout sideBySide = new StackLayout
-			{
-				Children = {
-					btnUnavailable,
-					btnStandDown
-				},
-				Orientation = StackOrientation.Horizontal,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-			};
+			//StackLayout title = new StackLayout
+			//{
+			//	Children = {
+			//		lblTitle
+			//	},
+			//	Orientation = StackOrientation.Horizontal,
+			//	HorizontalOptions = LayoutOptions.FillAndExpand,
+			//};
 
 			Content = new StackLayout
 			{
 				Spacing = 10,
-				Children = { lblTitle, btnRespondingFirehall, btnRespondingScene, btnOnScene, sideBySide, lblCoords }
+				Children = { btnRespondingFirehall, btnUnavailable }, //btnRespondingScene,btnOnScene,sideBySide,lblCoords
+				Orientation = StackOrientation.Vertical,
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				VerticalOptions = LayoutOptions.Center
 			};
 
 			InitializeComponent();
@@ -103,10 +104,10 @@ namespace Responder
 			responding = true;
 
 			btnRespondingFirehall.BackgroundColor = Color.Green;
-			btnRespondingScene.BackgroundColor = Color.Gray;
-			btnOnScene.BackgroundColor = Color.Gray;
+			//btnRespondingScene.BackgroundColor = Color.Gray;
+			//btnOnScene.BackgroundColor = Color.Gray;
 			btnUnavailable.BackgroundColor = Color.Gray;
-			btnStandDown.BackgroundColor = Color.Gray;
+			//btnStandDown.BackgroundColor = Color.Gray;
 
 			var seconds = TimeSpan.FromSeconds(30);
 			DependencyService.Get<GetLocationInterface>().StartListening();
@@ -133,40 +134,40 @@ namespace Responder
 			});
 		}
 
-		public void RespondingSceneButtonPressed(object sender, EventArgs e)
-		{
-			btnRespondingFirehall.BackgroundColor = Color.Gray;
-			btnRespondingScene.BackgroundColor = Color.Green;
-			btnOnScene.BackgroundColor = Color.Gray;
-			btnUnavailable.BackgroundColor = Color.Gray;
-			btnStandDown.BackgroundColor = Color.Gray;
-		}
+		//public void RespondingSceneButtonPressed(object sender, EventArgs e)
+		//{
+		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
+		//	//btnRespondingScene.BackgroundColor = Color.Green;
+		//	//btnOnScene.BackgroundColor = Color.Gray;
+		//	btnUnavailable.BackgroundColor = Color.Gray;
+		//	//btnStandDown.BackgroundColor = Color.Gray;
+		//}
 
-		private void OnSceneButtonPressed(object sender, EventArgs e)
-		{
-			btnRespondingFirehall.BackgroundColor = Color.Gray;
-			btnRespondingScene.BackgroundColor = Color.Gray;
-			btnOnScene.BackgroundColor = Color.Green;
-			btnUnavailable.BackgroundColor = Color.Gray;
-			btnStandDown.BackgroundColor = Color.Gray;
-		}
+		//private void OnSceneButtonPressed(object sender, EventArgs e)
+		//{
+		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
+		//	btnRespondingScene.BackgroundColor = Color.Gray;
+		//	btnOnScene.BackgroundColor = Color.Green;
+		//	btnUnavailable.BackgroundColor = Color.Gray;
+		//	btnStandDown.BackgroundColor = Color.Gray;
+		//}
 
 		private void UnavailableButtonPressed(object sender, EventArgs e)
 		{
 			btnRespondingFirehall.BackgroundColor = Color.Gray;
-			btnRespondingScene.BackgroundColor = Color.Gray;
-			btnOnScene.BackgroundColor = Color.Gray;
+			//btnRespondingScene.BackgroundColor = Color.Gray;
+			//btnOnScene.BackgroundColor = Color.Gray;
 			btnUnavailable.BackgroundColor = Color.Green;
-			btnStandDown.BackgroundColor = Color.Gray;
+			//btnStandDown.BackgroundColor = Color.Gray;
 		}
 
-		private void StandDownButtonPressed(object sender, EventArgs e)
-		{
-			btnRespondingFirehall.BackgroundColor = Color.Gray;
-			btnRespondingScene.BackgroundColor = Color.Gray;
-			btnOnScene.BackgroundColor = Color.Gray;
-			btnUnavailable.BackgroundColor = Color.Gray;
-			btnStandDown.BackgroundColor = Color.Green;
-		}
+		//private void StandDownButtonPressed(object sender, EventArgs e)
+		//{
+		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
+		//	btnRespondingScene.BackgroundColor = Color.Gray;
+		//	btnOnScene.BackgroundColor = Color.Gray;
+		//	btnUnavailable.BackgroundColor = Color.Gray;
+		//	btnStandDown.BackgroundColor = Color.Green;
+		//}
 	}
 }
