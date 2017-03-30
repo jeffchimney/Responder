@@ -162,23 +162,24 @@ namespace Responder.iOS.firehall.net {
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Responding", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public WS_Output Responding(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude) {
+        public WS_Output Responding(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude, int iTimeToHall) {
             object[] results = this.Invoke("Responding", new object[] {
                         iVersion,
                         iSubVersion,
                         sDeviceIdentifier,
                         dLatitude,
-                        dLongitude});
+                        dLongitude,
+                        iTimeToHall});
             return ((WS_Output)(results[0]));
         }
         
         /// CodeRemarks
-        public void RespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude) {
-            this.RespondingAsync(iVersion, iSubVersion, sDeviceIdentifier, dLatitude, dLongitude, null);
+        public void RespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude, int iTimeToHall) {
+            this.RespondingAsync(iVersion, iSubVersion, sDeviceIdentifier, dLatitude, dLongitude, iTimeToHall, null);
         }
         
         /// CodeRemarks
-        public void RespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude, object userState) {
+        public void RespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, decimal dLatitude, decimal dLongitude, int iTimeToHall, object userState) {
             if ((this.RespondingOperationCompleted == null)) {
                 this.RespondingOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRespondingOperationCompleted);
             }
@@ -187,7 +188,8 @@ namespace Responder.iOS.firehall.net {
                         iSubVersion,
                         sDeviceIdentifier,
                         dLatitude,
-                        dLongitude}, this.RespondingOperationCompleted, userState);
+                        dLongitude,
+                        iTimeToHall}, this.RespondingOperationCompleted, userState);
         }
         
         private void OnRespondingOperationCompleted(object arg) {
@@ -218,6 +220,14 @@ namespace Responder.iOS.firehall.net {
         public string ErrorMessage;
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<decimal> HallLatitude;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(IsNullable=true)]
+        public System.Nullable<decimal> HallLongitude;
+        
+        /// <remarks/>
         public WS_Response MyResponse;
         
         /// <remarks/>
@@ -229,6 +239,9 @@ namespace Responder.iOS.firehall.net {
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
     public enum WS_Result {
+        
+        /// <remarks/>
+        NA,
         
         /// <remarks/>
         OK,

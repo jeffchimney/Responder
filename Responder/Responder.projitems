@@ -45,5 +45,6 @@
       <DependentUpon>SettingsTab.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)SettingsTabInterface.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ResponderResult.cs" />
   </ItemGroup>
 </Project>

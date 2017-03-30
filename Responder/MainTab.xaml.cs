@@ -15,11 +15,12 @@ namespace Responder
 		};
 		Button btnRespondingFirehall = new Button
 		{
-			Text = "Responding to firehall",
+			Text = "Respond",
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
-			HeightRequest = 110,
-			TextColor = Color.Black
+			HeightRequest = 75,
+			TextColor = Color.Black,
+			HorizontalOptions = LayoutOptions.FillAndExpand
 		};
 		//Button btnRespondingScene = new Button
 		//{
@@ -42,8 +43,9 @@ namespace Responder
 			Text = "Unavailable",
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
-			HeightRequest = 110,
-			TextColor = Color.Black
+			HeightRequest = 75,
+			TextColor = Color.Black,
+			HorizontalOptions = LayoutOptions.FillAndExpand
 		};
 		//Button btnStandDown = new Button
 		//{
@@ -90,10 +92,10 @@ namespace Responder
 			Content = new StackLayout
 			{
 				Spacing = 10,
-				Children = { btnRespondingFirehall, btnUnavailable }, //btnRespondingScene,btnOnScene,sideBySide,lblCoords
 				Orientation = StackOrientation.Vertical,
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				VerticalOptions = LayoutOptions.Center
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				VerticalOptions = LayoutOptions.End,
+				Children = { btnRespondingFirehall, btnUnavailable } //btnRespondingScene,btnOnScene,sideBySide,lblCoords
 			};
 
 			InitializeComponent();
@@ -104,6 +106,7 @@ namespace Responder
 			responding = true;
 
 			btnRespondingFirehall.BackgroundColor = Color.Green;
+			btnRespondingFirehall.Text = "Responding";
 			//btnRespondingScene.BackgroundColor = Color.Gray;
 			//btnOnScene.BackgroundColor = Color.Gray;
 			btnUnavailable.BackgroundColor = Color.Gray;
@@ -117,10 +120,9 @@ namespace Responder
 
 				//call your method to check for notifications here
 				result = DependencyService.Get<GetLocationInterface>().GetLocation();
-				Console.WriteLine(result.Substring(0, 4));
 
 				// Returning true means you want to repeat this timer, false stops it.
-				if (result.Substring(0, 6).Contains("DONE"))
+				if (result.Contains("DONE"))
 				{
 					btnRespondingFirehall.BackgroundColor = Color.Gray;
 					btnRespondingFirehall.Text = "Arrived";
@@ -157,7 +159,7 @@ namespace Responder
 			btnRespondingFirehall.BackgroundColor = Color.Gray;
 			//btnRespondingScene.BackgroundColor = Color.Gray;
 			//btnOnScene.BackgroundColor = Color.Gray;
-			btnUnavailable.BackgroundColor = Color.Green;
+			btnUnavailable.BackgroundColor = Color.Red;
 			//btnStandDown.BackgroundColor = Color.Gray;
 		}
 

@@ -18,7 +18,7 @@
     <MetadataSource Address="http://firehall.net/api/Respond.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="Respond.wsdl" MetadataType="Wsdl" ID="65537253-7426-4d83-9dd4-ca0227e7f0a4" SourceId="1" SourceUrl="http://firehall.net/api/Respond.asmx?wsdl" />
-    <MetadataFile FileName="Respond.disco" MetadataType="Disco" ID="bcb002d1-86a3-45f0-8b28-0d2f52f87d82" SourceId="1" SourceUrl="http://firehall.net/api/Respond.asmx?disco" />
+    <MetadataFile FileName="Respond.wsdl" MetadataType="Wsdl" ID="7ecfb928-cee5-4fbd-9a73-8e225154d82e" SourceId="1" SourceUrl="http://firehall.net/api/Respond.asmx?wsdl" />
+    <MetadataFile FileName="Respond.disco" MetadataType="Disco" ID="47d16110-2ecd-4df7-94cf-846e0708b0ea" SourceId="1" SourceUrl="http://firehall.net/api/Respond.asmx?disco" />
   </Metadata>
 </ReferenceGroup>

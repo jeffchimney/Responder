@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Foundation;
 using UIKit;
+using MapKit;
 using CoreLocation;
 using Responder.iOS;
 [assembly: Xamarin.Forms.Dependency(typeof(Application))]
@@ -12,6 +13,10 @@ namespace Responder.iOS
 	public class Application: GetLocationInterface, SettingsTabInterface
 	{
 		CLLocationManager locationManager = new CLLocationManager();
+
+		Decimal? dHallLong = 0;
+		Decimal? dHallLat = 0;
+		double TimeToHall = -1;
 
 		// This is the main entry point of the application.
 		static void Main(string[] args)
@@ -36,9 +41,81 @@ namespace Responder.iOS
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 			Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
 
-			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
+			// calculate distance to hall
+			var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
+			var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+			var travelTime = CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
+
+			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+
+			dHallLong = response.HallLongitude;
+			dHallLat = response.HallLatitude;
 
 			return response.Result.ToString();
+		}
+
+		public List<ResponderResult> GetAllResponders()
+		{
+			Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
+			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
+
+			firehall.net.WebService1 responder = new firehall.net.WebService1();
+
+			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+			var responderList = new List<ResponderResult>();
+			if (response != null)
+			{
+				var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall ?? " ");
+				responderList.Add(myResponse);
+
+				foreach (firehall.net.WS_Response additionalResponse in response.Responses)
+				{
+					responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall ?? " "));
+				}
+
+				responderList.Add(new ResponderResult("Boris Boris", "10 km", "5 min"));
+				responderList.Add(new ResponderResult("Ted Johnson", "25 km", "10 min"));
+				responderList.Add(new ResponderResult("Judy Bloom", "35 km", "21 min"));
+
+				// calculate distance to hall
+				var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
+				var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+				var travelTime = CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
+			}
+			return responderList;
+		}
+
+		public int CalculateTravelTimeBetween(CLLocationCoordinate2D coord1, CLLocationCoordinate2D coord2)
+		{
+			var sourcePlacemark = new MKPlacemark(coord1);
+			var sourceMapItem = new MKMapItem(sourcePlacemark);
+
+			var destinationPlacemark = new MKPlacemark(coord2);
+			var destinationMapItem = new MKMapItem(destinationPlacemark);
+
+			var request = new MKDirectionsRequest();
+			request.Source = sourceMapItem;
+			request.Destination = destinationMapItem;
+			request.TransportType = MKDirectionsTransportType.Automobile;
+			request.RequestsAlternateRoutes = false;
+
+			var directions = new MKDirections(request);
+
+			directions.CalculateDirections((response, error) => 
+			{
+				if (error != null)
+				{
+					Console.WriteLine("Error with maps api");
+				}
+				else
+				{
+					var route = response.Routes.FirstOrDefault();
+					TimeToHall = route.ExpectedTravelTime;
+					Console.WriteLine(route.ExpectedTravelTime.ToString());
+				}
+			});
+
+			return 0;
 		}
 
 		public void StartMonitoringLocationInBackground()
@@ -62,7 +139,7 @@ namespace Responder.iOS
 						Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 						firehall.net.WebService1 responder = new firehall.net.WebService1();
 						Console.WriteLine("Noticed change in location");
-						var result = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude);
+						var result = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 						Console.WriteLine(result);
 						if (result.Result.ToString().Contains("DONE"))
 						{
@@ -131,17 +208,17 @@ namespace Responder.iOS
 		{
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 
-			Object result = responder.Register(1, 0, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			var result = responder.Register(1, 0, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
-			//if (result == string.Empty || result == "device already registered")
-			//{
-			//	// save deviceID to userdefaults
-			//	var defaults = NSUserDefaults.StandardUserDefaults;
+			if (result.Result.ToString() == string.Empty || result.Result.ToString() == "device already registered")
+			{
+				// save deviceID to userdefaults
+				var defaults = NSUserDefaults.StandardUserDefaults;
 
-			//	defaults.SetString(sFirehallID, "FireHallID");
-			//	defaults.SetString(sUserID, "UserID");
-			//	defaults.Synchronize();
-			//}
+				defaults.SetString(sFirehallID, "FireHallID");
+				defaults.SetString(sUserID, "UserID");
+				defaults.Synchronize();
+			}
 		}
 
 		// Settings Tab Interface Method

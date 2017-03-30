@@ -22,12 +22,15 @@
         <s:sequence>
           <s:element minOccurs="1" maxOccurs="1" name="Result" type="tns:WS_Result" />
           <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="HallLatitude" nillable="true" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="HallLongitude" nillable="true" type="s:decimal" />
           <s:element minOccurs="0" maxOccurs="1" name="MyResponse" type="tns:WS_Response" />
           <s:element minOccurs="0" maxOccurs="1" name="Responses" type="tns:ArrayOfWS_Response" />
         </s:sequence>
       </s:complexType>
       <s:simpleType name="WS_Result">
         <s:restriction base="s:string">
+          <s:enumeration value="NA" />
           <s:enumeration value="OK" />
           <s:enumeration value="Error" />
           <s:enumeration value="Upgrade" />
@@ -90,6 +93,7 @@
             <s:element minOccurs="0" maxOccurs="1" name="sDeviceIdentifier" type="s:string" />
             <s:element minOccurs="1" maxOccurs="1" name="dLatitude" type="s:decimal" />
             <s:element minOccurs="1" maxOccurs="1" name="dLongitude" type="s:decimal" />
+            <s:element minOccurs="1" maxOccurs="1" name="iTimeToHall" type="s:int" />
           </s:sequence>
         </s:complexType>
       </s:element>
