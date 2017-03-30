@@ -44,7 +44,7 @@ namespace Responder.iOS
 			// calculate distance to hall
 			var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
 			var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-			var travelTime = CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
+			CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 
 			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
@@ -62,30 +62,39 @@ namespace Responder.iOS
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 
 			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+
+			dHallLat = response.HallLatitude;
+			dHallLong = response.HallLongitude;
+
 			var responderList = new List<ResponderResult>();
 			if (response != null)
 			{
-				var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall ?? " ");
-				responderList.Add(myResponse);
-
-				foreach (firehall.net.WS_Response additionalResponse in response.Responses)
+				if (response.MyResponse != null)
 				{
-					responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall ?? " "));
+					var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall ?? " ");
+					responderList.Add(myResponse);
+
+					foreach (firehall.net.WS_Response additionalResponse in response.Responses)
+					{
+						responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall ?? " "));
+					}
+
+					responderList.Add(new ResponderResult("Boris Boris", "10 km", "5 min"));
+					responderList.Add(new ResponderResult("Ted Johnson", "25 km", "10 min"));
+					responderList.Add(new ResponderResult("Judy Bloom", "35 km", "21 min"));
+
+					// calculate distance to hall
+					var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
+					Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
+					var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+					Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
+					CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 				}
-
-				responderList.Add(new ResponderResult("Boris Boris", "10 km", "5 min"));
-				responderList.Add(new ResponderResult("Ted Johnson", "25 km", "10 min"));
-				responderList.Add(new ResponderResult("Judy Bloom", "35 km", "21 min"));
-
-				// calculate distance to hall
-				var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
-				var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-				var travelTime = CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 			}
 			return responderList;
 		}
 
-		public int CalculateTravelTimeBetween(CLLocationCoordinate2D coord1, CLLocationCoordinate2D coord2)
+		public void CalculateTravelTimeBetween(CLLocationCoordinate2D coord1, CLLocationCoordinate2D coord2)
 		{
 			var sourcePlacemark = new MKPlacemark(coord1);
 			var sourceMapItem = new MKMapItem(sourcePlacemark);
@@ -114,8 +123,6 @@ namespace Responder.iOS
 					Console.WriteLine(route.ExpectedTravelTime.ToString());
 				}
 			});
-
-			return 0;
 		}
 
 		public void StartMonitoringLocationInBackground()

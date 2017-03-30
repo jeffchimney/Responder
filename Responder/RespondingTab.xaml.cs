@@ -11,7 +11,51 @@ namespace Responder
 		{
 			InitializeComponent();
 
-			GetResponders();
+			var table = new TableView();
+			table.Intent = TableIntent.Settings;
+
+			var layout = new StackLayout()
+			{
+				Orientation = StackOrientation.Horizontal
+			};
+
+			layout.Children.Add(new Label()
+			{
+				Text = "Loading...",
+				TextColor = Color.FromHex("#f35e20"),
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.StartAndExpand
+			});
+
+			layout.Children.Add(new Label()
+			{
+				Text = "N/A",
+				TextColor = Color.FromHex("#f35e20"),
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.EndAndExpand,
+				WidthRequest = 50,
+				HorizontalTextAlignment = TextAlignment.End
+			});
+
+			layout.Children.Add(new Label()
+			{
+				Text = "N/A",
+				TextColor = Color.Black,
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.EndAndExpand,
+				WidthRequest = 50
+			});
+
+			var respondersSection = new TableSection("Responders");
+
+			table.Root = new TableRoot() {
+				new TableSection("My Info") {
+					new ViewCell() {View = layout}
+				},
+				respondersSection
+			};
+
+			Content = table;
 		}
 
 		public List<ViewCell> AddResponders(TableView table, List<ResponderResult> responderResults)
