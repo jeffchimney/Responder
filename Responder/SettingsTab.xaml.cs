@@ -10,11 +10,11 @@ namespace Responder
 
 		public MainPage parentPage;
 
-		Label lblTitle = new Label
+		Image logo = new Image()
 		{
-			Text = "FH Responder",
-			FontSize = 40,
-			HorizontalTextAlignment = TextAlignment.Center
+			Source = "firehalllogo.png",
+			Aspect = Aspect.AspectFill,
+			HorizontalOptions = LayoutOptions.Center
 		};
 
 		Label lblActivation = new Label
@@ -151,7 +151,7 @@ namespace Responder
 			Content = new StackLayout
 			{
 				Spacing = 23,
-				Children = { lblTitle, lblActivation, lblHallID, accountID, lblUserID, userID, btnSubmit }
+				Children = { logo, lblActivation, lblHallID, accountID, lblUserID, userID, btnSubmit }
 			};
 
 			txtHallID1.TextChanged += Entry_TextChanged;
@@ -206,6 +206,7 @@ namespace Responder
 		{
 			var thisEntry = sender as Entry;
 			string text = thisEntry.Text;      //Get Current Text
+			Console.WriteLine(text);
 			if (text.Length > 1)
 			{
 				text = text.Remove(0, 1);  // Remove First character

@@ -11,6 +11,13 @@ namespace Responder
 		{
 			InitializeComponent();
 
+			Image logo = new Image()
+			{
+				Source = "firehalllogo.png",
+				Aspect = Aspect.AspectFill,
+				HorizontalOptions = LayoutOptions.Center
+			};
+
 			var table = new TableView();
 			table.Intent = TableIntent.Settings;
 
@@ -37,15 +44,6 @@ namespace Responder
 				HorizontalTextAlignment = TextAlignment.End
 			});
 
-			layout.Children.Add(new Label()
-			{
-				Text = "N/A",
-				TextColor = Color.Black,
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.EndAndExpand,
-				WidthRequest = 50
-			});
-
 			var respondersSection = new TableSection("Responders");
 
 			table.Root = new TableRoot() {
@@ -55,7 +53,13 @@ namespace Responder
 				respondersSection
 			};
 
-			Content = table;
+			Content = new StackLayout
+			{
+				Spacing = 10,
+				Orientation = StackOrientation.Vertical,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Children = { logo, table } //btnRespondingScene,btnOnScene,sideBySide,lblCoords, btnUnavailable
+			};
 		}
 
 		public List<ViewCell> AddResponders(TableView table, List<ResponderResult> responderResults)
@@ -68,41 +72,47 @@ namespace Responder
 					Orientation = StackOrientation.Horizontal
 				};
 
-				layout.Children.Add(new Label()
-				{
-					Text = result.FullName,
-					TextColor = Color.FromHex("#f35e20"),
-					VerticalOptions = LayoutOptions.Center,
-					HorizontalOptions = LayoutOptions.StartAndExpand
-				});
-
-				layout.Children.Add(new Label()
-				{
-					Text = result.DistanceFromHall,
-					TextColor = Color.FromHex("#f35e20"),
-					VerticalOptions = LayoutOptions.Center,
-					HorizontalOptions = LayoutOptions.EndAndExpand,
-					WidthRequest = 50,
-					HorizontalTextAlignment = TextAlignment.End
-				});
-
-				layout.Children.Add(new Label()
-				{
-					Text = result.TimeToHall,
-					TextColor = Color.Black,
-					VerticalOptions = LayoutOptions.Center,
-					HorizontalOptions = LayoutOptions.EndAndExpand,
-					WidthRequest = 50
-				});
 				CellList.Add(new ViewCell() { View = layout });
 			}
 
 			return CellList;
 		}
 
+		public void ClearRespondersTable()
+		{
+			List<ResponderResult> results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
+
+			var table = new TableView();
+			table.Intent = TableIntent.Settings;
+
+			var layout = new StackLayout()
+			{
+				Orientation = StackOrientation.Horizontal
+			};
+
+			var respondersSection = new TableSection("Responders");
+
+			table.Root = new TableRoot()
+			{
+				new TableSection("My Info") {
+					new ViewCell() {View = layout}
+				},
+				respondersSection
+			};
+
+			Content = table;
+		}
+
 		public void GetResponders()
 		{
 			List<ResponderResult> results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
+
+			Image logo = new Image()
+			{
+				Source = "firehalllogo.png",
+				Aspect = Aspect.AspectFill,
+				HorizontalOptions = LayoutOptions.Center
+			};
 
 			var table = new TableView();
 			table.Intent = TableIntent.Settings;
@@ -113,33 +123,6 @@ namespace Responder
 			{
 				Orientation = StackOrientation.Horizontal
 			};
-
-			layout.Children.Add(new Label()
-			{
-				Text = results[0].FullName,
-				TextColor = Color.FromHex("#f35e20"),
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.StartAndExpand
-			});
-
-			layout.Children.Add(new Label()
-			{
-				Text = results[0].DistanceFromHall,
-				TextColor = Color.FromHex("#f35e20"),
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.EndAndExpand,
-				WidthRequest = 50,
-				HorizontalTextAlignment = TextAlignment.End
-			});
-
-			layout.Children.Add(new Label()
-			{
-				Text = results[0].TimeToHall,
-				TextColor = Color.Black,
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.EndAndExpand,
-				WidthRequest = 50
-			});
 
 			var respondersSection = new TableSection("Responders");
 			foreach (ViewCell cell in CellList)
@@ -154,7 +137,15 @@ namespace Responder
 				respondersSection
 			};
 
-			Content = table;
+			var VerticalLayout = new StackLayout()
+			{
+				Orientation = StackOrientation.Vertical
+			};
+
+			VerticalLayout.Children.Add(logo);
+			VerticalLayout.Children.Add(table);
+
+			Content = VerticalLayout;
 
 			// Run on a timer:
 
@@ -175,33 +166,6 @@ namespace Responder
 					Orientation = StackOrientation.Horizontal
 				};
 
-				layout.Children.Add(new Label()
-				{
-					Text = results[0].FullName,
-					TextColor = Color.FromHex("#f35e20"),
-					VerticalOptions = LayoutOptions.Center,
-					HorizontalOptions = LayoutOptions.StartAndExpand
-				});
-
-				layout.Children.Add(new Label()
-				{
-					Text = results[0].DistanceFromHall,
-					TextColor = Color.FromHex("#f35e20"),
-					VerticalOptions = LayoutOptions.Center,
-					HorizontalOptions = LayoutOptions.EndAndExpand,
-					WidthRequest = 50,
-					HorizontalTextAlignment = TextAlignment.End
-				});
-
-				layout.Children.Add(new Label()
-				{
-					Text = results[0].TimeToHall,
-					TextColor = Color.Black,
-					VerticalOptions = LayoutOptions.Center,
-					HorizontalOptions = LayoutOptions.EndAndExpand,
-					WidthRequest = 50
-				});
-
 				respondersSection = new TableSection("Responders");
 				foreach (ViewCell cell in CellList)
 				{
@@ -215,7 +179,7 @@ namespace Responder
 					respondersSection
 				};
 
-				Content = table;
+				Content = VerticalLayout;
 
 				// Returning true means you want to repeat this timer, false stops it.
 				return true;

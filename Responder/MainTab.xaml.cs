@@ -7,12 +7,21 @@ namespace Responder
 	{
 		MainPage parentPage;
 
-		Label lblTitle = new Label
+		Image logo = new Image
 		{
-			Text = "FH Responder",
-			FontSize = 40,
-			HorizontalTextAlignment = TextAlignment.Center
+			Source = "firehalllogo.png",
+			Aspect = Aspect.AspectFill,
+			HorizontalOptions = LayoutOptions.Center,
+			VerticalOptions = LayoutOptions.Start
 		};
+
+		StackLayout test = new StackLayout
+		{
+			HorizontalOptions = LayoutOptions.Center,
+			HeightRequest = 100,
+			VerticalOptions = LayoutOptions.CenterAndExpand
+		};
+
 		Button btnRespondingFirehall = new Button
 		{
 			Text = "Respond",
@@ -20,7 +29,8 @@ namespace Responder
 			FontSize = 20,
 			HeightRequest = 75,
 			TextColor = Color.Black,
-			HorizontalOptions = LayoutOptions.FillAndExpand
+			HorizontalOptions = LayoutOptions.FillAndExpand,
+			VerticalOptions = LayoutOptions.EndAndExpand
 		};
 		//Button btnRespondingScene = new Button
 		//{
@@ -38,15 +48,15 @@ namespace Responder
 		//	HeightRequest = 110,
 		//	TextColor = Color.Black
 		//};
-		Button btnUnavailable = new Button
-		{
-			Text = "Unavailable",
-			BackgroundColor = Color.Gray,
-			FontSize = 20,
-			HeightRequest = 75,
-			TextColor = Color.Black,
-			HorizontalOptions = LayoutOptions.FillAndExpand
-		};
+		//Button btnUnavailable = new Button
+		//{
+		//	Text = "Unavailable",
+		//	BackgroundColor = Color.Gray,
+		//	FontSize = 20,
+		//	HeightRequest = 75,
+		//	TextColor = Color.Black,
+		//	HorizontalOptions = LayoutOptions.FillAndExpand
+		//};
 		//Button btnStandDown = new Button
 		//{
 		//	Text = "Stand down",
@@ -75,7 +85,7 @@ namespace Responder
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
 			//btnRespondingScene.Clicked += RespondingSceneButtonPressed;
 			//btnOnScene.Clicked += OnSceneButtonPressed;
-			btnUnavailable.Clicked += UnavailableButtonPressed;
+			//btnUnavailable.Clicked += UnavailableButtonPressed;
 			//btnStandDown.Clicked += StandDownButtonPressed;
 
 			Padding = new Thickness(20);
@@ -94,8 +104,7 @@ namespace Responder
 				Spacing = 10,
 				Orientation = StackOrientation.Vertical,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				VerticalOptions = LayoutOptions.End,
-				Children = { btnRespondingFirehall, btnUnavailable } //btnRespondingScene,btnOnScene,sideBySide,lblCoords
+				Children = { logo, test, btnRespondingFirehall } //btnRespondingScene,btnOnScene,sideBySide,lblCoords, btnUnavailable
 			};
 
 			InitializeComponent();
@@ -103,37 +112,47 @@ namespace Responder
 
 		private void RespondingFirehallButtonPressed(object sender, EventArgs e)
 		{
-			responding = true;
-
-			btnRespondingFirehall.BackgroundColor = Color.Green;
-			btnRespondingFirehall.Text = "Responding";
-			//btnRespondingScene.BackgroundColor = Color.Gray;
-			//btnOnScene.BackgroundColor = Color.Gray;
-			btnUnavailable.BackgroundColor = Color.Gray;
-			//btnStandDown.BackgroundColor = Color.Gray;
-
-			var seconds = TimeSpan.FromSeconds(30);
-			DependencyService.Get<GetLocationInterface>().StartListening();
-			string result = DependencyService.Get<GetLocationInterface>().GetLocation();
-			Device.StartTimer(seconds, () =>
+			if (!responding) // start responding
 			{
+				responding = true;
 
-				//call your method to check for notifications here
-				result = DependencyService.Get<GetLocationInterface>().GetLocation();
+				btnRespondingFirehall.BackgroundColor = Color.Orange;
+				btnRespondingFirehall.Text = "Stop Responding";
+				//btnRespondingScene.BackgroundColor = Color.Gray;
+				//btnOnScene.BackgroundColor = Color.Gray;
+				//btnUnavailable.BackgroundColor = Color.Gray;
+				//btnStandDown.BackgroundColor = Color.Gray;
 
-				// Returning true means you want to repeat this timer, false stops it.
-				if (result.Contains("DONE"))
+				var seconds = TimeSpan.FromSeconds(30);
+				DependencyService.Get<GetLocationInterface>().StartListening();
+				string result = DependencyService.Get<GetLocationInterface>().GetLocation();
+				Device.StartTimer(seconds, () =>
 				{
-					btnRespondingFirehall.BackgroundColor = Color.Gray;
-					btnRespondingFirehall.Text = "Arrived";
-					responding = false;
-					return false;
-				}
-				else
-				{
-					return true;
-				}
-			});
+
+					//call your method to check for notifications here
+					result = DependencyService.Get<GetLocationInterface>().GetLocation();
+
+					// Returning true means you want to repeat this timer, false stops it.
+					if (result.Contains("DONE"))
+					{
+						btnRespondingFirehall.BackgroundColor = Color.Gray;
+						btnRespondingFirehall.Text = "Arrived";
+						responding = false;
+					}
+					return responding;
+				});
+			}
+			else // stop responding
+			{
+				responding = false;
+
+				btnRespondingFirehall.BackgroundColor = Color.Gray;
+				btnRespondingFirehall.Text = "Respond";
+				//btnRespondingScene.BackgroundColor = Color.Gray;
+				//btnOnScene.BackgroundColor = Color.Gray;
+				//btnUnavailable.BackgroundColor = Color.Gray;
+				//btnStandDown.BackgroundColor = Color.Gray;
+			}
 		}
 
 		//public void RespondingSceneButtonPressed(object sender, EventArgs e)
@@ -154,14 +173,14 @@ namespace Responder
 		//	btnStandDown.BackgroundColor = Color.Gray;
 		//}
 
-		private void UnavailableButtonPressed(object sender, EventArgs e)
-		{
-			btnRespondingFirehall.BackgroundColor = Color.Gray;
-			//btnRespondingScene.BackgroundColor = Color.Gray;
-			//btnOnScene.BackgroundColor = Color.Gray;
-			btnUnavailable.BackgroundColor = Color.Red;
-			//btnStandDown.BackgroundColor = Color.Gray;
-		}
+		//private void UnavailableButtonPressed(object sender, EventArgs e)
+		//{
+		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
+		//	//btnRespondingScene.BackgroundColor = Color.Gray;
+		//	//btnOnScene.BackgroundColor = Color.Gray;
+		//	//btnUnavailable.BackgroundColor = Color.Red;
+		//	//btnStandDown.BackgroundColor = Color.Gray;
+		//}
 
 		//private void StandDownButtonPressed(object sender, EventArgs e)
 		//{

@@ -47,4 +47,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SettingsTabInterface.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ResponderResult.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="$(MSBuildThisFileDirectory)firehalllogo.png" />
+  </ItemGroup>
 </Project>

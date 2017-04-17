@@ -29,11 +29,10 @@ namespace Responder
 			settingsTab = new NavigationPage(new SettingsTab(this));
 			settingsTab.Title = "Settings";
 
-			NavigationPage.SetHasNavigationBar(this, false);
-			NavigationPage.SetHasNavigationBar(mainTab, false);
-			NavigationPage.SetHasNavigationBar(responderTab, false);
-			//NavigationPage.SetHasNavigationBar(availableTab, false);
-			NavigationPage.SetHasNavigationBar(settingsTab, false);
+			//NavigationPage.SetHasNavigationBar(this, false);
+			//NavigationPage.SetHasNavigationBar(mainTab, false);
+			//NavigationPage.SetHasNavigationBar(responderTab, false);
+			//NavigationPage.SetHasNavigationBar(settingsTab, false);
 
 			Children.Add(mainTab);
 			Children.Add(responderTab);

@@ -79,9 +79,9 @@ namespace Responder.iOS
 						responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall ?? " "));
 					}
 
-					responderList.Add(new ResponderResult("Boris Boris", "10 km", "5 min"));
-					responderList.Add(new ResponderResult("Ted Johnson", "25 km", "10 min"));
-					responderList.Add(new ResponderResult("Judy Bloom", "35 km", "21 min"));
+					//responderList.Add(new ResponderResult("Boris Boris", "10 km", "5 min"));
+					//responderList.Add(new ResponderResult("Ted Johnson", "25 km", "10 min"));
+					//responderList.Add(new ResponderResult("Judy Bloom", "35 km", "21 min"));
 
 					// calculate distance to hall
 					var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
@@ -120,7 +120,7 @@ namespace Responder.iOS
 				{
 					var route = response.Routes.FirstOrDefault();
 					TimeToHall = route.ExpectedTravelTime;
-					Console.WriteLine(route.ExpectedTravelTime.ToString());
+					Console.WriteLine("Minutes to hall:D " + route.ExpectedTravelTime.ToString());
 				}
 			});
 		}
@@ -217,7 +217,7 @@ namespace Responder.iOS
 
 			var result = responder.Register(1, 0, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
-			if (result.Result.ToString() == string.Empty || result.Result.ToString() == "device already registered")
+			if (result.Result.ToString() == "OK" || result.Result.ToString() == "device already registered")
 			{
 				// save deviceID to userdefaults
 				var defaults = NSUserDefaults.StandardUserDefaults;
