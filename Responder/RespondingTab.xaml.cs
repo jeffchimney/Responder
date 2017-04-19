@@ -11,6 +11,8 @@ namespace Responder
 		{
 			InitializeComponent();
 
+			Padding = new Thickness(10);
+
 			Image logo = new Image()
 			{
 				Source = "firehalllogo.png",
@@ -55,7 +57,7 @@ namespace Responder
 
 			Content = new StackLayout
 			{
-				Spacing = 10,
+				Spacing = 5,
 				Orientation = StackOrientation.Vertical,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
 				Children = { logo, table } //btnRespondingScene,btnOnScene,sideBySide,lblCoords, btnUnavailable
@@ -80,7 +82,7 @@ namespace Responder
 
 		public void ClearRespondersTable()
 		{
-			List<ResponderResult> results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
+			//List<ResponderResult> results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
 
 			var table = new TableView();
 			table.Intent = TableIntent.Settings;

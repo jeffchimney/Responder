@@ -130,7 +130,7 @@ namespace Responder
 			//set up touch delegates
 			btnSubmit.Clicked += SubmitButtonPressed;
 
-			Padding = new Thickness(20);
+			Padding = new Thickness(10);
 
 			StackLayout accountID = new StackLayout
 			{

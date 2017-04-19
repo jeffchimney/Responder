@@ -9,7 +9,7 @@ namespace Responder
 	{
 
 		Page mainTab;
-		RespondingTab responderTab;
+		Page responderTab;
 		//Page availableTab;
 		Page settingsTab;
 
@@ -20,7 +20,7 @@ namespace Responder
 			mainTab = new NavigationPage(new MainTab(this));
 			mainTab.Title = "Main";
 
-			responderTab = new RespondingTab();
+			responderTab = new NavigationPage(new RespondingTab());
 			responderTab.Title = "Responding";
 
 			//availableTab = new NavigationPage(new AvailabilityTab());
@@ -46,11 +46,11 @@ namespace Responder
 				if (i == 1) // Responding page selected
 				{ // start getting others responding on the responding tab
 					var result = DependencyService.Get<GetLocationInterface>().GetAllResponders();
-					responderTab.GetResponders();
+					//responderTab.GetResponders();
 					var seconds = TimeSpan.FromSeconds(30);
 					Device.StartTimer(seconds, () =>
 					{
-						responderTab.GetResponders();
+						//responderTab.GetResponders();
 
 						return true;
 					});

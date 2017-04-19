@@ -88,7 +88,7 @@ namespace Responder
 			//btnUnavailable.Clicked += UnavailableButtonPressed;
 			//btnStandDown.Clicked += StandDownButtonPressed;
 
-			Padding = new Thickness(20);
+			Padding = new Thickness(10);
 
 			//StackLayout title = new StackLayout
 			//{

@@ -46,7 +46,7 @@ namespace Responder.iOS
 			var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
 			CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 
-			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+			var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
 			dHallLong = response.HallLongitude;
 			dHallLat = response.HallLatitude;
@@ -61,7 +61,7 @@ namespace Responder.iOS
 
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 
-			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+			var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
 			dHallLat = response.HallLatitude;
 			dHallLong = response.HallLongitude;
@@ -146,7 +146,7 @@ namespace Responder.iOS
 						Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 						firehall.net.WebService1 responder = new firehall.net.WebService1();
 						Console.WriteLine("Noticed change in location");
-						var result = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+						var result = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 						Console.WriteLine(result);
 						if (result.Result.ToString().Contains("DONE"))
 						{
@@ -215,7 +215,7 @@ namespace Responder.iOS
 		{
 			firehall.net.WebService1 responder = new firehall.net.WebService1();
 
-			var result = responder.Register(1, 0, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			var result = responder.Register(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
 			if (result.Result.ToString() == "OK" || result.Result.ToString() == "device already registered")
 			{
