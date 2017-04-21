@@ -14,7 +14,8 @@ namespace Responder
 		{
 			Source = "firehalllogo.png",
 			Aspect = Aspect.AspectFill,
-			HorizontalOptions = LayoutOptions.Center
+			HorizontalOptions = LayoutOptions.Center,
+			VerticalOptions = LayoutOptions.Start
 		};
 
 		Label lblActivation = new Label
@@ -252,7 +253,7 @@ namespace Responder
 			if (txtHallID1.Text != "" && txtHallID2.Text != "" && txtHallID3.Text != "" && txtHallID4.Text != "" && txtHallID5.Text != ""
 			   && txtHallID6.Text != "" && txtUserID1.Text != "" && txtUserID2.Text != "")
 			{
-				btnSubmit.BackgroundColor = Color.Green;
+				btnSubmit.BackgroundColor = Color.Orange;
 			}
 		}
 	}

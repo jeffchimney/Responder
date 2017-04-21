@@ -17,7 +17,8 @@ namespace Responder
 			{
 				Source = "firehalllogo.png",
 				Aspect = Aspect.AspectFill,
-				HorizontalOptions = LayoutOptions.Center
+				HorizontalOptions = LayoutOptions.Center,
+				VerticalOptions = LayoutOptions.Start
 			};
 
 			var table = new TableView();
@@ -60,7 +61,7 @@ namespace Responder
 				Spacing = 5,
 				Orientation = StackOrientation.Vertical,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Children = { logo, table } //btnRespondingScene,btnOnScene,sideBySide,lblCoords, btnUnavailable
+				Children = { logo, table }
 			};
 		}
 
@@ -74,6 +75,35 @@ namespace Responder
 					Orientation = StackOrientation.Horizontal
 				};
 
+				// set up layout of cell
+				layout.Children.Add(new Label()
+				{
+					Text = result.FullName,
+					TextColor = Color.FromHex("#f35e20"),
+					VerticalOptions = LayoutOptions.Center,
+					HorizontalOptions = LayoutOptions.Start
+				});
+
+				layout.Children.Add(new Label()
+				{
+					Text = result.DistanceFromHall,
+					TextColor = Color.FromHex("#f35e20"),
+					VerticalOptions = LayoutOptions.Center,
+					HorizontalOptions = LayoutOptions.CenterAndExpand,
+					WidthRequest = 50,
+					HorizontalTextAlignment = TextAlignment.End
+				});
+
+				layout.Children.Add(new Label()
+				{		
+					Text = result.TimeToHall,
+					TextColor = Color.FromHex("#f35e20"),
+					VerticalOptions = LayoutOptions.Center,
+					HorizontalOptions = LayoutOptions.End,
+					WidthRequest = 75,
+					HorizontalTextAlignment = TextAlignment.End
+				});
+
 				CellList.Add(new ViewCell() { View = layout });
 			}
 
@@ -82,8 +112,6 @@ namespace Responder
 
 		public void ClearRespondersTable()
 		{
-			//List<ResponderResult> results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
-
 			var table = new TableView();
 			table.Intent = TableIntent.Settings;
 
@@ -107,7 +135,11 @@ namespace Responder
 
 		public void GetResponders()
 		{
+			// get all responders (user info is first result in list)
 			List<ResponderResult> results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
+			// assign first result and remove it from the list.
+			ResponderResult myResult = results[0];
+			results.Remove(myResult);
 
 			Image logo = new Image()
 			{
@@ -125,6 +157,45 @@ namespace Responder
 			{
 				Orientation = StackOrientation.Horizontal
 			};
+
+			// set up layout of 'My Info' cell
+			layout.Children.Add(new Label()
+			{
+				Text = myResult.FullName,
+				TextColor = Color.FromHex("#f35e20"),
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.Start
+			});
+
+			layout.Children.Add(new Label()
+			{
+				Text = myResult.DistanceFromHall,
+				TextColor = Color.FromHex("#f35e20"),
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.CenterAndExpand,
+				WidthRequest = 50,
+				HorizontalTextAlignment = TextAlignment.End
+			});
+
+			string sTimeToHall = "";
+			if (myResult.TimeToHall == string.Empty)
+			{
+				sTimeToHall = "Calculating.";
+			}
+			else
+			{
+				sTimeToHall = myResult.TimeToHall;
+			}
+
+			layout.Children.Add(new Label()
+			{
+				Text = sTimeToHall,
+				TextColor = Color.FromHex("#f35e20"),
+				VerticalOptions = LayoutOptions.Center,
+				HorizontalOptions = LayoutOptions.End,
+				WidthRequest = 75,
+				HorizontalTextAlignment = TextAlignment.End
+			});
 
 			var respondersSection = new TableSection("Responders");
 			foreach (ViewCell cell in CellList)
@@ -148,44 +219,7 @@ namespace Responder
 			VerticalLayout.Children.Add(table);
 
 			Content = VerticalLayout;
-
-			// Run on a timer:
-
-			var seconds = TimeSpan.FromSeconds(30);
-			Device.StartTimer(seconds, () =>
-			{
-
-				//call your method to check for notifications here
-				results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
-
-				table = new TableView();
-				table.Intent = TableIntent.Settings;
-
-				CellList = AddResponders(table, results);
-
-				layout = new StackLayout()
-				{
-					Orientation = StackOrientation.Horizontal
-				};
-
-				respondersSection = new TableSection("Responders");
-				foreach (ViewCell cell in CellList)
-				{
-					respondersSection.Add(cell);
-				}
-
-				table.Root = new TableRoot() {
-					new TableSection("My Info") {
-					new ViewCell() {View = layout}
-					},
-					respondersSection
-				};
-
-				Content = VerticalLayout;
-
-				// Returning true means you want to repeat this timer, false stops it.
-				return true;
-			});
+			Console.WriteLine("Getting all responders");
 		}
 	}
 }

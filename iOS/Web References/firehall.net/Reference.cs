@@ -32,6 +32,8 @@ namespace Responder.iOS.firehall.net {
         
         private System.Threading.SendOrPostCallback RespondingOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetResponsesOperationCompleted;
+        
         /// CodeRemarks
         public WebService1() {
             this.Url = "http://firehall.net/api/Respond.asmx";
@@ -52,6 +54,9 @@ namespace Responder.iOS.firehall.net {
         
         /// CodeRemarks
         public event RespondingCompletedEventHandler RespondingCompleted;
+        
+        /// CodeRemarks
+        public event GetResponsesCompletedEventHandler GetResponsesCompleted;
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Test", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -196,6 +201,39 @@ namespace Responder.iOS.firehall.net {
             if ((this.RespondingCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.RespondingCompleted(this, new RespondingCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// CodeRemarks
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetResponses", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public WS_Output GetResponses(int iVersion, int iSubVersion, string sDeviceIdentifier) {
+            object[] results = this.Invoke("GetResponses", new object[] {
+                        iVersion,
+                        iSubVersion,
+                        sDeviceIdentifier});
+            return ((WS_Output)(results[0]));
+        }
+        
+        /// CodeRemarks
+        public void GetResponsesAsync(int iVersion, int iSubVersion, string sDeviceIdentifier) {
+            this.GetResponsesAsync(iVersion, iSubVersion, sDeviceIdentifier, null);
+        }
+        
+        /// CodeRemarks
+        public void GetResponsesAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, object userState) {
+            if ((this.GetResponsesOperationCompleted == null)) {
+                this.GetResponsesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetResponsesOperationCompleted);
+            }
+            this.InvokeAsync("GetResponses", new object[] {
+                        iVersion,
+                        iSubVersion,
+                        sDeviceIdentifier}, this.GetResponsesOperationCompleted, userState);
+        }
+        
+        private void OnGetResponsesOperationCompleted(object arg) {
+            if ((this.GetResponsesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetResponsesCompleted(this, new GetResponsesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -365,6 +403,32 @@ namespace Responder.iOS.firehall.net {
         private object[] results;
         
         internal RespondingCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// CodeRemarks
+        public WS_Output Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((WS_Output)(this.results[0]));
+            }
+        }
+    }
+    
+    /// CodeRemarks
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    public delegate void GetResponsesCompletedEventHandler(object sender, GetResponsesCompletedEventArgs e);
+    
+    /// CodeRemarks
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetResponsesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetResponsesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

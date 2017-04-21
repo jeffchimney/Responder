@@ -32,48 +32,6 @@ namespace Responder
 			HorizontalOptions = LayoutOptions.FillAndExpand,
 			VerticalOptions = LayoutOptions.EndAndExpand
 		};
-		//Button btnRespondingScene = new Button
-		//{
-		//	Text = "Responding to Scene",
-		//	BackgroundColor = Color.Gray,
-		//	FontSize = 20,
-		//	HeightRequest = 110,
-		//	TextColor = Color.Black
-		//};
-		//Button btnOnScene = new Button
-		//{
-		//	Text = "On scene",
-		//	BackgroundColor = Color.Gray,
-		//	FontSize = 20,
-		//	HeightRequest = 110,
-		//	TextColor = Color.Black
-		//};
-		//Button btnUnavailable = new Button
-		//{
-		//	Text = "Unavailable",
-		//	BackgroundColor = Color.Gray,
-		//	FontSize = 20,
-		//	HeightRequest = 75,
-		//	TextColor = Color.Black,
-		//	HorizontalOptions = LayoutOptions.FillAndExpand
-		//};
-		//Button btnStandDown = new Button
-		//{
-		//	Text = "Stand down",
-		//	BackgroundColor = Color.Gray,
-		//	FontSize = 20,
-		//	WidthRequest = 165,
-		//	HeightRequest = 110,
-		//	TextColor = Color.Black
-		//};
-		//Label lblCoords = new Label
-		//{
-		//	Text = "",
-		//	FontSize = 20,
-		//	WidthRequest = 165,
-		//	HeightRequest = 110,
-		//	TextColor = Color.Black
-		//};
 
 		public static bool responding = false;
 
@@ -81,30 +39,16 @@ namespace Responder
 		{
 			parentPage = parent;
 
-			//set up touch delegates
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
-			//btnRespondingScene.Clicked += RespondingSceneButtonPressed;
-			//btnOnScene.Clicked += OnSceneButtonPressed;
-			//btnUnavailable.Clicked += UnavailableButtonPressed;
-			//btnStandDown.Clicked += StandDownButtonPressed;
 
 			Padding = new Thickness(10);
-
-			//StackLayout title = new StackLayout
-			//{
-			//	Children = {
-			//		lblTitle
-			//	},
-			//	Orientation = StackOrientation.Horizontal,
-			//	HorizontalOptions = LayoutOptions.FillAndExpand,
-			//};
 
 			Content = new StackLayout
 			{
 				Spacing = 10,
 				Orientation = StackOrientation.Vertical,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Children = { logo, test, btnRespondingFirehall } //btnRespondingScene,btnOnScene,sideBySide,lblCoords, btnUnavailable
+				Children = { logo, test, btnRespondingFirehall }
 			};
 
 			InitializeComponent();
