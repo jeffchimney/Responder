@@ -7,6 +7,8 @@ namespace Responder
 {
 	public partial class RespondingTab : ContentPage
 	{
+		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
+
 		public RespondingTab()
 		{
 			InitializeComponent();
@@ -136,10 +138,18 @@ namespace Responder
 		public void GetResponders()
 		{
 			// get all responders (user info is first result in list)
-			List<ResponderResult> results = DependencyService.Get<GetLocationInterface>().GetAllResponders();
+			List<ResponderResult> results = LocationInterface.GetAllResponders();
+			ResponderResult myResult;
 			// assign first result and remove it from the list.
-			ResponderResult myResult = results[0];
-			results.Remove(myResult);
+			if (results != null && results.Count > 0)
+			{
+				myResult = results[0];
+				results.Remove(myResult);
+			}
+			else
+			{
+				myResult = new ResponderResult("N/A", "N/A");
+			}
 
 			Image logo = new Image()
 			{

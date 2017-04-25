@@ -34,6 +34,7 @@ namespace Responder
 		};
 
 		public static bool responding = false;
+		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
 
 		public MainTab(MainPage parent)
 		{
@@ -68,13 +69,13 @@ namespace Responder
 				//btnStandDown.BackgroundColor = Color.Gray;
 
 				var seconds = TimeSpan.FromSeconds(30);
-				DependencyService.Get<GetLocationInterface>().StartListening();
-				string result = DependencyService.Get<GetLocationInterface>().GetLocation();
+				LocationInterface.StartListening();
+				string result = LocationInterface.GetLocation();
 				Device.StartTimer(seconds, () =>
 				{
 
 					//call your method to check for notifications here
-					result = DependencyService.Get<GetLocationInterface>().GetLocation();
+					result = LocationInterface.GetLocation();
 
 					// Returning true means you want to repeat this timer, false stops it.
 					if (result.Contains("DONE"))

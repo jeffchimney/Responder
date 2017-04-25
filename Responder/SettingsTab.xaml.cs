@@ -122,8 +122,12 @@ namespace Responder
 			BackgroundColor = Color.Gray,
 			FontSize = 20,
 			WidthRequest = 10,
-			TextColor = Color.Black
+			TextColor = Color.Black,
+			VerticalOptions = LayoutOptions.Start
 		};
+
+		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
+		public SettingsTabInterface SettingsInterface = DependencyService.Get<SettingsTabInterface>();
 
 		public SettingsTab(MainPage parent)
 		{
@@ -166,7 +170,8 @@ namespace Responder
 
 			InitializeComponent();
 
-			string sFireHallAndUserID = DependencyService.Get<SettingsTabInterface>().GetAccountInfoFromUserDefaults();
+			Console.Write(SettingsInterface);
+			string sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
 
 			// prepopulate fields if the device already has firehallid and userid set
 			if (sFireHallAndUserID != ":")
@@ -197,9 +202,9 @@ namespace Responder
 				string sFireHallID = txtHallID1.Text + txtHallID2.Text + txtHallID3.Text + txtHallID4.Text + txtHallID5.Text + txtHallID6.Text;
 				string sUserID = txtUserID1.Text + txtUserID2.Text;
 				// call iOS/Android specific code to respond to the button click
-				DependencyService.Get<SettingsTabInterface>().SubmitAccountInfo(sFireHallID, sUserID);
+				SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
 				parentPage.SwitchToMainTab();
-				DependencyService.Get<GetLocationInterface>().AskForLocationPermissions();
+				LocationInterface.AskForLocationPermissions();
 			}
 		}
 

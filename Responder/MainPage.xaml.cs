@@ -14,6 +14,9 @@ namespace Responder
 		//Page availableTab;
 		Page settingsTab;
 
+		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
+		public SettingsTabInterface SettingsInterface = DependencyService.Get<SettingsTabInterface>();
+
 		public MainPage()
 		{
 			InitializeComponent();
@@ -45,7 +48,7 @@ namespace Responder
 			});
 
 			// check if user has firehall id and user id stored on their device already.  If they do, go to main tab, if they don't, go to settings tab.
-			string sFireHallAndUserID = DependencyService.Get<SettingsTabInterface>().GetAccountInfoFromUserDefaults();
+			string sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
 			if (sFireHallAndUserID != ":")
 			{
 				CurrentPage = mainTab;
@@ -54,7 +57,7 @@ namespace Responder
 			{
 				CurrentPage = settingsTab;
 			}
-			DependencyService.Get<GetLocationInterface>().RegisterForPushNotifications();
+			LocationInterface.RegisterForPushNotifications();
 		}
 
 		protected override void OnDisappearing()

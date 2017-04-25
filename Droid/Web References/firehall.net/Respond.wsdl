@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://tempuri.org/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <s:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+      <s:element name="Test">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="sInput" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="iSubVersion" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TestResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TestResult" type="tns:WS_Output" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="WS_Output">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="Result" type="tns:WS_Result" />
+          <s:element minOccurs="0" maxOccurs="1" name="ErrorMessage" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="HallLatitude" nillable="true" type="s:decimal" />
+          <s:element minOccurs="1" maxOccurs="1" name="HallLongitude" nillable="true" type="s:decimal" />
+          <s:element minOccurs="0" maxOccurs="1" name="MyResponse" type="tns:WS_Response" />
+          <s:element minOccurs="0" maxOccurs="1" name="Responses" type="tns:ArrayOfWS_Response" />
+        </s:sequence>
+      </s:complexType>
+      <s:simpleType name="WS_Result">
+        <s:restriction base="s:string">
+          <s:enumeration value="NA" />
+          <s:enumeration value="OK" />
+          <s:enumeration value="Error" />
+          <s:enumeration value="Upgrade" />
+          <s:enumeration value="AtHall" />
+        </s:restriction>
+      </s:simpleType>
+      <s:complexType name="WS_Response">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="FullName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TimeToHall" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="DistanceToHall" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ArrayOfWS_Response">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="WS_Response" nillable="true" type="tns:WS_Response" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="Register">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="iSubVersion" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sFireHallRespondID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sStaffRespondID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDeviceIdentifier" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RegisterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RegisterResult" type="tns:WS_Output" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Login">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="iSubVersion" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sFireHallRespondID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sStaffRespondID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDeviceIdentifier" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="LoginResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="LoginResult" type="tns:WS_Output" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="Responding">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="iSubVersion" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDeviceIdentifier" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="dLatitude" type="s:decimal" />
+            <s:element minOccurs="1" maxOccurs="1" name="dLongitude" type="s:decimal" />
+            <s:element minOccurs="1" maxOccurs="1" name="iTimeToHall" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RespondingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RespondingResult" type="tns:WS_Output" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResponses">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="iSubVersion" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDeviceIdentifier" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetResponsesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetResponsesResult" type="tns:WS_Output" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StopResponding">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="iSubVersion" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDeviceIdentifier" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StopRespondingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StopRespondingResult" type="tns:WS_Output" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="TestSoapIn">
+    <wsdl:part name="parameters" element="tns:Test" />
+  </wsdl:message>
+  <wsdl:message name="TestSoapOut">
+    <wsdl:part name="parameters" element="tns:TestResponse" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSoapIn">
+    <wsdl:part name="parameters" element="tns:Register" />
+  </wsdl:message>
+  <wsdl:message name="RegisterSoapOut">
+    <wsdl:part name="parameters" element="tns:RegisterResponse" />
+  </wsdl:message>
+  <wsdl:message name="LoginSoapIn">
+    <wsdl:part name="parameters" element="tns:Login" />
+  </wsdl:message>
+  <wsdl:message name="LoginSoapOut">
+    <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="RespondingSoapIn">
+    <wsdl:part name="parameters" element="tns:Responding" />
+  </wsdl:message>
+  <wsdl:message name="RespondingSoapOut">
+    <wsdl:part name="parameters" element="tns:RespondingResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetResponsesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetResponses" />
+  </wsdl:message>
+  <wsdl:message name="GetResponsesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetResponsesResponse" />
+  </wsdl:message>
+  <wsdl:message name="StopRespondingSoapIn">
+    <wsdl:part name="parameters" element="tns:StopResponding" />
+  </wsdl:message>
+  <wsdl:message name="StopRespondingSoapOut">
+    <wsdl:part name="parameters" element="tns:StopRespondingResponse" />
+  </wsdl:message>
+  <wsdl:portType name="WebService1Soap">
+    <wsdl:operation name="Test">
+      <wsdl:input message="tns:TestSoapIn" />
+      <wsdl:output message="tns:TestSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Register">
+      <wsdl:input message="tns:RegisterSoapIn" />
+      <wsdl:output message="tns:RegisterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <wsdl:input message="tns:LoginSoapIn" />
+      <wsdl:output message="tns:LoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="Responding">
+      <wsdl:input message="tns:RespondingSoapIn" />
+      <wsdl:output message="tns:RespondingSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetResponses">
+      <wsdl:input message="tns:GetResponsesSoapIn" />
+      <wsdl:output message="tns:GetResponsesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="StopResponding">
+      <wsdl:input message="tns:StopRespondingSoapIn" />
+      <wsdl:output message="tns:StopRespondingSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebService1Soap" type="tns:WebService1Soap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Test">
+      <soap:operation soapAction="http://tempuri.org/Test" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Register">
+      <soap:operation soapAction="http://tempuri.org/Register" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap:operation soapAction="http://tempuri.org/Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Responding">
+      <soap:operation soapAction="http://tempuri.org/Responding" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResponses">
+      <soap:operation soapAction="http://tempuri.org/GetResponses" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StopResponding">
+      <soap:operation soapAction="http://tempuri.org/StopResponding" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="WebService1Soap12" type="tns:WebService1Soap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Test">
+      <soap12:operation soapAction="http://tempuri.org/Test" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Register">
+      <soap12:operation soapAction="http://tempuri.org/Register" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap12:operation soapAction="http://tempuri.org/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Responding">
+      <soap12:operation soapAction="http://tempuri.org/Responding" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetResponses">
+      <soap12:operation soapAction="http://tempuri.org/GetResponses" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StopResponding">
+      <soap12:operation soapAction="http://tempuri.org/StopResponding" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebService1">
+    <wsdl:port name="WebService1Soap" binding="tns:WebService1Soap">
+      <soap:address location="http://firehall.net/api/Respond.asmx" />
+    </wsdl:port>
+    <wsdl:port name="WebService1Soap12" binding="tns:WebService1Soap12">
+      <soap12:address location="http://firehall.net/api/Respond.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
