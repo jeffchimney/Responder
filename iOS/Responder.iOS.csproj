@@ -116,13 +116,13 @@
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="Resources\button_background.png" />
+    <None Include="packages.config" />
     <None Include="Web References\firehall.net\Respond.wsdl" />
     <None Include="Web References\firehall.net\Respond.disco" />
     <None Include="Web References\firehall.net\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

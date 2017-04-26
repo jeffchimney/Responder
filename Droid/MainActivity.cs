@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Android.App;
 using Android.Content;
@@ -8,11 +9,12 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Responder.Droid;
+[assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 
 namespace Responder.Droid
 {
 	[Activity(Label = "Responder.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, SettingsTabInterface //, GetLocationInterface
+	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, SettingsTabInterface, GetLocationInterface
 	{
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -44,7 +46,9 @@ namespace Responder.Droid
 			//}
 		}
 
-		// Settings Tab Interface Method
+
+		// MARK: GetLocation Interface Methods
+
 		public string GetAccountInfoFromUserDefaults()
 		{
 			// get account info from userdefaults
@@ -54,6 +58,43 @@ namespace Responder.Droid
 			//string sUserID = defaults.StringForKey("UserID");
 
 			return "" + ":" + "";
+		}
+
+		// MARK: GetLocation Interface Methods
+
+		public string GetLocation()
+		{
+			return "";
+		}
+
+		public List<ResponderResult> GetAllResponders()
+		{
+			return new List<ResponderResult>();
+		}
+
+		public bool AskForLocationPermissions()
+		{
+			return true;
+		}
+
+		public void RegisterForPushNotifications()
+		{
+
+		}
+
+		public void StartMonitoringLocationInBackground()
+		{
+
+		}
+
+		public void StopMonitoringLocationChanges()
+		{
+			
+		}
+
+		public void StartListening()
+		{
+
 		}
 	}
 }

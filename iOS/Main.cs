@@ -67,6 +67,12 @@ namespace Responder.iOS
 			dHallLong = response.HallLongitude;
 
 			var responderList = new List<ResponderResult>();
+
+			if (response.ErrorMessage == "Device not found")
+			{
+				return new List<ResponderResult>();
+			}
+
 			if (response != null)
 			{
 				if (response.MyResponse != null)

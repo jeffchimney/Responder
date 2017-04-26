@@ -120,6 +120,22 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="StopResponding">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="iSubVersion" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="sDeviceIdentifier" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="StopRespondingResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="StopRespondingResult" type="tns:WS_Output" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="TestSoapIn">
@@ -152,6 +168,12 @@
   <wsdl:message name="GetResponsesSoapOut">
     <wsdl:part name="parameters" element="tns:GetResponsesResponse" />
   </wsdl:message>
+  <wsdl:message name="StopRespondingSoapIn">
+    <wsdl:part name="parameters" element="tns:StopResponding" />
+  </wsdl:message>
+  <wsdl:message name="StopRespondingSoapOut">
+    <wsdl:part name="parameters" element="tns:StopRespondingResponse" />
+  </wsdl:message>
   <wsdl:portType name="WebService1Soap">
     <wsdl:operation name="Test">
       <wsdl:input message="tns:TestSoapIn" />
@@ -172,6 +194,10 @@
     <wsdl:operation name="GetResponses">
       <wsdl:input message="tns:GetResponsesSoapIn" />
       <wsdl:output message="tns:GetResponsesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="StopResponding">
+      <wsdl:input message="tns:StopRespondingSoapIn" />
+      <wsdl:output message="tns:StopRespondingSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="WebService1Soap" type="tns:WebService1Soap">
@@ -221,6 +247,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="StopResponding">
+      <soap:operation soapAction="http://tempuri.org/StopResponding" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="WebService1Soap12" type="tns:WebService1Soap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -262,6 +297,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetResponses">
       <soap12:operation soapAction="http://tempuri.org/GetResponses" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StopResponding">
+      <soap12:operation soapAction="http://tempuri.org/StopResponding" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>
