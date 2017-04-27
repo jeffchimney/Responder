@@ -18,6 +18,8 @@ namespace Responder.iOS
 		Decimal? dHallLat = 0;
 		double TimeToHall = -1;
 
+		firehall.net.WebService1 responder = new firehall.net.WebService1();
+
 		// This is the main entry point of the application.
 		static void Main(string[] args)
 		{
@@ -38,7 +40,6 @@ namespace Responder.iOS
 			Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
 			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
-			firehall.net.WebService1 responder = new firehall.net.WebService1();
 			Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
 
 			// calculate distance to hall
@@ -58,8 +59,6 @@ namespace Responder.iOS
 		{
 			Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
 			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
-
-			firehall.net.WebService1 responder = new firehall.net.WebService1();
 
 			var response = responder.GetResponses(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
@@ -92,10 +91,6 @@ namespace Responder.iOS
 					var myResponse = new ResponderResult("Not Responding", " ", "N/A");
 					responderList.Add(myResponse);
 				}
-
-				//responderList.Add(new ResponderResult("Boris Boris", "10 km", "00:00:10"));
-				//responderList.Add(new ResponderResult("Ted Johnson", "25 km", "00:00:25"));
-				//responderList.Add(new ResponderResult("Judy Bloom", "35 km", "00:00:40"));
 
 				foreach (firehall.net.WS_Response additionalResponse in response.Responses)
 				{
@@ -177,6 +172,11 @@ namespace Responder.iOS
 			locationManager.StopMonitoringSignificantLocationChanges();
 		}
 
+		public void StopListening()
+		{
+			responder.StopResponding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+		}
+
 		public bool AskForLocationPermissions()
 		{
 			locationManager.RequestAlwaysAuthorization();
@@ -224,8 +224,6 @@ namespace Responder.iOS
 		// Settings Tab Interface Method
 		public void SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
-			firehall.net.WebService1 responder = new firehall.net.WebService1();
-
 			var result = responder.Register(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
 			if (result.Result.ToString() == "OK" || result.Result.ToString() == "device already registered")

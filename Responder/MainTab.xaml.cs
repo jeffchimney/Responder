@@ -63,10 +63,6 @@ namespace Responder
 
 				btnRespondingFirehall.BackgroundColor = Color.Orange;
 				btnRespondingFirehall.Text = "Stop Responding";
-				//btnRespondingScene.BackgroundColor = Color.Gray;
-				//btnOnScene.BackgroundColor = Color.Gray;
-				//btnUnavailable.BackgroundColor = Color.Gray;
-				//btnStandDown.BackgroundColor = Color.Gray;
 
 				var seconds = TimeSpan.FromSeconds(30);
 				LocationInterface.StartListening();
@@ -91,49 +87,11 @@ namespace Responder
 			{
 				responding = false;
 
+				LocationInterface.StopListening();
+
 				btnRespondingFirehall.BackgroundColor = Color.Gray;
 				btnRespondingFirehall.Text = "Respond";
-				//btnRespondingScene.BackgroundColor = Color.Gray;
-				//btnOnScene.BackgroundColor = Color.Gray;
-				//btnUnavailable.BackgroundColor = Color.Gray;
-				//btnStandDown.BackgroundColor = Color.Gray;
 			}
 		}
-
-		//public void RespondingSceneButtonPressed(object sender, EventArgs e)
-		//{
-		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
-		//	//btnRespondingScene.BackgroundColor = Color.Green;
-		//	//btnOnScene.BackgroundColor = Color.Gray;
-		//	btnUnavailable.BackgroundColor = Color.Gray;
-		//	//btnStandDown.BackgroundColor = Color.Gray;
-		//}
-
-		//private void OnSceneButtonPressed(object sender, EventArgs e)
-		//{
-		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
-		//	btnRespondingScene.BackgroundColor = Color.Gray;
-		//	btnOnScene.BackgroundColor = Color.Green;
-		//	btnUnavailable.BackgroundColor = Color.Gray;
-		//	btnStandDown.BackgroundColor = Color.Gray;
-		//}
-
-		//private void UnavailableButtonPressed(object sender, EventArgs e)
-		//{
-		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
-		//	//btnRespondingScene.BackgroundColor = Color.Gray;
-		//	//btnOnScene.BackgroundColor = Color.Gray;
-		//	//btnUnavailable.BackgroundColor = Color.Red;
-		//	//btnStandDown.BackgroundColor = Color.Gray;
-		//}
-
-		//private void StandDownButtonPressed(object sender, EventArgs e)
-		//{
-		//	btnRespondingFirehall.BackgroundColor = Color.Gray;
-		//	btnRespondingScene.BackgroundColor = Color.Gray;
-		//	btnOnScene.BackgroundColor = Color.Gray;
-		//	btnUnavailable.BackgroundColor = Color.Gray;
-		//	btnStandDown.BackgroundColor = Color.Green;
-		//}
 	}
 }

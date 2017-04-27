@@ -27,15 +27,11 @@ namespace Responder
 			responderTab = new RespondingTab();
 			responderTab.Title = "Responding";
 
-			//availableTab = new NavigationPage(new AvailabilityTab());
-			//availableTab.Title = "Available";
-
 			settingsTab = new SettingsTab(this);
 			settingsTab.Title = "Settings";
 
 			Children.Add(mainTab);
 			Children.Add(responderTab);
-			//Children.Add(availableTab);
 			Children.Add(settingsTab);
 
 			responderTab.GetResponders();

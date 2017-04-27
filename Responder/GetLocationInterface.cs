@@ -12,5 +12,6 @@ namespace Responder
 		void StartMonitoringLocationInBackground();
 		void StopMonitoringLocationChanges();
 		void StartListening();
+		void StopListening();
 	}
 }
