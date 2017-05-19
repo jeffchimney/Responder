@@ -37,7 +37,7 @@ namespace Responder
 		Entry txtHallID1 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
@@ -46,7 +46,7 @@ namespace Responder
 		Entry txtHallID2 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
@@ -55,7 +55,7 @@ namespace Responder
 		Entry txtHallID3 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
@@ -64,7 +64,7 @@ namespace Responder
 		Entry txtHallID4 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
@@ -73,7 +73,7 @@ namespace Responder
 		Entry txtHallID5 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
@@ -82,7 +82,7 @@ namespace Responder
 		Entry txtHallID6 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
@@ -100,7 +100,7 @@ namespace Responder
 		Entry txtUserID1 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
@@ -109,7 +109,7 @@ namespace Responder
 		Entry txtUserID2 = new Entry
 		{
 			Placeholder = "A",
-			WidthRequest = 50,
+			WidthRequest = 45,
 			HeightRequest = 50,
 			HorizontalOptions = LayoutOptions.Start,
 			HorizontalTextAlignment = TextAlignment.Center,
