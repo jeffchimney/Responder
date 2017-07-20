@@ -47,7 +47,7 @@ namespace Responder.iOS
 			var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
 			CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 
-			var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+			var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
 			dHallLong = response.HallLongitude;
 			dHallLat = response.HallLatitude;
@@ -60,7 +60,7 @@ namespace Responder.iOS
 			Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
 			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
-			var response = responder.GetResponses(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			var response = responder.GetResponses(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
 			dHallLat = response.HallLatitude;
 			dHallLong = response.HallLongitude;
@@ -76,15 +76,25 @@ namespace Responder.iOS
 			{
 				if (response.MyResponse != null)
 				{
-					var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall ?? "");
-					responderList.Add(myResponse);
-
-					// calculate distance to hall
+					// calculate travel time to hall
 					var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
 					Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
 					var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
 					Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
 					CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
+
+					var sTimeToHall = "";
+					if ((int)TimeToHall == -1)
+					{
+						sTimeToHall = response.MyResponse.TimeToHall;
+					}
+					else
+					{
+						sTimeToHall = TimeToHall.ToString();
+					}
+
+					var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, sTimeToHall);
+					responderList.Add(myResponse);
 				}
 				else // add an empty response to show you are not currently responding.
 				{
@@ -126,7 +136,7 @@ namespace Responder.iOS
 				{
 					var route = response.Routes.FirstOrDefault();
 					TimeToHall = route.ExpectedTravelTime;
-					Console.WriteLine("Minutes to hall:D " + route.ExpectedTravelTime.ToString());
+					Console.WriteLine("Minutes to hall: " + route.ExpectedTravelTime.ToString());
 				}
 			});
 		}

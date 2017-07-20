@@ -190,7 +190,7 @@ namespace Responder
 			string sTimeToHall = "";
 			if (myResult.TimeToHall == string.Empty)
 			{
-				sTimeToHall = "Calculating.";
+				sTimeToHall = "N/A";
 			}
 			else
 			{

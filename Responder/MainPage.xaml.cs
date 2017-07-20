@@ -34,26 +34,37 @@ namespace Responder
 			Children.Add(responderTab);
 			Children.Add(settingsTab);
 
-			responderTab.GetResponders();
-			var seconds = TimeSpan.FromSeconds(10);
-			Device.StartTimer(seconds, () =>
-			{
-				responderTab.GetResponders();
-
-				return true;
-			});
-
 			// check if user has firehall id and user id stored on their device already.  If they do, go to main tab, if they don't, go to settings tab.
 			string sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
 			if (sFireHallAndUserID != ":")
 			{
 				CurrentPage = mainTab;
+				responderTab.GetResponders();
+				var seconds = TimeSpan.FromSeconds(10);
+				Device.StartTimer(seconds, () =>
+				{
+					responderTab.GetResponders();
+
+					return true;
+				});
 			}
 			else
 			{
 				CurrentPage = settingsTab;
 			}
-			LocationInterface.RegisterForPushNotifications();
+			//LocationInterface.RegisterForPushNotifications();
+
+			this.CurrentPageChanged += (object sender, EventArgs e) =>
+			{
+				sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
+				var i = this.Children.IndexOf(this.CurrentPage);
+
+				if (sFireHallAndUserID == ":" && i != 2)
+				{
+                    DisplayAlert("Sign In", "Activate your app with the provided Firehall and User ID", "OK");
+					SwitchToSettingsTab();
+				}
+			};
 		}
 
 		protected override void OnDisappearing()

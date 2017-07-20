@@ -116,13 +116,17 @@ namespace Responder.Droid
 			// pass in the provider (GPS), 
 			// the minimum time between updates (in seconds), 
 			// the minimum distance the user needs to move to generate an update (in meters),
-			// and an ILocationListener (recall that this class impletents the ILocationListener interface)
-			if (locMgr.AllProviders.Contains (LocationManager.NetworkProvider)
-				&& locMgr.IsProviderEnabled (LocationManager.NetworkProvider)) {
-				locMgr.RequestLocationUpdates (LocationManager.NetworkProvider, 30, 1, this);
+			// and an ILocationListener
+			if (locMgr.AllProviders.Contains (LocationManager.GpsProvider)
+				&& locMgr.IsProviderEnabled (LocationManager.GpsProvider)) {
+				locMgr.RequestLocationUpdates (LocationManager.GpsProvider, 30, 1, this);
 			} else {
 				Toast.MakeText (this, "The Network Provider does not exist or is not enabled!", ToastLength.Long).Show ();
 			}
+			var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
+
+			responder.Responding(0, 1, Settings.Secure.AndroidId,lastKnownLocation.Latitude, lastKnownLocation.Longitude, 
+
 			return "";
 		}
 
