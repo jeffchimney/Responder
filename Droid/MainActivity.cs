@@ -23,8 +23,9 @@ namespace Responder.Droid
 		LocationManager locMgr;
 		double latitude = 0;
 		double longitude = 0;
-		double dHallLong = 0;
-		double dHallLat = 0;
+		Decimal? dHallLong = 0;
+		Decimal? dHallLat = 0;
+        double TimeToHall = -1;
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -84,29 +85,6 @@ namespace Responder.Droid
 
 		public string GetLocation()
 		{
-//Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
-//Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
-
-//Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
-
-//			// calculate distance to hall
-//			var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
-//var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-//			CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
-
-//var response = responder.Responding(1, 0, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
-
-//dHallLong = response.HallLongitude;
-//			dHallLat = response.HallLatitude;
-
-//			return response.Result.ToString();
-
-
-
-
-
-
-
 			if (locMgr == null)
 			{
 				// initialize location manager
@@ -125,9 +103,17 @@ namespace Responder.Droid
 			}
 			var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
 
-			responder.Responding(0, 1, Settings.Secure.AndroidId,lastKnownLocation.Latitude, lastKnownLocation.Longitude, 
+            Decimal lastLat = (Decimal)lastKnownLocation.Latitude;
+            Decimal lastLong = (Decimal)lastKnownLocation.Longitude;
 
-			return "";
+            // CALCULATE TRAVEL TIME
+
+            var response = responder.Responding(0, 1, Settings.Secure.AndroidId, lastLat, lastLong, (int)TimeToHall);
+
+            dHallLat = response.HallLatitude;
+            dHallLong = response.HallLongitude;
+
+			return response.Result.ToString();
 		}
 
 		public void OnLocationChanged(Location location)
@@ -168,12 +154,13 @@ namespace Responder.Droid
 
 		public void StartListening()
 		{
-
+			//locationManager.RequestAlwaysAuthorization();
+			//locationManager.StartUpdatingLocation();
 		}
 
 		public void StopListening()
 		{
-
+            responder.StopResponding(0, 1, Settings.Secure.AndroidId);
 		}
 
 		public void OnProviderDisabled(string provider)

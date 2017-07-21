@@ -5,12 +5,19 @@ using CoreLocation;
 
 using Foundation;
 using UIKit;
+using WindowsAzure.Messaging; 
 
 namespace Responder.iOS
 {
 	[Register("AppDelegate")]
 	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
 	{
+
+
+        private SBNotificationHub Hub { get; set; }
+		public const string ConnectionString = "Endpoint=sb://responder.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=nT+a/wIBuzMtDXWcUGKaU2yv+uO+1gHP7L0PFBZmWVw=";
+		public const string NotificationHubPath = "ResponderPushHub"; 
+
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			global::Xamarin.Forms.Forms.Init();
@@ -22,25 +29,65 @@ namespace Responder.iOS
 
 		public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
 		{
-			// Get current device token
-			var DeviceToken = deviceToken.Description;
-			if (!string.IsNullOrWhiteSpace(DeviceToken))
+            // Get current device token
+            var DeviceToken = deviceToken.Description;
+            if (!string.IsNullOrWhiteSpace(DeviceToken))
+            {
+            	DeviceToken = DeviceToken.Trim('<').Trim('>');
+            }
+            Console.Out.WriteLine(DeviceToken);
+            // Get previous device token
+            var oldDeviceToken = NSUserDefaults.StandardUserDefaults.StringForKey("PushDeviceToken");
+
+            // Has the token changed?
+            if (string.IsNullOrEmpty(oldDeviceToken) || !oldDeviceToken.Equals(DeviceToken))
+            {
+            	//TODO: Put your own logic here to notify your server that the device token has changed/been created!
+            	Console.Out.Write("Device token has been changed/created: " + DeviceToken);
+            }
+
+            // Save new device token 
+            NSUserDefaults.StandardUserDefaults.SetString(DeviceToken, "PushDeviceToken");
+
+            Hub = new SBNotificationHub(ConnectionString, NotificationHubPath);
+
+			// Unregister any previous instances using the device token
+			Hub.UnregisterAllAsync(DeviceToken, (error) =>
 			{
-				DeviceToken = DeviceToken.Trim('<').Trim('>');
-			}
+			    if (error != null)
+			    {
+                    // Error unregistering
+                    Console.Out.WriteLine("Error registering");
+			        return;
+			    }
 
-			// Get previous device token
-			var oldDeviceToken = NSUserDefaults.StandardUserDefaults.StringForKey("PushDeviceToken");
+			    // Register this device with the notification hub
+			    Hub.RegisterNativeAsync(DeviceToken, null, (registerError) =>
+			    {
+			        if (registerError != null)
+			        {
+			            // Error registering
+                        Console.Out.WriteLine("Error registering");
+		            }
+                    Console.Out.WriteLine("Registered");
+			    });
+			});
+		}
 
-			// Has the token changed?
-			if (string.IsNullOrEmpty(oldDeviceToken) || !oldDeviceToken.Equals(DeviceToken))
+		public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+		{
+			NSDictionary aps = userInfo.ObjectForKey(new NSString("aps")) as NSDictionary;
+
+			string alert = string.Empty;
+			if (aps.ContainsKey(new NSString("alert")))
+				alert = (aps[new NSString("alert")] as NSString).ToString();
+
+			//show alert
+			if (!string.IsNullOrEmpty(alert))
 			{
-				//TODO: Put your own logic here to notify your server that the device token has changed/been created!
-				Console.Out.Write("Device token has been changed/created: " + DeviceToken);
+				UIAlertView avAlert = new UIAlertView("Notification", alert, null, "OK", null);
+				avAlert.Show();
 			}
-
-			// Save new device token 
-			NSUserDefaults.StandardUserDefaults.SetString(DeviceToken, "PushDeviceToken");
 		}
 
 		public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
@@ -49,3 +96,6 @@ namespace Responder.iOS
 		}
 	}
 }
+
+// Endpoint=sb://responder.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=nT+a/wIBuzMtDXWcUGKaU2yv+uO+1gHP7L0PFBZmWVw=
+// Endpoint=sb://responder.servicebus.windows.net/;SharedAccessKeyName=DefaultFullSharedAccessSignature;SharedAccessKey=DqB4V3jxfj3ftxM95oN3zWdc3U51XBdm3JTxTonOndE=

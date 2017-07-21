@@ -52,7 +52,7 @@ namespace Responder
 			{
 				CurrentPage = settingsTab;
 			}
-			//LocationInterface.RegisterForPushNotifications();
+			LocationInterface.RegisterForPushNotifications();
 
 			this.CurrentPageChanged += (object sender, EventArgs e) =>
 			{
