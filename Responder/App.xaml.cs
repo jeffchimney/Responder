@@ -1,9 +1,11 @@
 ﻿using Xamarin.Forms;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace Responder
 {
 	public partial class App : Application
 	{
+
 		public App()
 		{
 			InitializeComponent();

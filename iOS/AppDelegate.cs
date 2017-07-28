@@ -6,22 +6,37 @@ using CoreLocation;
 using Foundation;
 using UIKit;
 using WindowsAzure.Messaging; 
+using Microsoft.WindowsAzure.MobileServices;
+using Newtonsoft.Json.Linq;
 
 namespace Responder.iOS
 {
 	[Register("AppDelegate")]
 	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
-	{
-
-
+    {
         private SBNotificationHub Hub { get; set; }
 		public const string ConnectionString = "Endpoint=sb://responder.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=nT+a/wIBuzMtDXWcUGKaU2yv+uO+1gHP7L0PFBZmWVw=";
-		public const string NotificationHubPath = "ResponderPushHub"; 
+		public const string NotificationHubPath = "ResponderPushHub";
 
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
-			global::Xamarin.Forms.Forms.Init();
+            Microsoft.WindowsAzure.MobileServices.CurrentPlatform.Init();
+            if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+            {
+                var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
+                                   UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
+                                   new NSSet());
 
+                UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
+                UIApplication.SharedApplication.RegisterForRemoteNotifications();
+            }
+            else
+            {
+                UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
+                UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
+            }
+
+			global::Xamarin.Forms.Forms.Init();
 			LoadApplication(new App());
 
 			return base.FinishedLaunching(app, options);
@@ -49,6 +64,9 @@ namespace Responder.iOS
             // Save new device token 
             NSUserDefaults.StandardUserDefaults.SetString(DeviceToken, "PushDeviceToken");
 
+
+			MobileServiceClient MobileService = new MobileServiceClient("https://responderdev.azurewebsites.net");
+
             Hub = new SBNotificationHub(ConnectionString, NotificationHubPath);
 
 			// Unregister any previous instances using the device token
@@ -72,6 +90,54 @@ namespace Responder.iOS
                     Console.Out.WriteLine("Registered");
 			    });
 			});
+		}
+
+		public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
+		{
+			ProcessNotification(userInfo, false);
+		}
+
+		void ProcessNotification(NSDictionary options, bool fromFinishedLaunching)
+		{
+			// Check to see if the dictionary has the aps key.  This is the notification payload you would have sent
+			if (null != options && options.ContainsKey(new NSString("aps")))
+			{
+				//Get the aps dictionary
+				NSDictionary aps = options.ObjectForKey(new NSString("aps")) as NSDictionary;
+
+				string alertString = string.Empty;
+				string paramString = string.Empty;
+
+				if (aps.ContainsKey(new NSString("alert")))
+					alertString = (aps[new NSString("alert")] as NSString).ToString();
+
+				if (aps.ContainsKey(new NSString("param")))
+					paramString = (aps[new NSString("param")] as NSString).ToString();
+
+				if (!fromFinishedLaunching)
+				{
+					//Manually show an alert
+					if (!string.IsNullOrEmpty(alertString))
+					{
+						UIAlertView avAlert = new UIAlertView("Awesome Notification", alertString, null,
+							NSBundle.MainBundle.LocalizedString("Cancel", "Cancel"),
+							NSBundle.MainBundle.LocalizedString("OK", "OK"));
+
+						avAlert.Clicked += (sender, buttonArgs) =>
+						{
+							if (buttonArgs.ButtonIndex != avAlert.CancelButtonIndex)
+							{
+								if (!string.IsNullOrEmpty(paramString))
+								{
+									//App.Current.MainPage = new NavigationPage(new PushNotifMessageDisplay(paramString));
+								}
+							}
+						};
+
+						avAlert.Show();
+					}
+				}
+			}
 		}
 
 		public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
