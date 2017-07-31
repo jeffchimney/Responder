@@ -232,9 +232,15 @@ namespace Responder.iOS
 		}
 
 		// Settings Tab Interface Method
-		public void SubmitAccountInfo(string sFirehallID, string sUserID)
+		public string SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
-			var result = responder.Register(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			var result = responder.Register(0, 0, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+
+            if (result.Result.ToString() == "Upgrade") {
+				UIAlertView avAlert = new UIAlertView("Upgrade Required", "Responder requires an update.", null, "OK", null); // null replaces completion handler, should send us to the app store for an update.
+				avAlert.Show();
+                return result.Result.ToString();
+			}
 
 			if (result.Result.ToString() == "OK" || result.Result.ToString() == "device already registered")
 			{
@@ -243,8 +249,10 @@ namespace Responder.iOS
 
 				defaults.SetString(sFirehallID, "FireHallID");
 				defaults.SetString(sUserID, "UserID");
+                defaults.SetBool(false, "IsAdmin");
 				defaults.Synchronize();
 			}
+            return result.Result.ToString();
 		}
 
 		// Settings Tab Interface Method
@@ -258,5 +266,13 @@ namespace Responder.iOS
 
 			return sFireHallID + ":" + sUserID;
 		}
+
+        public bool IsAdmin() {
+			// get account info from userdefaults
+			var defaults = NSUserDefaults.StandardUserDefaults;
+
+            bool bIsAdmin = defaults.BoolForKey("IsAdmin");
+            return bIsAdmin;
+        }
 	}
 }

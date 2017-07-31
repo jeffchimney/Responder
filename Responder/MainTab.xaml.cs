@@ -15,11 +15,28 @@ namespace Responder
 			VerticalOptions = LayoutOptions.Start
 		};
 
-		StackLayout test = new StackLayout
+		StackLayout placeholder = new StackLayout
 		{
 			HorizontalOptions = LayoutOptions.Center,
 			HeightRequest = 100,
 			VerticalOptions = LayoutOptions.CenterAndExpand
+		};
+		StackLayout placeholder2 = new StackLayout
+		{
+			HorizontalOptions = LayoutOptions.Center,
+			HeightRequest = 100,
+			VerticalOptions = LayoutOptions.CenterAndExpand
+		};
+
+		Button btnCallToHall = new Button
+		{
+			Text = "Call to Hall",
+			BackgroundColor = Color.Gray,
+			FontSize = 20,
+			HeightRequest = 75,
+			TextColor = Color.Black,
+			HorizontalOptions = LayoutOptions.FillAndExpand,
+			VerticalOptions = LayoutOptions.EndAndExpand
 		};
 
 		Button btnRespondingFirehall = new Button
@@ -35,24 +52,47 @@ namespace Responder
 
 		public static bool responding = false;
 		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
+        public SettingsTabInterface SettingsInterface = DependencyService.Get<SettingsTabInterface>();
 
 		public MainTab(MainPage parent)
 		{
 			parentPage = parent;
 
+            btnCallToHall.Clicked += CallToHallButtonPressed;
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
 
 			Padding = new Thickness(10);
 
-			Content = new StackLayout
-			{
-				Spacing = 10,
-				Orientation = StackOrientation.Vertical,
-				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Children = { logo, test, btnRespondingFirehall }
-			};
+            bool bIsAdmin = SettingsInterface.IsAdmin();
+
+            Content = new StackLayout
+            {
+                Spacing = 10,
+                Orientation = StackOrientation.Vertical,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                Children = { logo, placeholder, placeholder2, btnCallToHall, btnRespondingFirehall }
+            };
+
+            if (bIsAdmin) {
+                btnCallToHall.IsVisible = true;
+            } else {
+                btnCallToHall.IsVisible = false;
+            }
 
 			InitializeComponent();
+		}
+
+		private void CallToHallButtonPressed(object sender, EventArgs e)
+		{
+            // trigger push notification
+            if (btnCallToHall.BackgroundColor == Color.Orange)
+            {
+                btnCallToHall.BackgroundColor = Color.Gray;
+                btnCallToHall.Text = "Call to Hall";
+            } else {
+				btnCallToHall.BackgroundColor = Color.Orange;
+				btnCallToHall.Text = "Complete";
+            }
 		}
 
 		private void RespondingFirehallButtonPressed(object sender, EventArgs e)

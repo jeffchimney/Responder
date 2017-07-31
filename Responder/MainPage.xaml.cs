@@ -36,6 +36,14 @@ namespace Responder
 
 			// check if user has firehall id and user id stored on their device already.  If they do, go to main tab, if they don't, go to settings tab.
 			string sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
+
+			Array aFireHallAndUserID = sFireHallAndUserID.Split(":".ToCharArray());
+			var sFireHallID = aFireHallAndUserID.GetValue(0) as string;
+			var sUserID = aFireHallAndUserID.GetValue(1) as string;
+
+            SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
+            // J806X4 A1
+
 			if (sFireHallAndUserID != ":")
 			{
 				CurrentPage = mainTab;
