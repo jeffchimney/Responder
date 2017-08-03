@@ -39,6 +39,17 @@ namespace Responder
 			VerticalOptions = LayoutOptions.EndAndExpand
 		};
 
+		Button btnNotResponding = new Button
+		{
+			Text = "Not Responding",
+			BackgroundColor = Color.Gray,
+			FontSize = 20,
+			HeightRequest = 75,
+			TextColor = Color.Black,
+			HorizontalOptions = LayoutOptions.FillAndExpand,
+			VerticalOptions = LayoutOptions.EndAndExpand
+		};
+
 		Button btnRespondingFirehall = new Button
 		{
 			Text = "Respond",
@@ -59,6 +70,7 @@ namespace Responder
 			parentPage = parent;
 
             btnCallToHall.Clicked += CallToHallButtonPressed;
+            btnNotResponding.Clicked += BtnNotResponding_Clicked;
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
 
 			Padding = new Thickness(10);
@@ -67,10 +79,10 @@ namespace Responder
 
             Content = new StackLayout
             {
-                Spacing = 10,
+                Spacing = 5,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children = { logo, placeholder, placeholder2, btnCallToHall, btnRespondingFirehall }
+                Children = { logo, placeholder, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
             };
 
             if (bIsAdmin) {
@@ -95,7 +107,15 @@ namespace Responder
             }
 		}
 
-		private void RespondingFirehallButtonPressed(object sender, EventArgs e)
+        void BtnNotResponding_Clicked(object sender, EventArgs e)
+        {
+            btnRespondingFirehall.BackgroundColor = Color.Gray;
+            btnRespondingFirehall.Text = "Respond";
+
+            LocationInterface.StopListening();
+        }
+
+        private void RespondingFirehallButtonPressed(object sender, EventArgs e)
 		{
 			if (!responding) // start responding
 			{
@@ -114,10 +134,11 @@ namespace Responder
 					result = LocationInterface.GetLocation();
 
 					// Returning true means you want to repeat this timer, false stops it.
-					if (result.Contains("DONE"))
+					if (result.Contains("AtHall"))
 					{
-						btnRespondingFirehall.BackgroundColor = Color.Gray;
+						btnRespondingFirehall.BackgroundColor = Color.Green;
 						btnRespondingFirehall.Text = "Arrived";
+
 						responding = false;
 					}
 					return responding;
@@ -128,9 +149,6 @@ namespace Responder
 				responding = false;
 
 				LocationInterface.StopListening();
-
-				btnRespondingFirehall.BackgroundColor = Color.Gray;
-				btnRespondingFirehall.Text = "Respond";
 			}
 		}
 	}

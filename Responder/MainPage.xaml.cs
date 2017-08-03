@@ -65,12 +65,14 @@ namespace Responder
 			this.CurrentPageChanged += (object sender, EventArgs e) =>
 			{
 				sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
+                var bIsAdmin = SettingsInterface.IsAdmin();
 				var i = this.Children.IndexOf(this.CurrentPage);
 
 				if (sFireHallAndUserID == ":" && i != 2)
 				{
                     DisplayAlert("Sign In", "Activate your app with the provided Firehall and User ID", "OK");
 					SwitchToSettingsTab();
+                    return;
 				}
 			};
 		}

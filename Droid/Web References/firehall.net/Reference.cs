@@ -18,7 +18,7 @@ namespace Responder.Droid.firehall.net {
     
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="WebService1Soap", Namespace="http://tempuri.org/")]
@@ -34,7 +34,7 @@ namespace Responder.Droid.firehall.net {
         
         private System.Threading.SendOrPostCallback GetResponsesOperationCompleted;
         
-        private System.Threading.SendOrPostCallback StopRespondingOperationCompleted;
+        private System.Threading.SendOrPostCallback SetStatusNROperationCompleted;
         
         /// CodeRemarks
         public WebService1() {
@@ -61,7 +61,7 @@ namespace Responder.Droid.firehall.net {
         public event GetResponsesCompletedEventHandler GetResponsesCompleted;
         
         /// CodeRemarks
-        public event StopRespondingCompletedEventHandler StopRespondingCompleted;
+        public event SetStatusNRCompletedEventHandler SetStatusNRCompleted;
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Test", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -243,9 +243,9 @@ namespace Responder.Droid.firehall.net {
         }
         
         /// CodeRemarks
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/StopResponding", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public WS_Output StopResponding(int iVersion, int iSubVersion, string sDeviceIdentifier) {
-            object[] results = this.Invoke("StopResponding", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/SetStatusNR", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public WS_Output SetStatusNR(int iVersion, int iSubVersion, string sDeviceIdentifier) {
+            object[] results = this.Invoke("SetStatusNR", new object[] {
                         iVersion,
                         iSubVersion,
                         sDeviceIdentifier});
@@ -253,25 +253,25 @@ namespace Responder.Droid.firehall.net {
         }
         
         /// CodeRemarks
-        public void StopRespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier) {
-            this.StopRespondingAsync(iVersion, iSubVersion, sDeviceIdentifier, null);
+        public void SetStatusNRAsync(int iVersion, int iSubVersion, string sDeviceIdentifier) {
+            this.SetStatusNRAsync(iVersion, iSubVersion, sDeviceIdentifier, null);
         }
         
         /// CodeRemarks
-        public void StopRespondingAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, object userState) {
-            if ((this.StopRespondingOperationCompleted == null)) {
-                this.StopRespondingOperationCompleted = new System.Threading.SendOrPostCallback(this.OnStopRespondingOperationCompleted);
+        public void SetStatusNRAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, object userState) {
+            if ((this.SetStatusNROperationCompleted == null)) {
+                this.SetStatusNROperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetStatusNROperationCompleted);
             }
-            this.InvokeAsync("StopResponding", new object[] {
+            this.InvokeAsync("SetStatusNR", new object[] {
                         iVersion,
                         iSubVersion,
-                        sDeviceIdentifier}, this.StopRespondingOperationCompleted, userState);
+                        sDeviceIdentifier}, this.SetStatusNROperationCompleted, userState);
         }
         
-        private void OnStopRespondingOperationCompleted(object arg) {
-            if ((this.StopRespondingCompleted != null)) {
+        private void OnSetStatusNROperationCompleted(object arg) {
+            if ((this.SetStatusNRCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.StopRespondingCompleted(this, new StopRespondingCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.SetStatusNRCompleted(this, new SetStatusNRCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -282,7 +282,7 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -311,7 +311,7 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
     public enum WS_Result {
@@ -321,6 +321,9 @@ namespace Responder.Droid.firehall.net {
         
         /// <remarks/>
         OK,
+        
+        /// <remarks/>
+        Admin,
         
         /// <remarks/>
         Error,
@@ -333,7 +336,7 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -351,11 +354,11 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     public delegate void TestCompletedEventHandler(object sender, TestCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class TestCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -377,11 +380,11 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     public delegate void RegisterCompletedEventHandler(object sender, RegisterCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class RegisterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -403,11 +406,11 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     public delegate void LoginCompletedEventHandler(object sender, LoginCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class LoginCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -429,11 +432,11 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     public delegate void RespondingCompletedEventHandler(object sender, RespondingCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class RespondingCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -455,11 +458,11 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     public delegate void GetResponsesCompletedEventHandler(object sender, GetResponsesCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetResponsesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -481,18 +484,18 @@ namespace Responder.Droid.firehall.net {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
-    public delegate void StopRespondingCompletedEventHandler(object sender, StopRespondingCompletedEventArgs e);
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
+    public delegate void SetStatusNRCompletedEventHandler(object sender, SetStatusNRCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "4.0.0.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class StopRespondingCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class SetStatusNRCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal StopRespondingCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal SetStatusNRCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

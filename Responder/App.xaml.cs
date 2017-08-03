@@ -1,5 +1,5 @@
 ﻿using Xamarin.Forms;
-using Microsoft.WindowsAzure.MobileServices;
+//using Microsoft.WindowsAzure.MobileServices;
 
 namespace Responder
 {

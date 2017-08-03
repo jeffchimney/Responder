@@ -160,7 +160,7 @@ namespace Responder.Droid
 
 		public void StopListening()
 		{
-            responder.StopResponding(0, 1, Settings.Secure.AndroidId);
+            responder.SetStatusNR(0, 1, Settings.Secure.AndroidId);
 		}
 
 		public void OnProviderDisabled(string provider)

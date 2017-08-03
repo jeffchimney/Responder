@@ -6,6 +6,7 @@ using UIKit;
 using MapKit;
 using CoreLocation;
 using Responder.iOS;
+
 [assembly: Xamarin.Forms.Dependency(typeof(Application))]
 
 namespace Responder.iOS
@@ -184,7 +185,8 @@ namespace Responder.iOS
 
 		public void StopListening()
 		{
-			responder.StopResponding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+            responder.SetStatusNR(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			//responder.StopResponding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 		}
 
 		public bool AskForLocationPermissions()
@@ -234,7 +236,7 @@ namespace Responder.iOS
 		// Settings Tab Interface Method
 		public string SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
-			var result = responder.Register(0, 0, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+			var result = responder.Login(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
             if (result.Result.ToString() == "Upgrade") {
 				UIAlertView avAlert = new UIAlertView("Upgrade Required", "Responder requires an update.", null, "OK", null); // null replaces completion handler, should send us to the app store for an update.
@@ -242,14 +244,18 @@ namespace Responder.iOS
                 return result.Result.ToString();
 			}
 
-			if (result.Result.ToString() == "OK" || result.Result.ToString() == "device already registered")
+			if (result.Result.ToString() == "OK" || result.Result.ToString() == "Admin" ||  result.Result.ToString() == "device already registered")
 			{
 				// save deviceID to userdefaults
 				var defaults = NSUserDefaults.StandardUserDefaults;
 
 				defaults.SetString(sFirehallID, "FireHallID");
 				defaults.SetString(sUserID, "UserID");
-                defaults.SetBool(false, "IsAdmin");
+                if (result.Result.ToString() == "Admin") {
+                    defaults.SetBool(true, "IsAdmin");
+                } else {
+                    defaults.SetBool(false, "IsAdmin");
+                }
 				defaults.Synchronize();
 			}
             return result.Result.ToString();

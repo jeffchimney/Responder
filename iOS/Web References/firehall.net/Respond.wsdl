@@ -32,6 +32,7 @@
         <s:restriction base="s:string">
           <s:enumeration value="NA" />
           <s:enumeration value="OK" />
+          <s:enumeration value="Admin" />
           <s:enumeration value="Error" />
           <s:enumeration value="Upgrade" />
           <s:enumeration value="AtHall" />
@@ -120,7 +121,7 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="StopResponding">
+      <s:element name="SetStatusNR">
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="1" maxOccurs="1" name="iVersion" type="s:int" />
@@ -129,10 +130,10 @@
           </s:sequence>
         </s:complexType>
       </s:element>
-      <s:element name="StopRespondingResponse">
+      <s:element name="SetStatusNRResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="StopRespondingResult" type="tns:WS_Output" />
+            <s:element minOccurs="0" maxOccurs="1" name="SetStatusNRResult" type="tns:WS_Output" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -168,11 +169,11 @@
   <wsdl:message name="GetResponsesSoapOut">
     <wsdl:part name="parameters" element="tns:GetResponsesResponse" />
   </wsdl:message>
-  <wsdl:message name="StopRespondingSoapIn">
-    <wsdl:part name="parameters" element="tns:StopResponding" />
+  <wsdl:message name="SetStatusNRSoapIn">
+    <wsdl:part name="parameters" element="tns:SetStatusNR" />
   </wsdl:message>
-  <wsdl:message name="StopRespondingSoapOut">
-    <wsdl:part name="parameters" element="tns:StopRespondingResponse" />
+  <wsdl:message name="SetStatusNRSoapOut">
+    <wsdl:part name="parameters" element="tns:SetStatusNRResponse" />
   </wsdl:message>
   <wsdl:portType name="WebService1Soap">
     <wsdl:operation name="Test">
@@ -195,9 +196,9 @@
       <wsdl:input message="tns:GetResponsesSoapIn" />
       <wsdl:output message="tns:GetResponsesSoapOut" />
     </wsdl:operation>
-    <wsdl:operation name="StopResponding">
-      <wsdl:input message="tns:StopRespondingSoapIn" />
-      <wsdl:output message="tns:StopRespondingSoapOut" />
+    <wsdl:operation name="SetStatusNR">
+      <wsdl:input message="tns:SetStatusNRSoapIn" />
+      <wsdl:output message="tns:SetStatusNRSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="WebService1Soap" type="tns:WebService1Soap">
@@ -247,8 +248,8 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="StopResponding">
-      <soap:operation soapAction="http://tempuri.org/StopResponding" style="document" />
+    <wsdl:operation name="SetStatusNR">
+      <soap:operation soapAction="http://tempuri.org/SetStatusNR" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -304,8 +305,8 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="StopResponding">
-      <soap12:operation soapAction="http://tempuri.org/StopResponding" style="document" />
+    <wsdl:operation name="SetStatusNR">
+      <soap12:operation soapAction="http://tempuri.org/SetStatusNR" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

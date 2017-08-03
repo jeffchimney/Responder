@@ -203,7 +203,7 @@ namespace Responder
                 string sUserID = txtUserID1.Text + txtUserID2.Text;
                 // call iOS/Android specific code to respond to the button click
                 string result = SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
-                if (result == "OK") {
+                if (result == "OK" || result == "Admin") {
                     parentPage.SwitchToMainTab();
                     LocationInterface.AskForLocationPermissions();
                 }
