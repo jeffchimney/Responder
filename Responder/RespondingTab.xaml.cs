@@ -13,7 +13,7 @@ namespace Responder
 		{
 			InitializeComponent();
 
-			Padding = new Thickness(10);
+			Padding = new Thickness(25);
 
 			Image logo = new Image()
 			{

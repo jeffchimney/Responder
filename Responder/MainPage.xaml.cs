@@ -8,7 +8,7 @@ namespace Responder
 	public partial class MainPage : TabbedPage
 	{
 
-		Page mainTab;
+		MainTab mainTab;
 		RespondingTab responderTab;
 		//Page responderTab;
 		//Page availableTab;
@@ -65,7 +65,6 @@ namespace Responder
 			this.CurrentPageChanged += (object sender, EventArgs e) =>
 			{
 				sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
-                var bIsAdmin = SettingsInterface.IsAdmin();
 				var i = this.Children.IndexOf(this.CurrentPage);
 
 				if (sFireHallAndUserID == ":" && i != 2)
@@ -74,6 +73,11 @@ namespace Responder
 					SwitchToSettingsTab();
                     return;
 				}
+
+                var bIsAdmin = SettingsInterface.IsAdmin();
+                if (bIsAdmin) {
+                    mainTab.SetCallToHallVisibility(bIsAdmin);
+                }
 			};
 		}
 

@@ -73,9 +73,7 @@ namespace Responder
             btnNotResponding.Clicked += BtnNotResponding_Clicked;
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
 
-			Padding = new Thickness(10);
-
-            bool bIsAdmin = SettingsInterface.IsAdmin();
+			Padding = new Thickness(25);
 
             Content = new StackLayout
             {
@@ -84,12 +82,6 @@ namespace Responder
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children = { logo, placeholder, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
             };
-
-            if (bIsAdmin) {
-                btnCallToHall.IsVisible = true;
-            } else {
-                btnCallToHall.IsVisible = false;
-            }
 
 			InitializeComponent();
 		}
@@ -111,6 +103,8 @@ namespace Responder
         {
             btnRespondingFirehall.BackgroundColor = Color.Gray;
             btnRespondingFirehall.Text = "Respond";
+
+            responding = false;
 
             LocationInterface.StopListening();
         }
@@ -151,5 +145,9 @@ namespace Responder
 				LocationInterface.StopListening();
 			}
 		}
+
+        public void SetCallToHallVisibility(bool bIsAdmin) {
+            btnCallToHall.IsVisible = bIsAdmin;
+        }
 	}
 }

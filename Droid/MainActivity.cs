@@ -51,18 +51,45 @@ namespace Responder.Droid
 		}
 
 		// Settings Tab Interface Method
-		public void SubmitAccountInfo(string sFirehallID, string sUserID)
+		public string SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
 			Console.WriteLine(Build.Serial);
-			var result = responder.Register(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
 			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
 
-			if (result.Result.ToString() == string.Empty || result.Result.ToString() == "device already registered")
+			var sAccountInfo = GetAccountInfoFromUserDefaults();
+            firehall.net.WS_Output result;
+			if (sAccountInfo == ":")
+			{ // register
+				result = responder.Register(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
+			}
+			else // login
+			{
+				result = responder.Login(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
+			}
+
+			if (result.Result.ToString() == "Upgrade")
+			{
+				//UIAlertView avAlert = new UIAlertView("Upgrade Required", "Responder requires an update.", null, "OK", null); // null replaces completion handler, should send us to the app store for an update.
+				//avAlert.Show();
+				return result.Result.ToString();
+			}
+
+			if (result.Result.ToString() == "OK" || result.Result.ToString() == "Admin" || result.Result.ToString() == "device already registered")
 			{
 				// save deviceID to Defaults
 				localSettings.Edit().PutString("FirehallID", sFirehallID).Commit();
 				localSettings.Edit().PutString("UserID", sUserID).Commit();
+
+				if (result.Result.ToString() == "Admin")
+				{
+					localSettings.Edit().PutBoolean("IsAdmin", true).Commit();
+				}
+				else
+				{
+					localSettings.Edit().PutBoolean("IsAdmin", false).Commit();
+				}
 			}
+            return result.Result.ToString();
 		}
 
 
@@ -171,9 +198,16 @@ namespace Responder.Droid
 		{
 			Console.WriteLine(provider + " enabled by user");
 		}
-		public void OnStatusChanged(string provider, Availability status, Bundle extras)
-		{
-			Console.WriteLine(provider + " availability has changed to " + status.ToString());
-		}
+        public void OnStatusChanged(string provider, Availability status, Bundle extras)
+        {
+            Console.WriteLine(provider + " availability has changed to " + status.ToString());
+        }
+        public bool IsAdmin()
+        {
+			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
+			var bIsAdmin = localSettings.GetBoolean("IsAdmin", false);
+
+            return bIsAdmin;
+        }
 	}
 }

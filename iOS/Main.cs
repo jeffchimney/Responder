@@ -236,7 +236,16 @@ namespace Responder.iOS
 		// Settings Tab Interface Method
 		public string SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
-			var result = responder.Login(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+            var sAccountInfo = GetAccountInfoFromUserDefaults();
+            firehall.net.WS_Output result;
+            if (sAccountInfo == ":")
+            { // register
+                result = responder.Register(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+            }
+            else // login
+            {
+                result = responder.Login(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+            }
 
             if (result.Result.ToString() == "Upgrade") {
 				UIAlertView avAlert = new UIAlertView("Upgrade Required", "Responder requires an update.", null, "OK", null); // null replaces completion handler, should send us to the app store for an update.
