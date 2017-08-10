@@ -218,19 +218,19 @@ namespace Responder.iOS
 		public void RegisterForPushNotifications()
 		{
 			// register for notifications
-			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-			{
-				var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
-								   UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
-								   new NSSet());
+			//if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+			//{
+			//	var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
+			//					   UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
+			//					   new NSSet());
 
-				UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
-				UIApplication.SharedApplication.RegisterForRemoteNotifications();
-			}
-			else {
-				UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
-				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
-			}
+			//	UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
+			//	UIApplication.SharedApplication.RegisterForRemoteNotifications();
+			//}
+			//else {
+			//	UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
+			//	UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
+			//}
 		}
 
 		// Settings Tab Interface Method
@@ -286,7 +286,12 @@ namespace Responder.iOS
 			// get account info from userdefaults
 			var defaults = NSUserDefaults.StandardUserDefaults;
 
-            bool bIsAdmin = defaults.BoolForKey("IsAdmin");
+            object oIsAdmin = defaults.ValueForKey(NSObject.FromObject("IsAdmin") as NSString);
+            bool bIsAdmin = false;
+            if (oIsAdmin != null)
+            {
+                bIsAdmin = defaults.BoolForKey("IsAdmin");
+            }
             return bIsAdmin;
         }
 	}

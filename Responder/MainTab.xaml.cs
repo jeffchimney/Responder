@@ -83,6 +83,10 @@ namespace Responder
                 Children = { logo, placeholder, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
             };
 
+            bool btnCallToHallVisibility = SettingsInterface.IsAdmin();
+
+            btnCallToHall.IsVisible = btnCallToHallVisibility;
+
 			InitializeComponent();
 		}
 
@@ -147,7 +151,7 @@ namespace Responder
 		}
 
         public void SetCallToHallVisibility(bool bIsAdmin) {
-            btnCallToHall.IsVisible = bIsAdmin;
+           btnCallToHall.IsVisible = bIsAdmin;
         }
 	}
 }

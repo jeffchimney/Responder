@@ -45,7 +45,6 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
-		<string>remote-notification</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>net.firehall.responder</string>

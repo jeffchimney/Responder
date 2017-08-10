@@ -67,17 +67,15 @@ namespace Responder
 				sFireHallAndUserID = SettingsInterface.GetAccountInfoFromUserDefaults();
 				var i = this.Children.IndexOf(this.CurrentPage);
 
+				var bIsAdmin = SettingsInterface.IsAdmin();
+				mainTab.SetCallToHallVisibility(bIsAdmin);
+
 				if (sFireHallAndUserID == ":" && i != 2)
 				{
                     DisplayAlert("Sign In", "Activate your app with the provided Firehall and User ID", "OK");
 					SwitchToSettingsTab();
                     return;
 				}
-
-                var bIsAdmin = SettingsInterface.IsAdmin();
-                if (bIsAdmin) {
-                    mainTab.SetCallToHallVisibility(bIsAdmin);
-                }
 			};
 		}
 
