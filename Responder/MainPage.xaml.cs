@@ -42,19 +42,21 @@ namespace Responder
 			var sUserID = aFireHallAndUserID.GetValue(1) as string;
 
             SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
-            // J806X4 A1
+			// J806X4 A1
+
+
+			responderTab.GetResponders();
+			var seconds = TimeSpan.FromSeconds(10);
+			Device.StartTimer(seconds, () =>
+			{
+				responderTab.GetResponders();
+
+				return true;
+			});
 
 			if (sFireHallAndUserID != ":")
 			{
 				CurrentPage = mainTab;
-				responderTab.GetResponders();
-				var seconds = TimeSpan.FromSeconds(10);
-				Device.StartTimer(seconds, () =>
-				{
-					responderTab.GetResponders();
-
-					return true;
-				});
 			}
 			else
 			{

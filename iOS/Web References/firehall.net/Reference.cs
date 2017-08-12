@@ -36,6 +36,8 @@ namespace Responder.iOS.firehall.net {
         
         private System.Threading.SendOrPostCallback SetStatusNROperationCompleted;
         
+        private System.Threading.SendOrPostCallback PushNotificationOperationCompleted;
+        
         /// CodeRemarks
         public WebService1() {
             this.Url = "http://firehall.net/api/Respond.asmx";
@@ -62,6 +64,9 @@ namespace Responder.iOS.firehall.net {
         
         /// CodeRemarks
         public event SetStatusNRCompletedEventHandler SetStatusNRCompleted;
+        
+        /// CodeRemarks
+        public event PushNotificationCompletedEventHandler PushNotificationCompleted;
         
         /// CodeRemarks
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/Test", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -272,6 +277,40 @@ namespace Responder.iOS.firehall.net {
             if ((this.SetStatusNRCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetStatusNRCompleted(this, new SetStatusNRCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// CodeRemarks
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/PushNotification", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void PushNotification(int iVersion, int iSubVersion, string sDeviceIdentifier, string sMessage) {
+            this.Invoke("PushNotification", new object[] {
+                        iVersion,
+                        iSubVersion,
+                        sDeviceIdentifier,
+                        sMessage});
+        }
+        
+        /// CodeRemarks
+        public void PushNotificationAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, string sMessage) {
+            this.PushNotificationAsync(iVersion, iSubVersion, sDeviceIdentifier, sMessage, null);
+        }
+        
+        /// CodeRemarks
+        public void PushNotificationAsync(int iVersion, int iSubVersion, string sDeviceIdentifier, string sMessage, object userState) {
+            if ((this.PushNotificationOperationCompleted == null)) {
+                this.PushNotificationOperationCompleted = new System.Threading.SendOrPostCallback(this.OnPushNotificationOperationCompleted);
+            }
+            this.InvokeAsync("PushNotification", new object[] {
+                        iVersion,
+                        iSubVersion,
+                        sDeviceIdentifier,
+                        sMessage}, this.PushNotificationOperationCompleted, userState);
+        }
+        
+        private void OnPushNotificationOperationCompleted(object arg) {
+            if ((this.PushNotificationCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.PushNotificationCompleted(this, new System.ComponentModel.AsyncCompletedEventArgs(invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -508,4 +547,8 @@ namespace Responder.iOS.firehall.net {
             }
         }
     }
+    
+    /// CodeRemarks
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.0.1.24")]
+    public delegate void PushNotificationCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }

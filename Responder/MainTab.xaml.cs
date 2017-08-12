@@ -145,10 +145,22 @@ namespace Responder
 			else // stop responding
 			{
 				responding = false;
+				btnRespondingFirehall.BackgroundColor = Color.Gray;
+				btnRespondingFirehall.Text = "Respond";
 
 				LocationInterface.StopListening();
 			}
 		}
+
+		private void SetTimeToHallLocally()
+		{
+
+		}
+
+        private void SetDistanceToHallLocally()
+        {
+            
+        }
 
         public void SetCallToHallVisibility(bool bIsAdmin) {
            btnCallToHall.IsVisible = bIsAdmin;

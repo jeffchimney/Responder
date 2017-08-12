@@ -50,6 +50,9 @@ namespace Responder.iOS
 
 			var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
+            SaveTimeToHall(response.MyResponse.TimeToHall);
+            SaveDistanceFromHall(response.MyResponse.DistanceToHall);
+
 			dHallLong = response.HallLongitude;
 			dHallLat = response.HallLatitude;
 
@@ -58,56 +61,65 @@ namespace Responder.iOS
 
 		public List<ResponderResult> GetAllResponders()
 		{
-			Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
-			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
+            var responderList = new List<ResponderResult>();
+            if (locationManager.Location != null)
+            {
+                Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
+                Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
-			var response = responder.GetResponses(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+                GetLocation();
+                var response = responder.GetResponses(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
-			dHallLat = response.HallLatitude;
-			dHallLong = response.HallLongitude;
+                dHallLat = response.HallLatitude;
+                dHallLong = response.HallLongitude;
 
-			var responderList = new List<ResponderResult>();
+                if (response.ErrorMessage == "Device not found")
+                {
+                    return new List<ResponderResult>();
+                }
 
-			if (response.ErrorMessage == "Device not found")
-			{
-				return new List<ResponderResult>();
-			}
+                //if ((int)TimeToHall != -1)
+                //{
+                //    var separateResponse = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+                //}
 
-			if (response != null)
-			{
-				if (response.MyResponse != null)
-				{
-					// calculate travel time to hall
-					var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
-					Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
-					var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-					Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
-					CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
+                if (response != null)
+                {
+                    if (response.MyResponse != null)
+                    {
+                        // calculate travel time to hall
+                        var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
+                        Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
+                        var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+                        Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
+                        CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 
-					var sTimeToHall = "";
-					if ((int)TimeToHall == -1)
-					{
-						sTimeToHall = response.MyResponse.TimeToHall;
-					}
-					else
-					{
-						sTimeToHall = TimeToHall.ToString();
-					}
+                        var sTimeToHall = "";
+                        if ((int)TimeToHall != -1)
+                        {
+                            sTimeToHall = response.MyResponse.TimeToHall;
+                        }
+                        //else
+                        //{
+                        //	sTimeToHall = TimeToHall.ToString();
+                        //}
 
-					var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, sTimeToHall);
-					responderList.Add(myResponse);
-				}
-				else // add an empty response to show you are not currently responding.
-				{
-					var myResponse = new ResponderResult("Not Responding", " ", "N/A");
-					responderList.Add(myResponse);
-				}
+                        var myResponse = new ResponderResult(response.MyResponse.FullName, GetDistanceFromHall(), GetTimeToHall());
+                        //var myResponse = new ResponderResult(mySeparateResponse.MyResponse.FullName, mySeparateResponse.MyResponse.DistanceToHall, sTimeToHall);
+                        responderList.Add(myResponse);
+                    }
+                    else // add an empty response to show you are not currently responding.
+                    {
+                        var myResponse = new ResponderResult("Not Responding", " ", "N/A");
+                        responderList.Add(myResponse);
+                    }
 
-				foreach (firehall.net.WS_Response additionalResponse in response.Responses)
-				{
-					responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall ?? " "));
-				}
-			}
+                    foreach (firehall.net.WS_Response additionalResponse in response.Responses)
+                    {
+                        responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall));
+                    }
+                }
+            }
 			return responderList;
 		}
 
@@ -165,7 +177,7 @@ namespace Responder.iOS
 						Console.WriteLine("Noticed change in location");
 						var result = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 						Console.WriteLine(result);
-						if (result.Result.ToString().Contains("DONE"))
+						if (result.Result.ToString().Contains("At Hall"))
 						{
 							StopMonitoringLocationChanges();
 							locationManager.StopUpdatingLocation();
@@ -293,6 +305,36 @@ namespace Responder.iOS
                 bIsAdmin = defaults.BoolForKey("IsAdmin");
             }
             return bIsAdmin;
+        }
+
+        public string GetTimeToHall() {
+			var defaults = NSUserDefaults.StandardUserDefaults;
+
+            string sTimeToHall = defaults.StringForKey("TimeToHall");
+			return sTimeToHall;
+        }
+
+        public string GetDistanceFromHall() {
+			var defaults = NSUserDefaults.StandardUserDefaults;
+
+			string sDistanceFromHall = defaults.StringForKey("DistanceFromHall");
+			return sDistanceFromHall;
+        }
+
+        public void SaveTimeToHall(string sTimeToHall)
+        {
+			var defaults = NSUserDefaults.StandardUserDefaults;
+
+			defaults.SetString(sTimeToHall, "TimeToHall");
+			defaults.Synchronize();
+        }
+
+        public void SaveDistanceFromHall(string sDistanceFromHall)
+        {
+			var defaults = NSUserDefaults.StandardUserDefaults;
+
+			defaults.SetString(sDistanceFromHall, "DistanceFromHall");
+			defaults.Synchronize();
         }
 	}
 }
