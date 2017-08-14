@@ -38,25 +38,37 @@ namespace Responder.iOS
 		// Get Location Interface Methods
 		public string GetLocation()
 		{
-			Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
-			Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
+            if (CLLocationManager.LocationServicesEnabled)
+            {
+                if (CLLocationManager.Status == CLAuthorizationStatus.AuthorizedAlways || CLLocationManager.Status == CLAuthorizationStatus.AuthorizedWhenInUse)
+                {
+                    Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
+                    Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
-			Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
+                    Console.WriteLine(locationManager.Location.Coordinate.Latitude + ", " + locationManager.Location.Coordinate.Longitude);
 
-			// calculate distance to hall
-			var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
-			var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-			CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
+                    // calculate distance to hall
+                    var myCoordinates = new CLLocationCoordinate2D((double)latitude, (double)longitude);
+                    var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+                    CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 
-			var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+                    var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
-            SaveTimeToHall(response.MyResponse.TimeToHall);
-            SaveDistanceFromHall(response.MyResponse.DistanceToHall);
+                    SaveTimeToHall(response.MyResponse.TimeToHall);
+                    SaveDistanceFromHall(response.MyResponse.DistanceToHall);
 
-			dHallLong = response.HallLongitude;
-			dHallLat = response.HallLatitude;
+                    dHallLong = response.HallLongitude;
+                    dHallLat = response.HallLatitude;
 
-			return response.Result.ToString();
+                    return response.Result.ToString();
+                }
+                else
+                {
+                    return "Location Services Not Enabled";
+                }
+            } else {
+                return "Location Services Not Enabled";
+            }
 		}
 
 		public List<ResponderResult> GetAllResponders()
@@ -67,7 +79,7 @@ namespace Responder.iOS
                 Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
                 Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
-                GetLocation();
+                //GetLocation();
                 var response = responder.GetResponses(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
                 dHallLat = response.HallLatitude;
@@ -104,13 +116,13 @@ namespace Responder.iOS
                         //	sTimeToHall = TimeToHall.ToString();
                         //}
 
-                        var myResponse = new ResponderResult(response.MyResponse.FullName, GetDistanceFromHall(), GetTimeToHall());
+                        var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall);
                         //var myResponse = new ResponderResult(mySeparateResponse.MyResponse.FullName, mySeparateResponse.MyResponse.DistanceToHall, sTimeToHall);
                         responderList.Add(myResponse);
                     }
                     else // add an empty response to show you are not currently responding.
                     {
-                        var myResponse = new ResponderResult("Not Responding", " ", "N/A");
+                        var myResponse = new ResponderResult("Not Responding", " ", "N/R");
                         responderList.Add(myResponse);
                     }
 
@@ -122,6 +134,15 @@ namespace Responder.iOS
             }
 			return responderList;
 		}
+
+        public void LinkToSettings() {
+			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+			{
+				var settingsString = UIKit.UIApplication.OpenSettingsUrlString;
+				var url = new NSUrl(settingsString);
+				UIApplication.SharedApplication.OpenUrl(url);
+			}
+        }
 
 		public void CalculateTravelTimeBetween(CLLocationCoordinate2D coord1, CLLocationCoordinate2D coord2)
 		{
@@ -177,7 +198,7 @@ namespace Responder.iOS
 						Console.WriteLine("Noticed change in location");
 						var result = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 						Console.WriteLine(result);
-						if (result.Result.ToString().Contains("At Hall"))
+						if (result.Result.ToString().Contains("AtHall"))
 						{
 							StopMonitoringLocationChanges();
 							locationManager.StopUpdatingLocation();
@@ -219,7 +240,7 @@ namespace Responder.iOS
 					// save deviceID to userdefaults
 					var defaults = NSUserDefaults.StandardUserDefaults;
 
-					defaults.SetString(bLocationEnabled.ToString(), "bLocationEnabled");
+					defaults.SetBool(bLocationEnabled, "bLocationEnabled");
 					defaults.Synchronize();
 				}
 			};

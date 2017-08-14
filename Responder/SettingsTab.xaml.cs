@@ -201,7 +201,6 @@ namespace Responder
             {
                 string sFireHallID = txtHallID1.Text + txtHallID2.Text + txtHallID3.Text + txtHallID4.Text + txtHallID5.Text + txtHallID6.Text;
                 string sUserID = txtUserID1.Text + txtUserID2.Text;
-                // call iOS/Android specific code to respond to the button click
                 string result = SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
                 if (result == "OK" || result == "Admin") {
                     parentPage.SwitchToMainTab();

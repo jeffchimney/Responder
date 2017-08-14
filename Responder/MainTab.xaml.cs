@@ -113,7 +113,7 @@ namespace Responder
             LocationInterface.StopListening();
         }
 
-        private void RespondingFirehallButtonPressed(object sender, EventArgs e)
+        private async void RespondingFirehallButtonPressed(object sender, EventArgs e)
 		{
 			if (!responding) // start responding
 			{
@@ -125,22 +125,33 @@ namespace Responder
 				var seconds = TimeSpan.FromSeconds(30);
 				LocationInterface.StartListening();
 				string result = LocationInterface.GetLocation();
-				Device.StartTimer(seconds, () =>
-				{
+                if (!result.Contains("Location Services Not Enabled")) {
+                    Device.StartTimer(seconds, () =>
+                    {
 
-					//call your method to check for notifications here
-					result = LocationInterface.GetLocation();
+                    //call your method to check for notifications here
+                    result = LocationInterface.GetLocation();
 
-					// Returning true means you want to repeat this timer, false stops it.
-					if (result.Contains("AtHall"))
-					{
-						btnRespondingFirehall.BackgroundColor = Color.Green;
-						btnRespondingFirehall.Text = "Arrived";
+                    // Returning true means you want to repeat this timer, false stops it.
+                    if (result.Contains("AtHall"))
+                        {
+                            btnRespondingFirehall.BackgroundColor = Color.Green;
+                            btnRespondingFirehall.Text = "Arrived";
 
-						responding = false;
-					}
-					return responding;
-				});
+                            responding = false;
+                        }
+                        return responding;
+                    });
+                } else { // show alert saying user doesn't have location services enabled.
+					responding = false;
+					btnRespondingFirehall.BackgroundColor = Color.Gray;
+					btnRespondingFirehall.Text = "Respond";
+                    var accepted = await DisplayAlert("Enable Location Services", "Responder needs access to your location in order to track your progress to the hall.", "Settings", "Cancel");
+
+                    if (accepted) {
+                        LocationInterface.LinkToSettings();
+                    }
+                }
 			}
 			else // stop responding
 			{

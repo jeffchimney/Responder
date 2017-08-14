@@ -13,6 +13,7 @@ namespace Responder
 		void StopMonitoringLocationChanges();
 		void StartListening();
 		void StopListening();
+        void LinkToSettings();
         //void SaveTimeToHallLocally();
         //void SaveDistanceFromHallLocally();
 	}

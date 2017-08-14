@@ -228,6 +228,42 @@ namespace Responder.Droid
 			return responderList;
 		}
 
+		public void LinkToSettings()
+		{
+
+		}
+
+		public void CalculateTravelTimeBetween(double lat1, double long1, double lat2, double long2)
+		{
+			//var sourcePlacemark = new MKPlacemark(coord1);
+			//var sourceMapItem = new MKMapItem(sourcePlacemark);
+
+			//var destinationPlacemark = new MKPlacemark(coord2);
+			//var destinationMapItem = new MKMapItem(destinationPlacemark);
+
+			//var request = new MKDirectionsRequest();
+			//request.Source = sourceMapItem;
+			//request.Destination = destinationMapItem;
+			//request.TransportType = MKDirectionsTransportType.Automobile;
+			//request.RequestsAlternateRoutes = false;
+
+			//var directions = new MKDirections(request);
+
+			//directions.CalculateDirections((response, error) =>
+			//{
+			//	if (error != null)
+			//	{
+			//		Console.WriteLine("Error with maps api");
+			//	}
+			//	else
+			//	{
+			//		var route = response.Routes.FirstOrDefault();
+			//		TimeToHall = route.ExpectedTravelTime;
+			//		Console.WriteLine("Minutes to hall: " + route.ExpectedTravelTime.ToString());
+			//	}
+			//});
+		}
+
 		public bool AskForLocationPermissions()
 		{
 			return true;
