@@ -1,5 +1,6 @@
 ﻿using Xamarin.Forms;
 using System;
+using Plugin.Geolocator;
 
 namespace Responder
 {

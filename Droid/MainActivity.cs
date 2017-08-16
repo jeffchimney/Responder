@@ -11,17 +11,24 @@ using Android.OS;
 using Responder.Droid;
 using Android.Provider;
 using Android.Locations;
+using Android;
+using Android.Util;
+using Android.Support.V4.App;
+using Android.Support.Design.Widget;
+
+using Java.Interop;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
+[assembly: UsesPermission(Android.Manifest.Permission.AccessCoarseLocation)]
 
 namespace Responder.Droid
 {
 	[Activity(Label = "Responder.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, SettingsTabInterface, GetLocationInterface, ILocationListener
+	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, SettingsTabInterface, GetLocationInterface
 	{
 		firehall.net.WebService1 responder = new firehall.net.WebService1();
-		LocationManager locMgr;
+		LocationTracker locationTracker = null;
 		String locProvider;
 		double latitude = 0;
 		double longitude = 0;
@@ -38,43 +45,21 @@ namespace Responder.Droid
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
 
-			LoadApplication(new App());
+            LoadApplication(new App());
 		}
 
 		protected override void OnResume()
 		{
 			base.OnResume();
-			InitializeLocationManager();
-
-			if (locMgr.IsProviderEnabled(locProvider))
-			{
-				locMgr.RequestLocationUpdates(locProvider, 2000, 1, this);
-			}
-			else
-			{
-				System.Diagnostics.Debug.WriteLine("Could not resume location services.  Provider is not enabled.");
-			}
+			locationTracker = new LocationTracker(this, true);
+			locationTracker.InitializeLocationManager(true);
+			locationTracker.LocationChanged += LocationTracker_LocationChanged;
+            Location currentLocation = locationTracker.CurrentLocation;
 		}
 
-		void InitializeLocationManager()
+		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
 		{
-			locMgr = (LocationManager)GetSystemService(Context.LocationService);
-			Criteria criteriaForLocationService = new Criteria { Accuracy = Accuracy.Fine };
-			try
-			{
-				var isGPSReady = locMgr.IsProviderEnabled(LocationManager.GpsProvider);
-				var isNetworkReady = locMgr.IsProviderEnabled(LocationManager.NetworkProvider);
-
-				locProvider = locMgr.GetBestProvider(criteriaForLocationService, true);
-				if (locMgr.IsProviderEnabled(locProvider))
-				{
-					locMgr.RequestLocationUpdates(locProvider, 2000, 1, this);
-				}
-			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine(ex);
-			}
+			Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 		}
 
 		// Settings Tab Interface Method
@@ -139,14 +124,14 @@ namespace Responder.Droid
 
 		public string GetLocation()
 		{
-			// pass in the provider (GPS), 
-			// the minimum time between updates (in seconds), 
-			// the minimum distance the user needs to move to generate an update (in meters),
-			// and an ILocationListener
-			//var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
+            // pass in the provider (GPS), 
+            // the minimum time between updates (in seconds), 
+            // the minimum distance the user needs to move to generate an update (in meters),
+            // and an ILocationListener
+            //var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
 
-			Decimal lastLat = (Decimal)latitude;
-			Decimal lastLong = (Decimal)longitude;
+            Decimal lastLat = Decimal.Parse(GetLastLatitude());
+            Decimal lastLong = Decimal.Parse(GetLastLongitude());
 
 			// CALCULATE TRAVEL TIME
 
@@ -158,22 +143,11 @@ namespace Responder.Droid
 			return response.Result.ToString();
 		}
 
-		public void OnLocationChanged(Location location)
-		{
-			latitude = location.Latitude;
-			longitude = location.Longitude;
-
-			Console.WriteLine("Location changed");
-			Console.WriteLine("Latitude: " + latitude.ToString());
-			Console.WriteLine("Longitude: " + longitude.ToString());
-			Console.WriteLine("Provider: " + location.Provider);
-		}
-
 		public List<ResponderResult> GetAllResponders()
 		{
 			var responderList = new List<ResponderResult>();
 
-			GetLocation();
+			//GetLocation();
 			var response = responder.GetResponses(0, 1, Settings.Secure.AndroidId);
 
 			dHallLat = response.HallLatitude;
@@ -184,39 +158,30 @@ namespace Responder.Droid
 				return new List<ResponderResult>();
 			}
 
-			//if ((int)TimeToHall != -1)
-			//{
-			//    var separateResponse = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
-			//}
-
 			if (response != null)
 			{
 				if (response.MyResponse != null)
 				{
-					// calculate travel time to hall
-					//var myCoordinates = new CLLocationCoordinate2D(latitude, longitude);
-					//Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
-					//var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-					//Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
-					//CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
+                    // calculate travel time to hall
+                    //var myCoordinates = new CLLocationCoordinate2D(latitude, longitude);
+                    //Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
+                    //var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+                    //Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
+                    CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
 
 					var sTimeToHall = "";
 					if ((int)TimeToHall != -1)
 					{
 						sTimeToHall = response.MyResponse.TimeToHall;
 					}
-					//else
-					//{
-					//  sTimeToHall = TimeToHall.ToString();
-					//}
 
-					var myResponse = new ResponderResult(response.MyResponse.FullName, GetDistanceFromHall(), GetTimeToHall());
+					var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall);
 					//var myResponse = new ResponderResult(mySeparateResponse.MyResponse.FullName, mySeparateResponse.MyResponse.DistanceToHall, sTimeToHall);
 					responderList.Add(myResponse);
 				}
 				else // add an empty response to show you are not currently responding.
 				{
-					var myResponse = new ResponderResult("Not Responding", " ", "N/A");
+					var myResponse = new ResponderResult("Not Responding", " ", "N/R");
 					responderList.Add(myResponse);
 				}
 
@@ -266,7 +231,7 @@ namespace Responder.Droid
 
 		public bool AskForLocationPermissions()
 		{
-			return true;
+            return true;
 		}
 
 		public void RegisterForPushNotifications()
@@ -295,18 +260,6 @@ namespace Responder.Droid
 			responder.SetStatusNR(0, 1, Settings.Secure.AndroidId);
 		}
 
-		public void OnProviderDisabled(string provider)
-		{
-			Console.WriteLine(provider + " disabled by user");
-		}
-		public void OnProviderEnabled(string provider)
-		{
-			Console.WriteLine(provider + " enabled by user");
-		}
-		public void OnStatusChanged(string provider, Availability status, Bundle extras)
-		{
-			Console.WriteLine(provider + " availability has changed to " + status.ToString());
-		}
 		public bool IsAdmin()
 		{
 			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
@@ -330,5 +283,30 @@ namespace Responder.Droid
 
 			return sDistanceFromHall;
 		}
+
+		private void LocationTracker_LocationChanged(object sender, Location e)
+		{
+            var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
+            localSettings.Edit().PutString("Latitude", e.Latitude.ToString());
+            localSettings.Edit().PutString("Longitude", e.Longitude.ToString());
+
+			Console.WriteLine("Location changed");
+			Console.WriteLine("Latitude: " + latitude.ToString());
+			Console.WriteLine("Longitude: " + longitude.ToString());
+		}
+
+        private string GetLastLatitude() {
+			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.WorldWriteable);
+			var sLastLatitude = localSettings.GetString("Latitude", "0");
+
+			return sLastLatitude;
+        }
+
+        private string GetLastLongitude() {
+			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.WorldWriteable);
+			var sLastLongitude = localSettings.GetString("Longitude", "0");
+
+			return sLastLongitude;
+        }
 	}
 }
