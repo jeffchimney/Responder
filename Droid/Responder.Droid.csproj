@@ -208,6 +208,7 @@
     <AndroidResource Include="Resources\drawable-xxhdpi\icon.png" />
     <AndroidResource Include="Resources\drawable\button_background.png" />
     <AndroidResource Include="Resources\drawable\firehalllogo.png" />
+    <AndroidResource Include="Resources\drawable\firehalllogo2.png" />
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References" />

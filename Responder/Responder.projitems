@@ -50,4 +50,7 @@
   <ItemGroup>
     <BundleResource Include="$(MSBuildThisFileDirectory)firehalllogo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)firehalllogo2.png" />
+  </ItemGroup>
 </Project>

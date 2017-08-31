@@ -77,6 +77,10 @@ namespace Responder.Droid
 			else // login
 			{
 				result = responder.Login(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
+				if (result.ErrorMessage == "Device not yet registered")
+				{
+					result = responder.Register(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
+				}
 			}
 
 			if (result.Result.ToString() == "Upgrade")

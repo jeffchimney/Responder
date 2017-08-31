@@ -278,6 +278,9 @@ namespace Responder.iOS
             else // login
             {
                 result = responder.Login(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+                if (result.ErrorMessage == "Device not yet registered"){
+                    result = responder.Register(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+                }
             }
 
             if (result.Result.ToString() == "Upgrade") {

@@ -9,7 +9,7 @@ namespace Responder
 
 		Image logo = new Image
 		{
-			Source = "firehalllogo.png",
+			Source = "firehalllogo2.png",
 			Aspect = Aspect.AspectFill,
 			HorizontalOptions = LayoutOptions.Center,
 			VerticalOptions = LayoutOptions.Start
@@ -128,17 +128,19 @@ namespace Responder
                 if (!result.Contains("Location Services Not Enabled")) {
                     Device.StartTimer(seconds, () =>
                     {
-
-                    //call your method to check for notifications here
-                    result = LocationInterface.GetLocation();
-
-                    // Returning true means you want to repeat this timer, false stops it.
-                    if (result.Contains("AtHall"))
+                        if (responding)
                         {
-                            btnRespondingFirehall.BackgroundColor = Color.Green;
-                            btnRespondingFirehall.Text = "Arrived";
+                            //call your method to check for notifications here
+                            result = LocationInterface.GetLocation();
 
-                            responding = false;
+                            // Returning true means you want to repeat this timer, false stops it.
+                            if (result.Contains("AtHall"))
+                            {
+                                btnRespondingFirehall.BackgroundColor = Color.Green;
+                                btnRespondingFirehall.Text = "Arrived";
+
+                                responding = false;
+                            }
                         }
                         return responding;
                     });

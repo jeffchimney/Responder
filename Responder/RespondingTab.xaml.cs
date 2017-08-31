@@ -17,7 +17,7 @@ namespace Responder
 
 			Image logo = new Image()
 			{
-				Source = "firehalllogo.png",
+				Source = "firehalllogo2.png",
 				Aspect = Aspect.AspectFill,
 				HorizontalOptions = LayoutOptions.Center,
 				VerticalOptions = LayoutOptions.Start
@@ -153,7 +153,7 @@ namespace Responder
 
 			Image logo = new Image()
 			{
-				Source = "firehalllogo.png",
+				Source = "firehalllogo2.png",
 				Aspect = Aspect.AspectFill,
 				HorizontalOptions = LayoutOptions.Center
 			};

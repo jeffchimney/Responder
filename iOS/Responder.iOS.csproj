@@ -123,12 +123,12 @@
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon180.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon120.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon114.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon57.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon120 copy.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\icon80.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall57.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall114.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall120.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall80.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall180.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -167,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\firehalllogo.png" />
+    <BundleResource Include="Resources\firehalllogo2.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="azure-messaging">
