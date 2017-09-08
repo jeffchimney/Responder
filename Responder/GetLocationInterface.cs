@@ -14,6 +14,7 @@ namespace Responder
 		void StartListening();
 		void StopListening();
         void LinkToSettings();
+        void CallToHall(string sTitle, string sMessage);
         //void SaveTimeToHallLocally();
         //void SaveDistanceFromHallLocally();
 	}

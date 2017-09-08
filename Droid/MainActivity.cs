@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 
 using Android.App;
 using Android.Content;
@@ -15,8 +16,11 @@ using Android;
 using Android.Util;
 using Android.Support.V4.App;
 using Android.Support.Design.Widget;
-
+using Android.Gms.Maps;
+using Android.Gms.Maps.Model;
 using Java.Interop;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
@@ -35,6 +39,7 @@ namespace Responder.Droid
 		Decimal? dHallLong = 0;
 		Decimal? dHallLat = 0;
 		double TimeToHall = -1;
+        private static readonly HttpClient client = new HttpClient();
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -144,6 +149,12 @@ namespace Responder.Droid
 			dHallLat = response.HallLatitude;
 			dHallLong = response.HallLongitude;
 
+
+            if (GetLastLatitude() != "0" && GetLastLongitude() != "0")
+            {
+                CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
+            }
+
 			return response.Result.ToString();
 		}
 
@@ -202,35 +213,21 @@ namespace Responder.Droid
 
 		}
 
-		public void CalculateTravelTimeBetween(double lat1, double long1, double lat2, double long2)
+		public async void CalculateTravelTimeBetween(double lat1, double long1, double lat2, double long2)
 		{
-			//var sourcePlacemark = new MKPlacemark(coord1);
-			//var sourceMapItem = new MKMapItem(sourcePlacemark);
+            var origin = new LatLng(lat1, long1);
+            var dest = new LatLng(lat2, long2);
+            var responseString = await client.GetStringAsync(GetDirectionsUrl(origin, dest));
 
-			//var destinationPlacemark = new MKPlacemark(coord2);
-			//var destinationMapItem = new MKMapItem(destinationPlacemark);
+            var jsonResult = JObject.Parse(responseString);
+            var sTimeToHallResult = jsonResult["rows"][0]["elements"][0]["status"];
 
-			//var request = new MKDirectionsRequest();
-			//request.Source = sourceMapItem;
-			//request.Destination = destinationMapItem;
-			//request.TransportType = MKDirectionsTransportType.Automobile;
-			//request.RequestsAlternateRoutes = false;
-
-			//var directions = new MKDirections(request);
-
-			//directions.CalculateDirections((response, error) =>
-			//{
-			//	if (error != null)
-			//	{
-			//		Console.WriteLine("Error with maps api");
-			//	}
-			//	else
-			//	{
-			//		var route = response.Routes.FirstOrDefault();
-			//		TimeToHall = route.ExpectedTravelTime;
-			//		Console.WriteLine("Minutes to hall: " + route.ExpectedTravelTime.ToString());
-			//	}
-			//});
+            if (sTimeToHallResult.ToString() != "ZERO_RESULTS")
+            {
+                var sSecondsToHall = jsonResult["rows"][0]["elements"][0]["duration"]["value"].ToString();
+                var dSecondsToHall = double.Parse(sSecondsToHall);
+                TimeToHall = dSecondsToHall;
+            }
 		}
 
 		public bool AskForLocationPermissions()
@@ -312,5 +309,30 @@ namespace Responder.Droid
 
 			return sLastLongitude;
         }
+
+		private String GetDirectionsUrl(LatLng origin, LatLng dest)
+		{
+
+			// Origin of route
+			String str_origin = origin.Latitude + "," + origin.Longitude;
+
+			// Destination of route
+			String str_dest = dest.Latitude + "," + dest.Longitude;
+
+			// Sensor enabled
+			String sensor = "sensor=false";
+
+			//// Building the parameters to the web service
+			//String parameters = str_origin + "&" + str_dest + "&" + sensor;
+
+			//// Output format
+			//String output = "json";
+
+			// Building the url to the web service
+
+			String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + str_origin + "&destinations=" + str_dest +"&key=AIzaSyDEwhj5NF6QkIOyTwpEc43cresueUK8sSs";
+
+			return url;
+		}
 	}
 }

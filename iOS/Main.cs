@@ -6,6 +6,9 @@ using UIKit;
 using MapKit;
 using CoreLocation;
 using Responder.iOS;
+using Amazon;
+using Amazon.SimpleNotificationService;
+using Amazon.CognitoIdentity;
 
 [assembly: Xamarin.Forms.Dependency(typeof(Application))]
 
@@ -359,6 +362,12 @@ namespace Responder.iOS
 
 			defaults.SetString(sDistanceFromHall, "DistanceFromHall");
 			defaults.Synchronize();
+        }
+
+        public void CallToHall(string sTitle, string sMessage)
+        {
+            var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
+            appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
         }
 	}
 }

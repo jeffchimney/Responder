@@ -100,6 +100,7 @@ namespace Responder
             } else {
 				btnCallToHall.BackgroundColor = Color.Orange;
 				btnCallToHall.Text = "Complete";
+                LocationInterface.CallToHall("Get your ass to the hall!", "There has been a terrible accident and grandma needs her cat out of the toilet.");
             }
 		}
 
