@@ -18,15 +18,37 @@ namespace Responder
 		StackLayout placeholder = new StackLayout
 		{
 			HorizontalOptions = LayoutOptions.Center,
-			HeightRequest = 100,
+			HeightRequest = 75,
 			VerticalOptions = LayoutOptions.CenterAndExpand
 		};
 		StackLayout placeholder2 = new StackLayout
 		{
 			HorizontalOptions = LayoutOptions.Center,
-			HeightRequest = 100,
+			HeightRequest = 75,
 			VerticalOptions = LayoutOptions.CenterAndExpand
 		};
+		StackLayout placeholder3 = new StackLayout
+		{
+			HorizontalOptions = LayoutOptions.Center,
+			HeightRequest = 75,
+			VerticalOptions = LayoutOptions.CenterAndExpand
+		};
+		StackLayout placeholder4 = new StackLayout
+		{
+			HorizontalOptions = LayoutOptions.Center,
+			HeightRequest = 75,
+			VerticalOptions = LayoutOptions.CenterAndExpand
+		};
+
+        Label lblStatus = new Label
+        {
+            Text = "Idle",
+			FontSize = 20,
+			HeightRequest = 75,
+			TextColor = Color.Black,
+			HorizontalOptions = LayoutOptions.Center,
+			VerticalOptions = LayoutOptions.Center
+        };
 
 		Button btnCallToHall = new Button
 		{
@@ -61,6 +83,17 @@ namespace Responder
 			VerticalOptions = LayoutOptions.EndAndExpand
 		};
 
+        Button btnCancel = new Button
+        {
+            Text = "Cancel",
+            BackgroundColor = Color.Gray,
+            FontSize = 20,
+            HeightRequest = 75,
+            TextColor = Color.Black,
+            HorizontalOptions = LayoutOptions.EndAndExpand,
+            VerticalOptions = LayoutOptions.FillAndExpand
+        };
+
 		public static bool responding = false;
 		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
         public SettingsTabInterface SettingsInterface = DependencyService.Get<SettingsTabInterface>();
@@ -72,6 +105,7 @@ namespace Responder
             btnCallToHall.Clicked += CallToHallButtonPressed;
             btnNotResponding.Clicked += BtnNotResponding_Clicked;
 			btnRespondingFirehall.Clicked += RespondingFirehallButtonPressed;
+            btnCancel.Clicked += BtnCancel_Pressed;
 
 			Padding = new Thickness(25);
 
@@ -80,7 +114,7 @@ namespace Responder
                 Spacing = 5,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children = { logo, placeholder, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
+                Children = { logo, placeholder, lblStatus, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
             };
 
             bool btnCallToHallVisibility = SettingsInterface.IsAdmin();
@@ -121,12 +155,13 @@ namespace Responder
 				responding = true;
 
 				btnRespondingFirehall.BackgroundColor = Color.Orange;
-				btnRespondingFirehall.Text = "Stop Responding";
+				lblStatus.Text = "Responding";
 
-				var seconds = TimeSpan.FromSeconds(30);
+				var seconds = TimeSpan.FromSeconds(15);
 				LocationInterface.StartListening();
 				string result = LocationInterface.GetLocation();
                 if (!result.Contains("Location Services Not Enabled")) {
+                    ShowCancelButtonHideOthers();
                     Device.StartTimer(seconds, () =>
                     {
                         if (responding)
@@ -138,7 +173,7 @@ namespace Responder
                             if (result.Contains("AtHall"))
                             {
                                 btnRespondingFirehall.BackgroundColor = Color.Green;
-                                btnRespondingFirehall.Text = "Arrived";
+                                lblStatus.Text = "Arrived";
 
                                 responding = false;
                             }
@@ -148,7 +183,7 @@ namespace Responder
                 } else { // show alert saying user doesn't have location services enabled.
 					responding = false;
 					btnRespondingFirehall.BackgroundColor = Color.Gray;
-					btnRespondingFirehall.Text = "Respond";
+					lblStatus.Text = "";
                     var accepted = await DisplayAlert("Enable Location Services", "Responder needs access to your location in order to track your progress to the hall.", "Settings", "Cancel");
 
                     if (accepted) {
@@ -156,14 +191,24 @@ namespace Responder
                     }
                 }
 			}
-			else // stop responding
-			{
-				responding = false;
-				btnRespondingFirehall.BackgroundColor = Color.Gray;
-				btnRespondingFirehall.Text = "Respond";
+			//else // stop responding
+			//{
+			//	responding = false;
+			//	btnRespondingFirehall.BackgroundColor = Color.Gray;
+			//	lblStatus.Text = "Stopped Responding";
 
-				LocationInterface.StopListening();
-			}
+			//	LocationInterface.StopListening();
+			//}
+		}
+
+        private void BtnCancel_Pressed(object sender, EventArgs e)
+        {
+			responding = false;
+			lblStatus.Text = "Stopped Responding";
+
+			LocationInterface.StopListening();
+
+            HideCancelButtonShowOthers();
 		}
 
 		private void SetTimeToHallLocally()
@@ -178,6 +223,26 @@ namespace Responder
 
         public void SetCallToHallVisibility(bool bIsAdmin) {
            btnCallToHall.IsVisible = bIsAdmin;
+        }
+
+        public void ShowCancelButtonHideOthers() {
+			Content = new StackLayout
+			{
+				Spacing = 5,
+				Orientation = StackOrientation.Vertical,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Children = { logo, placeholder, lblStatus, placeholder2, placeholder3, placeholder4, btnCancel }
+			};
+        }
+
+        public void HideCancelButtonShowOthers() {
+			Content = new StackLayout
+			{
+				Spacing = 5,
+				Orientation = StackOrientation.Vertical,
+				HorizontalOptions = LayoutOptions.FillAndExpand,
+				Children = { logo, placeholder, lblStatus, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
+			};
         }
 	}
 }

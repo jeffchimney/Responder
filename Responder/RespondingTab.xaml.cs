@@ -52,7 +52,7 @@ namespace Responder
 			var respondersSection = new TableSection("Responders");
 
 			table.Root = new TableRoot() {
-				new TableSection("My Info") {
+				new TableSection("My Status") {
 					new ViewCell() {View = layout}
 				},
 				respondersSection
@@ -126,7 +126,7 @@ namespace Responder
 
 			table.Root = new TableRoot()
 			{
-				new TableSection("My Info") {
+				new TableSection("My Status") {
 					new ViewCell() {View = layout}
 				},
 				respondersSection
@@ -168,7 +168,7 @@ namespace Responder
 				Orientation = StackOrientation.Horizontal
 			};
 
-			// set up layout of 'My Info' cell
+			// set up layout of 'My Status' cell
 			layout.Children.Add(new Label()
 			{
 				Text = myResult.FullName,
@@ -214,7 +214,7 @@ namespace Responder
 			}
 
 			table.Root = new TableRoot() {
-				new TableSection("My Info") {
+				new TableSection("My Status") {
 					new ViewCell() {View = layout}
 				},
 				respondersSection
