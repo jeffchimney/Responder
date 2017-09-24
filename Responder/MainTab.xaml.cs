@@ -129,23 +129,14 @@ namespace Responder
 		private async void CallToHallButtonPressed(object sender, EventArgs e)
 		{
             // trigger push notification
-            if (btnCallToHall.BackgroundColor == Color.Orange)
+            bool bSendNotification = await DisplayAlert("Are you sure you want to send?", "", "Send", "Cancel");
+
+            if (bSendNotification)
             {
-                btnCallToHall.BackgroundColor = Color.Gray;
-                btnCallToHall.Text = "Call to Hall";
+                LocationInterface.CallToHall("Get your ass to the hall!", "There has been a terrible accident and grandma needs her cat out of the toilet.");
+                lblStatus.Text = "Call to Hall Sent";
             } else {
-				btnCallToHall.BackgroundColor = Color.Orange;
-				btnCallToHall.Text = "Complete";
-
-                bool bSendNotification = await DisplayAlert("Are you sure you want to send?", "", "Send", "Cancel");
-
-                if (bSendNotification)
-                {
-                    LocationInterface.CallToHall("Get your ass to the hall!", "There has been a terrible accident and grandma needs her cat out of the toilet.");
-                    lblStatus.Text = "Call to Hall Sent";
-                } else {
-                    lblStatus.Text = "Call to Hall Cancelled";
-                }
+                lblStatus.Text = "Call to Hall Cancelled";
             }
 		}
 
@@ -161,77 +152,68 @@ namespace Responder
 
         private async void RespondingFirehallButtonPressed(object sender, EventArgs e)
 		{
-			if (!responding) // start responding
-			{
-				responding = true;
+			responding = true;
+            ShowCancelButtonHideOthers();
 
-				lblStatus.Text = "Responding";
+			lblStatus.Text = "Responding";
 
-				var seconds = TimeSpan.FromSeconds(15);
-				LocationInterface.StartListening();
-                if (!timerAlreadyStarted)
+			var seconds = TimeSpan.FromSeconds(15);
+            if (LocationInterface.HasNetworkConnectivity())
+            {
+                LocationInterface.StartListening();
+            }
+            if (!timerAlreadyStarted)
+            {
+                string result = LocationInterface.GetLocation();
+                if (!result.Contains("Location Services Not Enabled"))
                 {
-                    string result = LocationInterface.GetLocation();
-                    if (!result.Contains("Location Services Not Enabled"))
+                    timerAlreadyStarted = true;
+                    Device.StartTimer(seconds, () =>
                     {
-                        ShowCancelButtonHideOthers();
-                        Device.StartTimer(seconds, () =>
+                        if (responding)
                         {
-                            if (responding)
+                            timerAlreadyStarted = true;
+                            //call your method to check for notifications here
+                            result = LocationInterface.GetLocation();
+
+                            // Returning true means you want to repeat this timer, false stops it.
+                            if (result.Contains("AtHall"))
                             {
-                                timerAlreadyStarted = true;
-                                //call your method to check for notifications here
-                                result = LocationInterface.GetLocation();
+                                btnRespondingFirehall.BackgroundColor = Color.Green;
+                                lblStatus.Text = "Arrived";
 
-                                // Returning true means you want to repeat this timer, false stops it.
-                                if (result.Contains("AtHall"))
-                                {
-                                    btnRespondingFirehall.BackgroundColor = Color.Green;
-                                    lblStatus.Text = "Arrived";
-
-                                    responding = false;
-                                    timerAlreadyStarted = false;
-                                }
+                                responding = false;
+                                timerAlreadyStarted = false;
                             }
-                            return responding;
-                        });
-                    }
-                    else
-                    { // show alert saying user doesn't have location services enabled.
-                        responding = false;
-                        timerAlreadyStarted = false;
-                        btnRespondingFirehall.BackgroundColor = Color.Gray;
-                        lblStatus.Text = "";
-                        var accepted = await DisplayAlert("Enable Location Services", "Responder needs access to your location in order to track your progress to the hall.", "Settings", "Cancel");
-
-                        if (accepted)
-                        {
-                            LocationInterface.LinkToSettings();
                         }
+                        return responding;
+                    });
+                }
+                else
+                { // show alert saying user doesn't have location services enabled.
+                    responding = false;
+                    timerAlreadyStarted = false;
+                    btnRespondingFirehall.BackgroundColor = Color.Gray;
+                    lblStatus.Text = "";
+                    var accepted = await DisplayAlert("Enable Location Services", "Responder needs access to your location in order to track your progress to the hall.", "Settings", "Cancel");
+
+                    if (accepted)
+                    {
+                        LocationInterface.LinkToSettings();
                     }
                 }
-			}
-			//else // stop responding
-			//{
-			//	responding = false;
-			//	btnRespondingFirehall.BackgroundColor = Color.Gray;
-			//	lblStatus.Text = "Stopped Responding";
-
-			//	LocationInterface.StopListening();
-			//}
+            }
 		}
 
         private void BtnCancel_Pressed(object sender, EventArgs e)
         {
-			lblStatus.Text = "Stopped Responding";
-
+            HideCancelButtonShowOthers();
+            responding = false;
             if (responding)
             {
+                lblStatus.Text = "Stopped Responding";
                 LocationInterface.StopListening();
             }
-            responding = false;
-
-            HideCancelButtonShowOthers();
 		}
 
 		private void SetTimeToHallLocally()

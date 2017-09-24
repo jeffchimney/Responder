@@ -8,6 +8,7 @@ namespace Responder
 		string GetLocation();
 		List<ResponderResult> GetAllResponders();
 		bool AskForLocationPermissions();
+        bool HasNetworkConnectivity();
 		void RegisterForPushNotifications();
 		void StartMonitoringLocationInBackground();
 		void StopMonitoringLocationChanges();

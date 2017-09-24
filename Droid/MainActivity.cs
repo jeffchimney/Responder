@@ -21,6 +21,7 @@ using Android.Gms.Maps.Model;
 using Java.Interop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Plugin.Connectivity;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
@@ -333,6 +334,24 @@ namespace Responder.Droid
 			String url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=" + str_origin + "&destinations=" + str_dest +"&key=AIzaSyDEwhj5NF6QkIOyTwpEc43cresueUK8sSs";
 
 			return url;
+		}
+
+		public void CallToHall(string sTitle, string sMessage)
+		{
+			//var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
+			//appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
+		}
+
+		public bool HasNetworkConnectivity()
+		{
+			if (CrossConnectivity.Current.IsConnected)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 }

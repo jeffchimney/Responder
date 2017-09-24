@@ -9,6 +9,7 @@ using Responder.iOS;
 using Amazon;
 using Amazon.SimpleNotificationService;
 using Amazon.CognitoIdentity;
+using Plugin.Connectivity;
 
 [assembly: Xamarin.Forms.Dependency(typeof(Application))]
 
@@ -55,15 +56,22 @@ namespace Responder.iOS
                     var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
                     CalculateTravelTimeBetween(myCoordinates, hallCoordinates);
 
-                    var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+                    if (HasNetworkConnectivity())
+                    {
+                        var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
-                    SaveTimeToHall(response.MyResponse.TimeToHall);
-                    SaveDistanceFromHall(response.MyResponse.DistanceToHall);
+						SaveTimeToHall(response.MyResponse.TimeToHall);
+						SaveDistanceFromHall(response.MyResponse.DistanceToHall);
 
-                    dHallLong = response.HallLongitude;
-                    dHallLat = response.HallLatitude;
+						dHallLong = response.HallLongitude;
+						dHallLat = response.HallLatitude;
 
-                    return response.Result.ToString();
+						return response.Result.ToString();
+                    }
+                    else
+                    {
+                        return "No Connection";
+                    }
                 }
                 else
                 {
@@ -369,5 +377,17 @@ namespace Responder.iOS
             var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
             appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
         }
+
+        public bool HasNetworkConnectivity()
+        {
+			if (CrossConnectivity.Current.IsConnected)
+			{
+                return true;
+			}
+			else
+			{
+                return false;
+			}
+		}
 	}
 }
