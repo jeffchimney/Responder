@@ -237,7 +237,7 @@ namespace Responder.Droid
 			}
 		}
 
-		public void Dispose()
+		public new void Dispose()
 		{
 			StopLocationManager();
 		}

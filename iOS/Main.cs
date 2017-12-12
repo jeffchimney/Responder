@@ -36,12 +36,15 @@ namespace Responder.iOS
 		public void StartListening()
 		{
 			locationManager.RequestAlwaysAuthorization();
+            locationManager.RequestWhenInUseAuthorization();
 			locationManager.StartUpdatingLocation();
 		}
 
 		// Get Location Interface Methods
 		public string GetLocation()
 		{
+            locationManager.RequestAlwaysAuthorization();
+            locationManager.RequestWhenInUseAuthorization();
             if (CLLocationManager.LocationServicesEnabled)
             {
                 if (CLLocationManager.Status == CLAuthorizationStatus.AuthorizedAlways || CLLocationManager.Status == CLAuthorizationStatus.AuthorizedWhenInUse)
@@ -230,23 +233,26 @@ namespace Responder.iOS
 		public void StopListening()
 		{
             responder.SetStatusNR(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
-			//responder.StopResponding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 		}
 
 		public bool AskForLocationPermissions()
 		{
 			locationManager.RequestAlwaysAuthorization();
+            locationManager.RequestWhenInUseAuthorization();
 
 			var bLocationEnabled = false;
 
 			locationManager.AuthorizationChanged += (object sender, CLAuthorizationChangedEventArgs e) =>
 			{
+                Console.Out.Write("Test");
 				if (e.Status == CLAuthorizationStatus.Denied || e.Status == CLAuthorizationStatus.Restricted)
 				{
 					bLocationEnabled = false;
+                    Console.Out.Write("Test2");
 				}
 				else if (e.Status == CLAuthorizationStatus.Authorized)
 				{
+                    Console.Out.Write("Test3");
 					bLocationEnabled = true;
 					// save deviceID to userdefaults
 					var defaults = NSUserDefaults.StandardUserDefaults;
@@ -262,19 +268,19 @@ namespace Responder.iOS
 		public void RegisterForPushNotifications()
 		{
 			// register for notifications
-			//if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-			//{
-			//	var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
-			//					   UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
-			//					   new NSSet());
+			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+			{
+				var pushSettings = UIUserNotificationSettings.GetSettingsForTypes(
+								   UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound,
+								   new NSSet());
 
-			//	UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
-			//	UIApplication.SharedApplication.RegisterForRemoteNotifications();
-			//}
-			//else {
-			//	UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
-			//	UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
-			//}
+				UIApplication.SharedApplication.RegisterUserNotificationSettings(pushSettings);
+				UIApplication.SharedApplication.RegisterForRemoteNotifications();
+			}
+			else {
+				UIRemoteNotificationType notificationTypes = UIRemoteNotificationType.Alert | UIRemoteNotificationType.Badge | UIRemoteNotificationType.Sound;
+				UIApplication.SharedApplication.RegisterForRemoteNotificationTypes(notificationTypes);
+			}
 		}
 
 		// Settings Tab Interface Method

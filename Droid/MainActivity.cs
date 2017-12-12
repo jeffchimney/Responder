@@ -34,7 +34,6 @@ namespace Responder.Droid
 	{
 		firehall.net.WebService1 responder = new firehall.net.WebService1();
 		LocationTracker locationTracker = null;
-		String locProvider;
 		double latitude = 0;
 		double longitude = 0;
 		Decimal? dHallLong = 0;
@@ -321,7 +320,7 @@ namespace Responder.Droid
 			String str_dest = dest.Latitude + "," + dest.Longitude;
 
 			// Sensor enabled
-			String sensor = "sensor=false";
+			//String sensor = "sensor=false";
 
 			//// Building the parameters to the web service
 			//String parameters = str_origin + "&" + str_dest + "&" + sensor;

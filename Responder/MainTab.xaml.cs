@@ -21,12 +21,18 @@ namespace Responder
 			HeightRequest = 75,
 			VerticalOptions = LayoutOptions.CenterAndExpand
 		};
-		StackLayout placeholder2 = new StackLayout
-		{
+        ActivityIndicator activityIndicator = new ActivityIndicator
+        {
 			HorizontalOptions = LayoutOptions.Center,
 			HeightRequest = 75,
 			VerticalOptions = LayoutOptions.CenterAndExpand
-		};
+        };
+		//StackLayout placeholder2 = new StackLayout
+		//{
+		//	HorizontalOptions = LayoutOptions.Center,
+		//	HeightRequest = 75,
+		//	VerticalOptions = LayoutOptions.CenterAndExpand
+		//};
 		StackLayout placeholder3 = new StackLayout
 		{
 			HorizontalOptions = LayoutOptions.Center,
@@ -116,7 +122,7 @@ namespace Responder
                 Spacing = 5,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                Children = { logo, placeholder, lblStatus, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
+                Children = { logo, placeholder, lblStatus, activityIndicator, btnCallToHall, btnNotResponding, btnRespondingFirehall }
             };
 
             bool btnCallToHallVisibility = SettingsInterface.IsAdmin();
@@ -124,16 +130,18 @@ namespace Responder
             btnCallToHall.IsVisible = btnCallToHallVisibility;
 
 			InitializeComponent();
+
+            LocationInterface.AskForLocationPermissions();
 		}
 
 		private async void CallToHallButtonPressed(object sender, EventArgs e)
 		{
             // trigger push notification
-            bool bSendNotification = await DisplayAlert("Are you sure you want to send?", "", "Send", "Cancel");
+            bool bSendNotification = await DisplayAlert("Are you sure?", "", "Send", "Cancel");
 
             if (bSendNotification)
             {
-                LocationInterface.CallToHall("Get your ass to the hall!", "There has been a terrible accident and grandma needs her cat out of the toilet.");
+                LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
                 lblStatus.Text = "Call to Hall Sent";
             } else {
                 lblStatus.Text = "Call to Hall Cancelled";
@@ -143,9 +151,11 @@ namespace Responder
         void BtnNotResponding_Clicked(object sender, EventArgs e)
         {
             responding = false;
+            activityIndicator.IsRunning = true;
 
             LocationInterface.StopListening();
 
+            activityIndicator.IsRunning = false;
             lblStatus.Text = "Not Responding";
             ShowCancelButtonHideOthers();
         }
@@ -154,6 +164,7 @@ namespace Responder
 		{
 			responding = true;
             ShowCancelButtonHideOthers();
+            activityIndicator.IsRunning = true;
 
 			lblStatus.Text = "Responding";
 
@@ -203,17 +214,21 @@ namespace Responder
                     }
                 }
             }
+            activityIndicator.IsRunning = false;
 		}
 
         private void BtnCancel_Pressed(object sender, EventArgs e)
         {
             HideCancelButtonShowOthers();
-            responding = false;
             if (responding)
             {
                 lblStatus.Text = "Stopped Responding";
                 LocationInterface.StopListening();
+            } else
+            {
+                lblStatus.Text = "Idle";
             }
+            responding = false;
 		}
 
 		private void SetTimeToHallLocally()
@@ -236,7 +251,7 @@ namespace Responder
 				Spacing = 5,
 				Orientation = StackOrientation.Vertical,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Children = { logo, placeholder, lblStatus, placeholder2, placeholder3, placeholder4, btnCancel }
+				Children = { logo, placeholder, lblStatus, activityIndicator, placeholder3, placeholder4, btnCancel }
 			};
         }
 
@@ -246,7 +261,7 @@ namespace Responder
 				Spacing = 5,
 				Orientation = StackOrientation.Vertical,
 				HorizontalOptions = LayoutOptions.FillAndExpand,
-				Children = { logo, placeholder, lblStatus, placeholder2, btnCallToHall, btnNotResponding, btnRespondingFirehall }
+				Children = { logo, placeholder, lblStatus, activityIndicator, btnCallToHall, btnNotResponding, btnRespondingFirehall }
 			};
         }
 	}

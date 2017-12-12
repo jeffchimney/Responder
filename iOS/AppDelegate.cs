@@ -7,6 +7,7 @@ using Foundation;
 using UIKit;
 using Amazon;
 using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
 using Amazon.CognitoIdentity;
 
 namespace Responder.iOS
@@ -54,28 +55,43 @@ namespace Responder.iOS
             var offset = AWSConfigs.ClockOffset;
 
 			global::Xamarin.Forms.Forms.Init();
-			LoadApplication(new App());
+            LoadApplication(new App());
 
 			return base.FinishedLaunching(app, launchOptions);
 		}
 
 		public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
 		{
-			var token = deviceToken.Description.Replace("<", "").Replace(">", "").Replace(" ", "");
-			if (!string.IsNullOrEmpty(token))
-			{
-				//register with SNS to create an endpoint ARN
-				var response = snsClient.CreatePlatformEndpointAsync(
-				new Amazon.SimpleNotificationService.Model.CreatePlatformEndpointRequest
-				{
-					Token = token,
-					PlatformApplicationArn = "arn:aws:sns:us-west-2:527503918783:app/APNS_SANDBOX/FirehallResponder" /* insert your platform application ARN here */
-				});
-			}
+            var defaults = NSUserDefaults.StandardUserDefaults;
+
+            var endpoint = defaults.StringForKey("EndpointARN");
+
+            if (endpoint == "" || endpoint == null)
+            {
+                var token = deviceToken.Description.Replace("<", "").Replace(">", "").Replace(" ", "");
+                Console.WriteLine(token);
+                if (!string.IsNullOrEmpty(token))
+                {
+                    //register with SNS to create an endpoint ARN
+                    var response = snsClient.CreatePlatformEndpointAsync(
+                    new Amazon.SimpleNotificationService.Model.CreatePlatformEndpointRequest
+                    {
+                        Token = token,
+                        CustomUserData = "Jeff Phone",
+                        PlatformApplicationArn = "arn:aws:sns:us-west-2:527503918783:app/APNS_SANDBOX/FirehallResponder" /* insert your platform application ARN here */
+                    });
+
+                    response.Wait();
+
+                    subscribe(response.Result.EndpointArn);
+                }
+            }
 		}
 
         public void PublishNotificationWithMessage(string sTitle, string sMessage) {
-            snsClient.PublishAsync("arn:aws:sns:us-west-2:527503918783:CallToHall", sMessage, sTitle);
+            var published = snsClient.PublishAsync("arn:aws:sns:us-west-2:527503918783:CallToHall", sMessage, sTitle);
+            published.Wait();
+            var test = published.Result;
         }
 
 		public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
@@ -120,6 +136,29 @@ namespace Responder.iOS
         public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
         {
             new UIAlertView("Error registering push notifications", error.LocalizedDescription, null, "OK", null).Show();
+        }
+
+        public void subscribe(string sEndpointARN)
+        {
+            // Creating the topic request and the topic and response  
+            var topics = snsClient.FindTopicAsync("CallToHall");
+            topics.Wait();
+            var topicARN = topics.Result.TopicArn;
+
+            // Subscribe to the endpoint of the topic  
+            var subscribeRequest = new SubscribeRequest()
+            {
+                TopicArn = topicARN,
+                Protocol = "application",
+                Endpoint = sEndpointARN
+            };
+
+            var res = snsClient.SubscribeAsync(subscribeRequest);
+            res.Wait();
+            var results = res.Result;
+
+            var defaults = NSUserDefaults.StandardUserDefaults;
+            defaults.SetString(sEndpointARN, "EndpointARN");
         }
 	}
 }
