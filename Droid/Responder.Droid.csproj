@@ -193,6 +193,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="LocationTracker.cs" />
+    <Compile Include="Web References\firehall.net_https\Reference.cs">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -201,6 +204,11 @@
     <None Include="packages.config" />
     <None Include="Web References\firehall.net\Respond.wsdl" />
     <None Include="Web References\firehall.net\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\firehall.net_https\Respond.wsdl" />
+    <None Include="Web References\firehall.net_https\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -225,6 +233,11 @@
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\firehall.net</RelPath>
       <UpdateFromURL>http://firehall.net/api/Respond.asmx?wsdl</UpdateFromURL>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="https://firehall.net/api/Respond.asmx?wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\firehall.net_https</RelPath>
+      <UpdateFromURL>https://firehall.net/api/Respond.asmx?wsdl</UpdateFromURL>
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>

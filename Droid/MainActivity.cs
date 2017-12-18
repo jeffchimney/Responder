@@ -32,7 +32,7 @@ namespace Responder.Droid
 	[Activity(Label = "Responder.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, SettingsTabInterface, GetLocationInterface
 	{
-		firehall.net.WebService1 responder = new firehall.net.WebService1();
+        firehall.net_https.WebService1 responder = new firehall.net_https.WebService1();
 		LocationTracker locationTracker = null;
 		double latitude = 0;
 		double longitude = 0;
@@ -74,17 +74,17 @@ namespace Responder.Droid
 			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
 
 			var sAccountInfo = GetAccountInfoFromUserDefaults();
-			firehall.net.WS_Output result;
+            firehall.net_https.WS_Output result;
 			if (sAccountInfo == ":")
 			{ // register
-				result = responder.Register(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
+				result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
 			}
 			else // login
 			{
-				result = responder.Login(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
+				result = responder.Login(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
 				if (result.ErrorMessage == "Device not yet registered")
 				{
-					result = responder.Register(0, 1, sFirehallID, sUserID, Settings.Secure.AndroidId);
+					result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
 				}
 			}
 
@@ -144,7 +144,7 @@ namespace Responder.Droid
 
 			// CALCULATE TRAVEL TIME
 
-			var response = responder.Responding(0, 1, Settings.Secure.AndroidId, lastLat, lastLong, (int)TimeToHall);
+			var response = responder.Responding(0, 2, Settings.Secure.AndroidId, lastLat, lastLong, (int)TimeToHall);
 
 			dHallLat = response.HallLatitude;
 			dHallLong = response.HallLongitude;
@@ -163,7 +163,7 @@ namespace Responder.Droid
 			var responderList = new List<ResponderResult>();
 
 			//GetLocation();
-			var response = responder.GetResponses(0, 1, Settings.Secure.AndroidId);
+			var response = responder.GetResponses(0, 2, Settings.Secure.AndroidId);
 
 			dHallLat = response.HallLatitude;
 			dHallLong = response.HallLongitude;
@@ -200,7 +200,7 @@ namespace Responder.Droid
 					responderList.Add(myResponse);
 				}
 
-				foreach (firehall.net.WS_Response additionalResponse in response.Responses)
+                foreach (firehall.net_https.WS_Response additionalResponse in response.Responses)
 				{
 					responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall));
 				}
@@ -258,7 +258,7 @@ namespace Responder.Droid
 
 		public void StopListening()
 		{
-			responder.SetStatusNR(0, 1, Settings.Secure.AndroidId);
+			responder.SetStatusNR(0, 2, Settings.Secure.AndroidId);
 		}
 
 		public bool IsAdmin()

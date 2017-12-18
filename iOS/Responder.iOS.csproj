@@ -163,6 +163,7 @@
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall120.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall80.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\firehall180.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\itunes1024.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -181,11 +182,19 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Web References\firehall.net_https\Respond.wsdl" />
+    <None Include="Web References\firehall.net_https\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Web References\firehall.net\Reference.cs">
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\firehall.net_https\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -197,6 +206,11 @@
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\firehall.net</RelPath>
       <UpdateFromURL>http://firehall.net/api/Respond.asmx</UpdateFromURL>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="https://firehall.net/api/Respond.asmx?wsdl">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\firehall.net_https</RelPath>
+      <UpdateFromURL>https://firehall.net/api/Respond.asmx?wsdl</UpdateFromURL>
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>

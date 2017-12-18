@@ -23,7 +23,7 @@ namespace Responder.iOS
 		Decimal? dHallLat = 0;
 		double TimeToHall = -1;
 
-		firehall.net.WebService1 responder = new firehall.net.WebService1();
+        firehall.net_https.WebService1 responder = new firehall.net_https.WebService1();
 
 		// This is the main entry point of the application.
 		static void Main(string[] args)
@@ -61,7 +61,7 @@ namespace Responder.iOS
 
                     if (HasNetworkConnectivity())
                     {
-                        var response = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+                        var response = responder.Responding(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 
 						SaveTimeToHall(response.MyResponse.TimeToHall);
 						SaveDistanceFromHall(response.MyResponse.DistanceToHall);
@@ -94,7 +94,7 @@ namespace Responder.iOS
                 Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
 
                 //GetLocation();
-                var response = responder.GetResponses(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+                var response = responder.GetResponses(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 
                 dHallLat = response.HallLatitude;
                 dHallLong = response.HallLongitude;
@@ -106,7 +106,7 @@ namespace Responder.iOS
 
                 //if ((int)TimeToHall != -1)
                 //{
-                //    var separateResponse = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+                //    var separateResponse = responder.Responding(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
                 //}
 
                 if (response != null)
@@ -140,7 +140,7 @@ namespace Responder.iOS
                         responderList.Add(myResponse);
                     }
 
-                    foreach (firehall.net.WS_Response additionalResponse in response.Responses)
+                    foreach (firehall.net_https.WS_Response additionalResponse in response.Responses)
                     {
                         responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall));
                     }
@@ -208,9 +208,9 @@ namespace Responder.iOS
 					{
 						Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
 						Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
-						firehall.net.WebService1 responder = new firehall.net.WebService1();
+                        firehall.net_https.WebService1 responder = new firehall.net_https.WebService1();
 						Console.WriteLine("Noticed change in location");
-						var result = responder.Responding(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+						var result = responder.Responding(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
 						Console.WriteLine(result);
 						if (result.Result.ToString().Contains("AtHall"))
 						{
@@ -232,7 +232,7 @@ namespace Responder.iOS
 
 		public void StopListening()
 		{
-            responder.SetStatusNR(0, 1, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+            responder.SetStatusNR(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 		}
 
 		public bool AskForLocationPermissions()
@@ -287,16 +287,16 @@ namespace Responder.iOS
 		public string SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
             var sAccountInfo = GetAccountInfoFromUserDefaults();
-            firehall.net.WS_Output result;
+            firehall.net_https.WS_Output result;
             if (sAccountInfo == ":")
             { // register
-                result = responder.Register(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+                result = responder.Register(0, 2, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
             }
             else // login
             {
-                result = responder.Login(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+                result = responder.Login(0, 2, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
                 if (result.ErrorMessage == "Device not yet registered"){
-                    result = responder.Register(0, 1, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
+                    result = responder.Register(0, 2, sFirehallID, sUserID, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
                 }
             }
 
@@ -319,6 +319,9 @@ namespace Responder.iOS
                     defaults.SetBool(false, "IsAdmin");
                 }
 				defaults.Synchronize();
+
+                var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
+                appDelegate.RegisterForNotifications();
 			}
             return result.Result.ToString();
 		}
