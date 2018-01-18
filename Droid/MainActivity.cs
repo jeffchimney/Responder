@@ -22,6 +22,10 @@ using Java.Interop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Plugin.Connectivity;
+using Amazon;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+using Amazon.CognitoIdentity;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
@@ -31,7 +35,7 @@ namespace Responder.Droid
 {
 	[Activity(Label = "Responder.Droid", Icon = "@drawable/icon", Theme = "@style/MyTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 	public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, SettingsTabInterface, GetLocationInterface
-	{
+    {
         firehall.net_https.WebService1 responder = new firehall.net_https.WebService1();
 		LocationTracker locationTracker = null;
 		double latitude = 0;
@@ -56,7 +60,7 @@ namespace Responder.Droid
 		protected override void OnResume()
 		{
 			base.OnResume();
-			locationTracker = new LocationTracker(this, true);
+			locationTracker = new LocationTracker(this, false);
 			locationTracker.InitializeLocationManager(true);
 			locationTracker.LocationChanged += LocationTracker_LocationChanged;
             Location currentLocation = locationTracker.CurrentLocation;
@@ -70,47 +74,51 @@ namespace Responder.Droid
 		// Settings Tab Interface Method
 		public string SubmitAccountInfo(string sFirehallID, string sUserID)
 		{
-			Console.WriteLine(Build.Serial);
-			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
+            if (HasNetworkConnectivity()) {
+                Console.WriteLine(Build.Serial);
+                var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
 
-			var sAccountInfo = GetAccountInfoFromUserDefaults();
-            firehall.net_https.WS_Output result;
-			if (sAccountInfo == ":")
-			{ // register
-				result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
-			}
-			else // login
-			{
-				result = responder.Login(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
-				if (result.ErrorMessage == "Device not yet registered")
-				{
-					result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
-				}
-			}
+                var sAccountInfo = GetAccountInfoFromUserDefaults();
+                firehall.net_https.WS_Output result;
+                if (sAccountInfo == ":")
+                { // register
+                    result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
+                }
+                else // login
+                {
+                    result = responder.Login(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
+                    if (result.ErrorMessage == "Device not yet registered")
+                    {
+                        result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
+                    }
+                }
 
-			if (result.Result.ToString() == "Upgrade")
-			{
-				//UIAlertView avAlert = new UIAlertView("Upgrade Required", "Responder requires an update.", null, "OK", null); // null replaces completion handler, should send us to the app store for an update.
-				//avAlert.Show();
-				return result.Result.ToString();
-			}
+                if (result.Result.ToString() == "Upgrade")
+                {
+                    //UIAlertView avAlert = new UIAlertView("Upgrade Required", "Responder requires an update.", null, "OK", null); // null replaces completion handler, should send us to the app store for an update.
+                    //avAlert.Show();
+                    return result.Result.ToString();
+                }
 
-			if (result.Result.ToString() == "OK" || result.Result.ToString() == "Admin" || result.Result.ToString() == "device already registered")
-			{
-				// save deviceID to Defaults
-				localSettings.Edit().PutString("FirehallID", sFirehallID).Commit();
-				localSettings.Edit().PutString("UserID", sUserID).Commit();
+                if (result.Result.ToString() == "OK" || result.Result.ToString() == "Admin" || result.Result.ToString() == "device already registered")
+                {
+                    // save deviceID to Defaults
+                    localSettings.Edit().PutString("FirehallID", sFirehallID).Commit();
+                    localSettings.Edit().PutString("UserID", sUserID).Commit();
 
-				if (result.Result.ToString() == "Admin")
-				{
-					localSettings.Edit().PutBoolean("IsAdmin", true).Commit();
-				}
-				else
-				{
-					localSettings.Edit().PutBoolean("IsAdmin", false).Commit();
-				}
-			}
-			return result.Result.ToString();
+                    if (result.Result.ToString() == "Admin")
+                    {
+                        localSettings.Edit().PutBoolean("IsAdmin", true).Commit();
+                    }
+                    else
+                    {
+                        localSettings.Edit().PutBoolean("IsAdmin", false).Commit();
+                    }
+                }
+                return result.Result.ToString();
+            } else {
+                return "No Connection";
+            }
 		}
 
 
@@ -133,79 +141,90 @@ namespace Responder.Droid
 
 		public string GetLocation()
 		{
-            // pass in the provider (GPS), 
-            // the minimum time between updates (in seconds), 
-            // the minimum distance the user needs to move to generate an update (in meters),
-            // and an ILocationListener
-            //var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
-
-            Decimal lastLat = Decimal.Parse(GetLastLatitude());
-            Decimal lastLong = Decimal.Parse(GetLastLongitude());
-
-			// CALCULATE TRAVEL TIME
-
-			var response = responder.Responding(0, 2, Settings.Secure.AndroidId, lastLat, lastLong, (int)TimeToHall);
-
-			dHallLat = response.HallLatitude;
-			dHallLong = response.HallLongitude;
-
-
-            if (GetLastLatitude() != "0" && GetLastLongitude() != "0")
+            if (HasNetworkConnectivity())
             {
-                CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
-            }
+                // pass in the provider (GPS), 
+                // the minimum time between updates (in seconds), 
+                // the minimum distance the user needs to move to generate an update (in meters),
+                // and an ILocationListener
+                //var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
 
-			return response.Result.ToString();
+                Decimal lastLat = Decimal.Parse(GetLastLatitude());
+                Decimal lastLong = Decimal.Parse(GetLastLongitude());
+
+                // CALCULATE TRAVEL TIME
+
+                var response = responder.Responding(0, 2, Settings.Secure.AndroidId, lastLat, lastLong, (int)TimeToHall);
+
+                dHallLat = response.HallLatitude;
+                dHallLong = response.HallLongitude;
+
+
+                if (GetLastLatitude() != "0" && GetLastLongitude() != "0")
+                {
+                    CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
+                }
+
+                return response.Result.ToString();
+            } else {
+                return "No Connection";
+            }
 		}
 
 		public List<ResponderResult> GetAllResponders()
 		{
-			var responderList = new List<ResponderResult>();
+            if (HasNetworkConnectivity())
+            {
+                var responderList = new List<ResponderResult>();
 
-			//GetLocation();
-			var response = responder.GetResponses(0, 2, Settings.Secure.AndroidId);
+                //GetLocation();
+                var response = responder.GetResponses(0, 2, Settings.Secure.AndroidId);
 
-			dHallLat = response.HallLatitude;
-			dHallLong = response.HallLongitude;
+                dHallLat = response.HallLatitude;
+                dHallLong = response.HallLongitude;
 
-			if (response.ErrorMessage == "Device not found")
-			{
-				return new List<ResponderResult>();
-			}
+                if (response.ErrorMessage == "Device not found")
+                {
+                    return new List<ResponderResult>();
+                }
 
-			if (response != null)
-			{
-				if (response.MyResponse != null)
-				{
-                    // calculate travel time to hall
-                    //var myCoordinates = new CLLocationCoordinate2D(latitude, longitude);
-                    //Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
-                    //var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-                    //Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
-                    CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
+                if (response != null)
+                {
+                    if (response.MyResponse != null)
+                    {
+                        // calculate travel time to hall
+                        //var myCoordinates = new CLLocationCoordinate2D(latitude, longitude);
+                        //Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
+                        //var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+                        //Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
+                        CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
 
-					var sTimeToHall = "";
-					if ((int)TimeToHall != -1)
-					{
-						sTimeToHall = response.MyResponse.TimeToHall;
-					}
+                        var sTimeToHall = "";
+                        if ((int)TimeToHall != -1)
+                        {
+                            sTimeToHall = response.MyResponse.TimeToHall;
+                        }
 
-					var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall);
-					//var myResponse = new ResponderResult(mySeparateResponse.MyResponse.FullName, mySeparateResponse.MyResponse.DistanceToHall, sTimeToHall);
-					responderList.Add(myResponse);
-				}
-				else // add an empty response to show you are not currently responding.
-				{
-					var myResponse = new ResponderResult("Not Responding", " ", "N/R");
-					responderList.Add(myResponse);
-				}
+                        var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall);
+                        //var myResponse = new ResponderResult(mySeparateResponse.MyResponse.FullName, mySeparateResponse.MyResponse.DistanceToHall, sTimeToHall);
+                        responderList.Add(myResponse);
+                    }
+                    else // add an empty response to show you are not currently responding.
+                    {
+                        var myResponse = new ResponderResult("Not Responding", " ", "N/R");
+                        responderList.Add(myResponse);
+                    }
 
-                foreach (firehall.net_https.WS_Response additionalResponse in response.Responses)
-				{
-					responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall));
-				}
-			}
-			return responderList;
+                    foreach (firehall.net_https.WS_Response additionalResponse in response.Responses)
+                    {
+                        responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall));
+                    }
+                }
+                return responderList;
+            } else {
+                // no connection
+                return new List<ResponderResult>();
+            }
 		}
 
 		public void LinkToSettings()
@@ -215,18 +234,21 @@ namespace Responder.Droid
 
 		public async void CalculateTravelTimeBetween(double lat1, double long1, double lat2, double long2)
 		{
-            var origin = new LatLng(lat1, long1);
-            var dest = new LatLng(lat2, long2);
-            var responseString = await client.GetStringAsync(GetDirectionsUrl(origin, dest));
-
-            var jsonResult = JObject.Parse(responseString);
-            var sTimeToHallResult = jsonResult["rows"][0]["elements"][0]["status"];
-
-            if (sTimeToHallResult.ToString() != "ZERO_RESULTS")
+            if (HasNetworkConnectivity())
             {
-                var sSecondsToHall = jsonResult["rows"][0]["elements"][0]["duration"]["value"].ToString();
-                var dSecondsToHall = double.Parse(sSecondsToHall);
-                TimeToHall = dSecondsToHall;
+                var origin = new LatLng(lat1, long1);
+                var dest = new LatLng(lat2, long2);
+                var responseString = await client.GetStringAsync(GetDirectionsUrl(origin, dest));
+
+                var jsonResult = JObject.Parse(responseString);
+                var sTimeToHallResult = jsonResult["rows"][0]["elements"][0]["status"];
+
+                if (sTimeToHallResult.ToString() != "ZERO_RESULTS")
+                {
+                    var sSecondsToHall = jsonResult["rows"][0]["elements"][0]["duration"]["value"].ToString();
+                    var dSecondsToHall = double.Parse(sSecondsToHall);
+                    TimeToHall = dSecondsToHall;
+                }
             }
 		}
 
@@ -258,7 +280,10 @@ namespace Responder.Droid
 
 		public void StopListening()
 		{
-			responder.SetStatusNR(0, 2, Settings.Secure.AndroidId);
+            if (HasNetworkConnectivity())
+            {
+                responder.SetStatusNR(0, 2, Settings.Secure.AndroidId);
+            }
 		}
 
 		public bool IsAdmin()
@@ -337,9 +362,41 @@ namespace Responder.Droid
 
 		public void CallToHall(string sTitle, string sMessage)
 		{
-			//var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
-			//appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
+            if (HasNetworkConnectivity())
+            {
+                PublishNotificationWithMessage(sTitle, sMessage);
+            }
 		}
+
+        public void PublishNotificationWithMessage(string sTitle, string sMessage)
+        {
+            //var credentials = new CognitoAWSCredentials(
+            //"us-west-2:ec8de114-9ca5-4e6a-9c84-a9e484975d0a", // Identity pool ID
+            //RegionEndpoint.USWest2 // Region
+            //);
+
+            //var snsConfig = new AmazonSimpleNotificationServiceConfig
+            //{
+            //    RegionEndpoint = RegionEndpoint.USWest2
+            //};
+            //var snsClient = new AmazonSimpleNotificationServiceClient("AKIAJG5P2JQN2CRRM2IQ", "6mdlnDzPFC3wry1K78eC+9Gz15FnWDGFeO2tRFwt", snsConfig);
+
+            //var loggingConfig = AWSConfigs.LoggingConfig;
+            //loggingConfig.LogMetrics = true;
+            //loggingConfig.LogResponses = ResponseLoggingOption.Always;
+            //loggingConfig.LogMetricsFormat = LogMetricsFormatOption.JSON;
+            //loggingConfig.LogTo = LoggingOptions.SystemDiagnostics;
+
+            //AWSConfigs.AWSRegion = "us-west-2";
+
+            //AWSConfigs.CorrectForClockSkew = true;
+            //var offset = AWSConfigs.ClockOffset;
+
+
+            //var published = snsClient.PublishAsync("arn:aws:sns:us-west-2:527503918783:CallToHall", sMessage, sTitle);
+            //published.Wait();
+            //var test = published.Result;
+        }
 
 		public bool HasNetworkConnectivity()
 		{

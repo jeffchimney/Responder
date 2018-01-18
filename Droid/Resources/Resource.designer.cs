@@ -28,6 +28,8 @@ namespace Responder.Droid
 		{
 			global::PCLCrypto.Resource.String.ApplicationName = global::Responder.Droid.Resource.String.ApplicationName;
 			global::PCLCrypto.Resource.String.Hello = global::Responder.Droid.Resource.String.Hello;
+			global::PCLStorage.Resource.String.ApplicationName = global::Responder.Droid.Resource.String.ApplicationName;
+			global::PCLStorage.Resource.String.Hello = global::Responder.Droid.Resource.String.Hello;
 			global::Xamarin.Forms.Platform.Android.Resource.Attribute.actionBarSize = global::Responder.Droid.Resource.Attribute.actionBarSize;
 		}
 		

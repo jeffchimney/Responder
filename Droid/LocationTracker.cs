@@ -64,7 +64,7 @@ namespace Responder.Droid
 		// The minimum time between updates in milliseconds
 		long _minTimeBetweenUpdatesMs = 1000 * 30; // 30 seconds
 
-		public LocationTracker(Context context, bool giveToastsOnStatusChanges = true, long minDistanceChangeForUpdatesMeters = 10, long minTimeBetweenUpdatesMs = 30000)
+		public LocationTracker(Context context, bool giveToastsOnStatusChanges = false, long minDistanceChangeForUpdatesMeters = 10, long minTimeBetweenUpdatesMs = 30000)
 		{
 			this._context = context;
 			this._isGiveToastsOnStatusChanges = giveToastsOnStatusChanges;
@@ -97,11 +97,14 @@ namespace Responder.Droid
 			_locationManager.RequestLocationUpdates(LocationManager.GpsProvider, _minTimeBetweenUpdatesMs, _minDistanceChangeForUpdatesMeters, this);
 			CurrentLocation = _locationManager.GetLastKnownLocation(LocationManager.GpsProvider);
 
-			var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.WorldWriteable);
-            localSettings.Edit()
-                         .PutString("Latitude", CurrentLocation.Latitude.ToString())
-			             .PutString("Longitude", CurrentLocation.Longitude.ToString())
-                         .Commit();
+            if (CurrentLocation != null)
+            {
+                var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.WorldWriteable);
+                localSettings.Edit()
+                             .PutString("Latitude", CurrentLocation.Latitude.ToString())
+                             .PutString("Longitude", CurrentLocation.Longitude.ToString())
+                             .Commit();
+            }
 		}
 
 		/// <summary>

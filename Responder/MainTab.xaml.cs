@@ -1,5 +1,9 @@
 ﻿using Xamarin.Forms;
 using System;
+using Amazon;
+using Amazon.SimpleNotificationService;
+using Amazon.SimpleNotificationService.Model;
+using Amazon.CognitoIdentity;
 
 namespace Responder
 {
@@ -142,11 +146,38 @@ namespace Responder
             if (bSendNotification)
             {
                 LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
+                //PublishNotificationWithMessage("FireHall Alert", "FireHall Incident - Please Respond");
                 lblStatus.Text = "Call to Hall Sent";
             } else {
                 lblStatus.Text = "Call to Hall Cancelled";
             }
 		}
+
+        private void PublishNotificationWithMessage(string sTitle, string sMessage)
+        {
+            var credentials = new CognitoAWSCredentials(
+            "us-west-2:ec8de114-9ca5-4e6a-9c84-a9e484975d0a", // Identity pool ID
+            RegionEndpoint.USWest2 // Region
+            );
+
+            var snsClient = new AmazonSimpleNotificationServiceClient("AKIAJG5P2JQN2CRRM2IQ", "6mdlnDzPFC3wry1K78eC+9Gz15FnWDGFeO2tRFwt", RegionEndpoint.USWest2);
+
+            var loggingConfig = AWSConfigs.LoggingConfig;
+            loggingConfig.LogMetrics = true;
+            loggingConfig.LogResponses = ResponseLoggingOption.Always;
+            loggingConfig.LogMetricsFormat = LogMetricsFormatOption.JSON;
+            loggingConfig.LogTo = LoggingOptions.SystemDiagnostics;
+
+            AWSConfigs.AWSRegion = "us-west-2";
+
+            AWSConfigs.CorrectForClockSkew = true;
+            var offset = AWSConfigs.ClockOffset;
+
+
+            var published = snsClient.PublishAsync("arn:aws:sns:us-west-2:527503918783:CallToHall", sMessage, sTitle);
+            published.Wait();
+            var test = published.Result;
+        }
 
         void BtnNotResponding_Clicked(object sender, EventArgs e)
         {
