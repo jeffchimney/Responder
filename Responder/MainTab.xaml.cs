@@ -1,5 +1,6 @@
 ﻿using Xamarin.Forms;
 using System;
+using System.Threading;
 using Amazon;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
@@ -105,10 +106,18 @@ namespace Responder
             VerticalOptions = LayoutOptions.FillAndExpand
         };
 
+        public class TimerState
+        {
+            public int counter = 0;
+            public Timer tmr;
+        }
+
 		public static bool responding = false;
         public static bool timerAlreadyStarted = false;
 		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
         public SettingsTabInterface SettingsInterface = DependencyService.Get<SettingsTabInterface>();
+        public TimerState s = new TimerState();
+
 
 		public MainTab(MainPage parent)
 		{
@@ -181,10 +190,20 @@ namespace Responder
 
         void BtnNotResponding_Clicked(object sender, EventArgs e)
         {
+            // dispose of preexisting timer if there is one (there shouldnt be)
+            if (s.tmr != null)
+            {
+                s.tmr.Dispose();
+                s.tmr = null;
+            }
+            
             responding = false;
             activityIndicator.IsRunning = true;
 
-            LocationInterface.StopListening();
+            if (LocationInterface.HasNetworkConnectivity())
+            {
+                LocationInterface.StopListening();
+            }
 
             activityIndicator.IsRunning = false;
             lblStatus.Text = "Not Responding";
@@ -192,44 +211,31 @@ namespace Responder
         }
 
         private async void RespondingFirehallButtonPressed(object sender, EventArgs e)
-		{
+        {
 			responding = true;
             ShowCancelButtonHideOthers();
             activityIndicator.IsRunning = true;
 
 			lblStatus.Text = "Responding";
 
-			var seconds = TimeSpan.FromSeconds(15);
             if (LocationInterface.HasNetworkConnectivity())
             {
                 LocationInterface.StartListening();
-            }
-            if (!timerAlreadyStarted)
-            {
+
                 string result = LocationInterface.GetLocation();
                 if (!result.Contains("Location Services Not Enabled"))
                 {
-                    timerAlreadyStarted = true;
-                    Device.StartTimer(seconds, () =>
+                    // dispose of preexisting timer if there is one (there shouldnt be)
+                    if (s.tmr != null)
                     {
-                        if (responding)
-                        {
-                            timerAlreadyStarted = true;
-                            //call your method to check for notifications here
-                            result = LocationInterface.GetLocation();
+                        s.tmr.Dispose();
+                        s.tmr = null;
+                    }
 
-                            // Returning true means you want to repeat this timer, false stops it.
-                            if (result.Contains("AtHall"))
-                            {
-                                btnRespondingFirehall.BackgroundColor = Color.Green;
-                                lblStatus.Text = "Arrived";
-
-                                responding = false;
-                                timerAlreadyStarted = false;
-                            }
-                        }
-                        return responding;
-                    });
+                    // instantiate new timer
+                    TimerCallback timerDelegate = new TimerCallback(CheckStatus);
+                    Timer timer = new Timer(timerDelegate, s, 10000, 10000);
+                    s.tmr = timer;
                 }
                 else
                 { // show alert saying user doesn't have location services enabled.
@@ -245,13 +251,34 @@ namespace Responder
                     }
                 }
             }
+
             activityIndicator.IsRunning = false;
 		}
+
+        public void CheckStatus(Object state)
+        {
+            TimerState timerState = (TimerState)state;
+            if (responding)
+            {
+                string result = LocationInterface.GetLocation();
+
+                // Returning true means you want to repeat this timer, false stops it.
+                if (result.Contains("AtHall"))
+                {
+                    btnRespondingFirehall.BackgroundColor = Color.Green;
+                    lblStatus.Text = "Arrived";
+
+                    responding = false;
+                    timerState.tmr.Dispose();
+                    timerState.tmr = null;
+                }
+            }
+        }
 
         private void BtnCancel_Pressed(object sender, EventArgs e)
         {
             HideCancelButtonShowOthers();
-            if (responding)
+            if (responding && LocationInterface.HasNetworkConnectivity())
             {
                 lblStatus.Text = "Stopped Responding";
                 LocationInterface.StopListening();
@@ -260,6 +287,12 @@ namespace Responder
                 lblStatus.Text = "Idle";
             }
             responding = false;
+
+            // dispose of preexisting timer if there is one (there shouldnt be)
+            if (s.tmr != null) {
+                s.tmr.Dispose();
+                s.tmr = null;
+            }
 		}
 
 		private void SetTimeToHallLocally()

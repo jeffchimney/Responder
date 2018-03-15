@@ -197,6 +197,8 @@
     <Compile Include="Web References\firehall.net_https\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="TabBarCustomRenderer.cs" />
+    <Compile Include="Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References" />

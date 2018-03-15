@@ -26,6 +26,7 @@ using Amazon;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Amazon.CognitoIdentity;
+using Android.Gms.Common;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
@@ -44,6 +45,7 @@ namespace Responder.Droid
 		Decimal? dHallLat = 0;
 		double TimeToHall = -1;
         private static readonly HttpClient client = new HttpClient();
+        AmazonSimpleNotificationServiceClient snsClient;
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -53,6 +55,8 @@ namespace Responder.Droid
 			base.OnCreate(bundle);
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
+
+            snsClient = new AmazonSimpleNotificationServiceClient("AKIAJG5P2JQN2CRRM2IQ", "6mdlnDzPFC3wry1K78eC+9Gz15FnWDGFeO2tRFwt", RegionEndpoint.USWest2);
 
             LoadApplication(new App());
 		}
@@ -82,14 +86,26 @@ namespace Responder.Droid
                 firehall.net_https.WS_Output result;
                 if (sAccountInfo == ":")
                 { // register
-                    result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
+                    Guid deviceID = Guid.NewGuid();
+                    localSettings.Edit().PutString("DeviceId", deviceID.ToString()).Commit();
+                    result = responder.Register(0, 2, sFirehallID, sUserID, deviceID.ToString());
                 }
                 else // login
                 {
-                    result = responder.Login(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
+                    String deviceID = GetUniqueDeviceID();
+                    if (deviceID == "")
+                    {
+                        deviceID = Guid.NewGuid().ToString();
+                        localSettings.Edit().PutString("DeviceId", deviceID).Commit();
+                        result = responder.Register(0, 2, sFirehallID, sUserID, deviceID);
+                    }
+                    else
+                    {
+                        result = responder.Login(0, 2, sFirehallID, sUserID, deviceID);
+                    }
                     if (result.ErrorMessage == "Device not yet registered")
                     {
-                        result = responder.Register(0, 2, sFirehallID, sUserID, Settings.Secure.AndroidId);
+                        result = responder.Register(0, 2, sFirehallID, sUserID, GetUniqueDeviceID());
                     }
                 }
 
@@ -121,6 +137,13 @@ namespace Responder.Droid
             }
 		}
 
+        public string GetUniqueDeviceID()
+        {
+            var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
+
+            String sDeviceID = localSettings.GetString("DeviceId", "");
+            return sDeviceID;
+        }
 
 		// MARK: GetLocation Interface Methods
 
@@ -154,7 +177,7 @@ namespace Responder.Droid
 
                 // CALCULATE TRAVEL TIME
 
-                var response = responder.Responding(0, 2, Settings.Secure.AndroidId, lastLat, lastLong, (int)TimeToHall);
+                var response = responder.Responding(0, 2, GetUniqueDeviceID(), lastLat, lastLong, (int)TimeToHall);
 
                 dHallLat = response.HallLatitude;
                 dHallLong = response.HallLongitude;
@@ -178,7 +201,7 @@ namespace Responder.Droid
                 var responderList = new List<ResponderResult>();
 
                 //GetLocation();
-                var response = responder.GetResponses(0, 2, Settings.Secure.AndroidId);
+                var response = responder.GetResponses(0, 2, GetUniqueDeviceID());
 
                 dHallLat = response.HallLatitude;
                 dHallLong = response.HallLongitude;
@@ -282,7 +305,7 @@ namespace Responder.Droid
 		{
             if (HasNetworkConnectivity())
             {
-                responder.SetStatusNR(0, 2, Settings.Secure.AndroidId);
+                responder.SetStatusNR(0, 2, GetUniqueDeviceID());
             }
 		}
 

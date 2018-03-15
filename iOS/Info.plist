@@ -7,9 +7,7 @@
 	<key>CFBundleName</key>
 	<string>Responder</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.05</string>
-	<key>CFBundleVersion</key>
-	<string>1.9</string>
+	<string>1.06</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
@@ -49,5 +47,7 @@
 		<string>location</string>
 		<string>remote-notification</string>
 	</array>
+	<key>CFBundleVersion</key>
+	<string>2.0</string>
 </dict>
 </plist>

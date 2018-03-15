@@ -15,9 +15,24 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="com.jeffsapps.responder.permission.MAPS_RECEIVE" />
 	<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.jeffsapps.responder.permission.C2D_MESSAGE" />
+    <permission android:name="com.jeffsapps.responder.permission.C2D_MESSAGE" 
+                android:protectionLevel="signature" />
 	<application android:label="Responder" android:icon="@drawable/firehalllogo2">
 		<!--<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDdSlqt2R4hkE9brZUJVD0DZy3pPUnOdaA" />-->
 		<meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyDEwhj5NF6QkIOyTwpEc43cresueUK8sSs" />
 		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+
+        <receiver android:name="com.google.android.gms.gcm.GcmReceiver" 
+              android:exported="true" 
+              android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <category android:name="com.jeffsapps.responder" />
+            </intent-filter>
+        </receiver>
 	</application>
 </manifest>

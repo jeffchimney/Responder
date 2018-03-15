@@ -8,7 +8,7 @@ namespace Responder
 	public partial class MainPage : TabbedPage
 	{
 
-		MainTab mainTab;
+		public MainTab mainTab;
 		RespondingTab responderTab;
 		//Page responderTab;
 		//Page availableTab;

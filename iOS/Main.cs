@@ -160,33 +160,37 @@ namespace Responder.iOS
 
 		public void CalculateTravelTimeBetween(CLLocationCoordinate2D coord1, CLLocationCoordinate2D coord2)
 		{
-			var sourcePlacemark = new MKPlacemark(coord1);
-			var sourceMapItem = new MKMapItem(sourcePlacemark);
+            // MK items need to be run on main UI thread
+            UIApplication.SharedApplication.InvokeOnMainThread(delegate
+            {
+                var sourcePlacemark = new MKPlacemark(coord1);
+                var sourceMapItem = new MKMapItem(sourcePlacemark);
 
-			var destinationPlacemark = new MKPlacemark(coord2);
-			var destinationMapItem = new MKMapItem(destinationPlacemark);
+                var destinationPlacemark = new MKPlacemark(coord2);
+                var destinationMapItem = new MKMapItem(destinationPlacemark);
 
-			var request = new MKDirectionsRequest();
-			request.Source = sourceMapItem;
-			request.Destination = destinationMapItem;
-			request.TransportType = MKDirectionsTransportType.Automobile;
-			request.RequestsAlternateRoutes = false;
+                var request = new MKDirectionsRequest();
+                request.Source = sourceMapItem;
+                request.Destination = destinationMapItem;
+                request.TransportType = MKDirectionsTransportType.Automobile;
+                request.RequestsAlternateRoutes = false;
 
-			var directions = new MKDirections(request);
+                var directions = new MKDirections(request);
 
-			directions.CalculateDirections((response, error) => 
-			{
-				if (error != null)
-				{
-					Console.WriteLine("Error with maps api");
-				}
-				else
-				{
-					var route = response.Routes.FirstOrDefault();
-					TimeToHall = route.ExpectedTravelTime;
-					Console.WriteLine("Minutes to hall: " + route.ExpectedTravelTime.ToString());
-				}
-			});
+                directions.CalculateDirections((response, error) =>
+                {
+                    if (error != null)
+                    {
+                        Console.WriteLine("Error with maps api");
+                    }
+                    else
+                    {
+                        var route = response.Routes.FirstOrDefault();
+                        TimeToHall = route.ExpectedTravelTime;
+                        Console.WriteLine("Minutes to hall: " + route.ExpectedTravelTime.ToString());
+                    }
+                });
+            });
 		}
 
 		public void StartMonitoringLocationInBackground()
