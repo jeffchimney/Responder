@@ -388,7 +388,7 @@ namespace Responder.iOS
         public void CallToHall(string sTitle, string sMessage)
         {
             var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
-            appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
+            //appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
         }
 
         public bool HasNetworkConnectivity()
