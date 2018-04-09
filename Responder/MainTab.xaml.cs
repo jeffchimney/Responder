@@ -1,10 +1,18 @@
 ﻿using Xamarin.Forms;
 using System;
 using System.Threading;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Web;
 using Amazon;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Amazon.CognitoIdentity;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using Flurl.Http;
 
 namespace Responder
 {
@@ -118,6 +126,8 @@ namespace Responder
         public SettingsTabInterface SettingsInterface = DependencyService.Get<SettingsTabInterface>();
         public TimerState s = new TimerState();
 
+        private const string URL = "https://firehall-fn.azurewebsites.net/api/SendPush";
+        private static readonly HttpClient client = new HttpClient();
 
 		public MainTab(MainPage parent)
 		{
@@ -154,7 +164,9 @@ namespace Responder
 
             if (bSendNotification)
             {
-                LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
+                var sData = "hello";
+                GetPOSTResponse(URL, sData);
+                //LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
                 //PublishNotificationWithMessage("FireHall Alert", "FireHall Incident - Please Respond");
                 lblStatus.Text = "Call to Hall Sent";
             } else {
@@ -162,11 +174,21 @@ namespace Responder
             }
 		}
 
+        private async void GetPOSTResponse(string sUri, string data)
+        {
+
+            var responseString = await sUri
+                .PostUrlEncodedAsync(new { }) // message = data
+                .ReceiveString();
+
+            Console.Out.WriteLine(responseString);
+        }
+
         private void PublishNotificationWithMessage(string sTitle, string sMessage)
         {
             var credentials = new CognitoAWSCredentials(
-            "us-west-2:ec8de114-9ca5-4e6a-9c84-a9e484975d0a", // Identity pool ID
-            RegionEndpoint.USWest2 // Region
+                "us-west-2:ec8de114-9ca5-4e6a-9c84-a9e484975d0a", // Identity pool ID
+                RegionEndpoint.USWest2 // Region
             );
 
             var snsClient = new AmazonSimpleNotificationServiceClient("AKIAJG5P2JQN2CRRM2IQ", "6mdlnDzPFC3wry1K78eC+9Gz15FnWDGFeO2tRFwt", RegionEndpoint.USWest2);
@@ -220,25 +242,12 @@ namespace Responder
 
             if (LocationInterface.HasNetworkConnectivity())
             {
-                LocationInterface.StartListening();
-
-                string result = LocationInterface.GetLocation();
-                if (!result.Contains("Location Services Not Enabled"))
-                {
-                    // dispose of preexisting timer if there is one (there shouldnt be)
-                    if (s.tmr != null)
-                    {
-                        s.tmr.Dispose();
-                        s.tmr = null;
-                    }
-
-                    // instantiate new timer
-                    TimerCallback timerDelegate = new TimerCallback(CheckStatus);
-                    Timer timer = new Timer(timerDelegate, s, 10000, 10000);
-                    s.tmr = timer;
-                }
-                else
-                { // show alert saying user doesn't have location services enabled.
+                if (LocationInterface.CheckAuthorizationStatus()) {
+                    responding = true;
+                    LocationInterface.StartListening();
+                    LocationInterface.StartMonitoringLocationInBackground();
+                } else {
+                    // show alert saying user doesn't have location services enabled.
                     responding = false;
                     timerAlreadyStarted = false;
                     btnRespondingFirehall.BackgroundColor = Color.Gray;
@@ -249,31 +258,61 @@ namespace Responder
                     {
                         LocationInterface.LinkToSettings();
                     }
+                    
                 }
+
+                //string result = LocationInterface.GetLocation();
+                //if (!result.Contains("Location Services Not Enabled"))
+                //{
+                //    // dispose of preexisting timer if there is one (there shouldnt be)
+                //    if (s.tmr != null)
+                //    {
+                //        s.tmr.Dispose();
+                //        s.tmr = null;
+                //    }
+
+                //    // instantiate new timer
+                //    TimerCallback timerDelegate = new TimerCallback(CheckStatus);
+                //    Timer timer = new Timer(timerDelegate, s, 10000, 10000);
+                //    s.tmr = timer;
+                //}
+                //else
+                //{ // show alert saying user doesn't have location services enabled.
+                //    responding = false;
+                //    timerAlreadyStarted = false;
+                //    btnRespondingFirehall.BackgroundColor = Color.Gray;
+                //    lblStatus.Text = "";
+                //    var accepted = await DisplayAlert("Enable Location Services", "Responder needs access to your location in order to track your progress to the hall.", "Settings", "Cancel");
+
+                //    if (accepted)
+                //    {
+                //        LocationInterface.LinkToSettings();
+                //    }
+                //}
             }
 
             activityIndicator.IsRunning = false;
 		}
 
-        public void CheckStatus(Object state)
-        {
-            TimerState timerState = (TimerState)state;
-            if (responding)
-            {
-                string result = LocationInterface.GetLocation();
+        //public void CheckStatus(Object state)
+        //{
+        //    TimerState timerState = (TimerState)state;
+        //    if (responding)
+        //    {
+        //        string result = LocationInterface.GetLocation();
 
-                // Returning true means you want to repeat this timer, false stops it.
-                if (result.Contains("AtHall"))
-                {
-                    btnRespondingFirehall.BackgroundColor = Color.Green;
-                    lblStatus.Text = "Arrived";
+        //        // Returning true means you want to repeat this timer, false stops it.
+        //        if (result.Contains("AtHall"))
+        //        {
+        //            btnRespondingFirehall.BackgroundColor = Color.Green;
+        //            lblStatus.Text = "Arrived";
 
-                    responding = false;
-                    timerState.tmr.Dispose();
-                    timerState.tmr = null;
-                }
-            }
-        }
+        //            responding = false;
+        //            timerState.tmr.Dispose();
+        //            timerState.tmr = null;
+        //        }
+        //    }
+        //}
 
         private void BtnCancel_Pressed(object sender, EventArgs e)
         {

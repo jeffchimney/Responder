@@ -39,21 +39,21 @@ namespace Responder
             //}
 
             // start background location updates
-            DependencyService.Get<GetLocationInterface>().StartMonitoringLocationInBackground();
+            //DependencyService.Get<GetLocationInterface>().StartMonitoringLocationInBackground();
 		}
 
 		protected override void OnResume()
 		{
-			// Handle when your app resumes
-			if (MainTab.responding)
-			{
-				DependencyService.Get<GetLocationInterface>().StopMonitoringLocationChanges();
+			//// Handle when your app resumes
+			//if (MainTab.responding)
+			//{
+				//DependencyService.Get<GetLocationInterface>().StopMonitoringLocationChanges();
 
-                // instantiate new timer
-                //TimerCallback timerDelegate = new TimerCallback(CheckStatus);
-                //Timer timer = new Timer(timerDelegate, mainPage.mainTab.s, 10000, 10000);
-                //mainPage.mainTab.s.tmr = timer;
-			}
+               // // instantiate new timer
+               // //TimerCallback timerDelegate = new TimerCallback(CheckStatus);
+               // //Timer timer = new Timer(timerDelegate, mainPage.mainTab.s, 10000, 10000);
+               // //mainPage.mainTab.s.tmr = timer;
+			//}
 		}
 
         //public void CheckStatus(Object state)

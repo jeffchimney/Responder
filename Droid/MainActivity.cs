@@ -162,6 +162,10 @@ namespace Responder.Droid
 
 		// MARK: GetLocation Interface Methods
 
+        public bool CheckAuthorizationStatus() {
+            return true;
+        }
+
 		public string GetLocation()
 		{
             if (HasNetworkConnectivity())

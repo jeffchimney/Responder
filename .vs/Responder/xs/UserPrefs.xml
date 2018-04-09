@@ -1,0 +1,20 @@
+﻿<Properties StartupConfiguration="{BF0FF304-0639-4DC0-B5BB-DD5E9AA08DD4}|Default">
+  <MonoDevelop.Ide.ItemProperties.Responder.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.aa843c8ca668b6fb8e7cf9db899de1ab38d9d9d9" automaticSigning="False" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Responder/MainTab.xaml.cs">
+    <Files>
+      <File FileName="Responder/MainTab.xaml.cs" Line="199" Column="74" />
+      <File FileName="../../../../../../Library/Frameworks/Xamarin.iOS.framework/Versions/11.9.1.24/lib/msbuild/iOS/Xamarin.iOS.Common.targets" Line="1319" Column="3" />
+      <File FileName="iOS/AppDelegate.cs" Line="76" Column="1" />
+      <File FileName="Droid/MainActivity.cs" Line="166" Column="25" />
+      <File FileName="iOS/Main.cs" Line="33" Column="1" />
+      <File FileName="Responder/App.xaml.cs" Line="55" Column="26" />
+      <File FileName="Responder/GetLocationInterface.cs" Line="19" Column="41" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

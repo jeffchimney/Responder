@@ -33,11 +33,15 @@ namespace Responder.iOS
 			UIApplication.Main(args, null, "AppDelegate");
 		}
 
+        public bool CheckAuthorizationStatus() {
+            return CLLocationManager.LocationServicesEnabled;
+        }
+
 		public void StartListening()
 		{
 			locationManager.RequestAlwaysAuthorization();
             locationManager.RequestWhenInUseAuthorization();
-			locationManager.StartUpdatingLocation();
+            locationManager.StartUpdatingLocation();
 		}
 
 		// Get Location Interface Methods

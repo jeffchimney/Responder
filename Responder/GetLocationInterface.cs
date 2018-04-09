@@ -16,6 +16,7 @@ namespace Responder
 		void StopListening();
         void LinkToSettings();
         void CallToHall(string sTitle, string sMessage);
+        bool CheckAuthorizationStatus();
         //void SaveTimeToHallLocally();
         //void SaveDistanceFromHallLocally();
 	}
