@@ -46,6 +46,7 @@ namespace Responder.Droid
 		double TimeToHall = -1;
         private static readonly HttpClient client = new HttpClient();
         AmazonSimpleNotificationServiceClient snsClient;
+        bool responding = false;
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -389,41 +390,11 @@ namespace Responder.Droid
 
 		public void CallToHall(string sTitle, string sMessage)
 		{
-            if (HasNetworkConnectivity())
-            {
-                PublishNotificationWithMessage(sTitle, sMessage);
-            }
-		}
-
-        public void PublishNotificationWithMessage(string sTitle, string sMessage)
-        {
-            //var credentials = new CognitoAWSCredentials(
-            //"us-west-2:ec8de114-9ca5-4e6a-9c84-a9e484975d0a", // Identity pool ID
-            //RegionEndpoint.USWest2 // Region
-            //);
-
-            //var snsConfig = new AmazonSimpleNotificationServiceConfig
+            //if (HasNetworkConnectivity())
             //{
-            //    RegionEndpoint = RegionEndpoint.USWest2
-            //};
-            //var snsClient = new AmazonSimpleNotificationServiceClient("AKIAJG5P2JQN2CRRM2IQ", "6mdlnDzPFC3wry1K78eC+9Gz15FnWDGFeO2tRFwt", snsConfig);
-
-            //var loggingConfig = AWSConfigs.LoggingConfig;
-            //loggingConfig.LogMetrics = true;
-            //loggingConfig.LogResponses = ResponseLoggingOption.Always;
-            //loggingConfig.LogMetricsFormat = LogMetricsFormatOption.JSON;
-            //loggingConfig.LogTo = LoggingOptions.SystemDiagnostics;
-
-            //AWSConfigs.AWSRegion = "us-west-2";
-
-            //AWSConfigs.CorrectForClockSkew = true;
-            //var offset = AWSConfigs.ClockOffset;
-
-
-            //var published = snsClient.PublishAsync("arn:aws:sns:us-west-2:527503918783:CallToHall", sMessage, sTitle);
-            //published.Wait();
-            //var test = published.Result;
-        }
+            //    PublishNotificationWithMessage(sTitle, sMessage);
+            //}
+		}
 
 		public bool HasNetworkConnectivity()
 		{
@@ -436,5 +407,10 @@ namespace Responder.Droid
 				return false;
 			}
 		}
+
+        public void SetResponding(bool isResponding)
+        {
+            responding = isResponding;
+        }
 	}
 }

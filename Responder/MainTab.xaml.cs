@@ -12,7 +12,6 @@ using Amazon.SimpleNotificationService.Model;
 using Amazon.CognitoIdentity;
 using Newtonsoft.Json.Linq;
 using System.IO;
-using Flurl.Http;
 
 namespace Responder
 {
@@ -164,7 +163,7 @@ namespace Responder
 
             if (bSendNotification)
             {
-                var sData = "hello";
+                var sData = "FireHall Incident - Please Respond";
                 GetPOSTResponse(URL, sData);
                 //LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
                 //PublishNotificationWithMessage("FireHall Alert", "FireHall Incident - Please Respond");
@@ -174,40 +173,58 @@ namespace Responder
             }
 		}
 
-        private async void GetPOSTResponse(string sUri, string data)
+        private void GetPOSTResponse(string sUri, string data)
         {
 
-            var responseString = await sUri
-                .PostUrlEncodedAsync(new { }) // message = data
-                .ReceiveString();
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(sUri);
+            httpWebRequest.ContentType = "application/json; charset=utf-8";
+            httpWebRequest.Method = "POST";
+            string result = "";
 
-            Console.Out.WriteLine(responseString);
-        }
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = "{ \"message\": \"" + data +  "\" }";
+                Console.Out.WriteLine(json);
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+            try
+            {
+                using (var response = httpWebRequest.GetResponse() as HttpWebResponse)
+                {
+                    if (httpWebRequest.HaveResponse && response != null)
+                    {
+                        using (var reader = new StreamReader(response.GetResponseStream()))
+                        {
+                            result = reader.ReadToEnd();
+                            Console.Out.Write(result);
+                        }
+                    }
+                }
+            }
+            catch (WebException e)
+            {
+                if (e.Response != null)
+                {
+                    using (var errorResponse = (HttpWebResponse)e.Response)
+                    {
+                        using (var reader = new StreamReader(errorResponse.GetResponseStream()))
+                        {
+                            string error = reader.ReadToEnd();
+                            result = error;
+                            Console.Out.Write(result);
+                        }
+                    }
 
-        private void PublishNotificationWithMessage(string sTitle, string sMessage)
-        {
-            var credentials = new CognitoAWSCredentials(
-                "us-west-2:ec8de114-9ca5-4e6a-9c84-a9e484975d0a", // Identity pool ID
-                RegionEndpoint.USWest2 // Region
-            );
+                }
+            }
 
-            var snsClient = new AmazonSimpleNotificationServiceClient("AKIAJG5P2JQN2CRRM2IQ", "6mdlnDzPFC3wry1K78eC+9Gz15FnWDGFeO2tRFwt", RegionEndpoint.USWest2);
+            //var responseString = await sUri
+            //    .PostUrlEncodedAsync(new { }) // message = data
+            //    .ReceiveString();
 
-            var loggingConfig = AWSConfigs.LoggingConfig;
-            loggingConfig.LogMetrics = true;
-            loggingConfig.LogResponses = ResponseLoggingOption.Always;
-            loggingConfig.LogMetricsFormat = LogMetricsFormatOption.JSON;
-            loggingConfig.LogTo = LoggingOptions.SystemDiagnostics;
-
-            AWSConfigs.AWSRegion = "us-west-2";
-
-            AWSConfigs.CorrectForClockSkew = true;
-            var offset = AWSConfigs.ClockOffset;
-
-
-            var published = snsClient.PublishAsync("arn:aws:sns:us-west-2:527503918783:CallToHall", sMessage, sTitle);
-            published.Wait();
-            var test = published.Result;
+            //Console.Out.WriteLine(responseString);
         }
 
         void BtnNotResponding_Clicked(object sender, EventArgs e)
@@ -235,6 +252,7 @@ namespace Responder
         private async void RespondingFirehallButtonPressed(object sender, EventArgs e)
         {
 			responding = true;
+            LocationInterface.SetResponding(true);
             ShowCancelButtonHideOthers();
             activityIndicator.IsRunning = true;
 
@@ -320,6 +338,7 @@ namespace Responder
             if (responding && LocationInterface.HasNetworkConnectivity())
             {
                 lblStatus.Text = "Stopped Responding";
+                LocationInterface.SetResponding(false);
                 LocationInterface.StopListening();
             } else
             {

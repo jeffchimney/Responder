@@ -39,7 +39,7 @@ namespace Responder
             //}
 
             // start background location updates
-            //DependencyService.Get<GetLocationInterface>().StartMonitoringLocationInBackground();
+            DependencyService.Get<GetLocationInterface>().StartMonitoringLocationInBackground();
 		}
 
 		protected override void OnResume()

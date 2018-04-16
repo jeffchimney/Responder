@@ -1,5 +1,5 @@
 ﻿<Properties StartupConfiguration="{BF0FF304-0639-4DC0-B5BB-DD5E9AA08DD4}|Default">
-  <MonoDevelop.Ide.ItemProperties.Responder.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.aa843c8ca668b6fb8e7cf9db899de1ab38d9d9d9" automaticSigning="False" />
+  <MonoDevelop.Ide.ItemProperties.Responder.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.D5B485C7-7216-4184-BFA9-8956360CF6A3" automaticSigning="False" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Responder/MainTab.xaml.cs">
     <Files>
       <File FileName="Responder/MainTab.xaml.cs" Line="199" Column="74" />
@@ -11,7 +11,7 @@
       <File FileName="Responder/GetLocationInterface.cs" Line="19" Column="41" />
     </Files>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

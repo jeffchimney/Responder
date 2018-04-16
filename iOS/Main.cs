@@ -22,6 +22,10 @@ namespace Responder.iOS
 		Decimal? dHallLong = 0;
 		Decimal? dHallLat = 0;
 		double TimeToHall = -1;
+        bool responding = false;
+        Decimal lastLatitude = 0;
+        Decimal lastLongitude = 0;
+
 
         firehall.net_https.WebService1 responder = new firehall.net_https.WebService1();
 
@@ -197,49 +201,60 @@ namespace Responder.iOS
             });
 		}
 
+        public void SetResponding(bool isResponding) {
+            responding = isResponding;
+        }
+
 		public void StartMonitoringLocationInBackground()
 		{
-			Console.WriteLine("Start monitoring in background");
-			locationManager.RequestAlwaysAuthorization();
-			locationManager.DesiredAccuracy = 1;
+            Console.WriteLine("Start monitoring in background");
+            locationManager.RequestAlwaysAuthorization();
+            locationManager.DesiredAccuracy = 1;
 
-			if (UIDevice.CurrentDevice.IsMultitaskingSupported)
-			{
-				Console.WriteLine("Multitasking supported");
-				// Code dependent on multitasking.
-				if (CLLocationManager.LocationServicesEnabled)
-				{
-					Console.WriteLine("Location services enabled");
-					locationManager.StartMonitoringSignificantLocationChanges();
+            if (UIDevice.CurrentDevice.IsMultitaskingSupported)
+            {
+                Console.WriteLine("Multitasking supported");
+                // Code dependent on multitasking.
+                if (CLLocationManager.LocationServicesEnabled)
+                {
+                    Console.WriteLine("Location services enabled");
 
-					locationManager.LocationsUpdated += (o, e) =>
-					{
-						Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
-						Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
-                        firehall.net_https.WebService1 responder = new firehall.net_https.WebService1();
-						Console.WriteLine("Noticed change in location");
-						var result = responder.Responding(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
-						Console.WriteLine(result);
-						if (result.Result.ToString().Contains("AtHall"))
-						{
-							StopMonitoringLocationChanges();
-							locationManager.StopUpdatingLocation();
-						}
-					};
-				}
-				else {
-					Console.WriteLine("Location services not enabled, please enable this in your Settings");
-				}
-			}
+                    locationManager.LocationsUpdated += (o, e) =>
+                    {
+                        Decimal latitude = Convert.ToDecimal(locationManager.Location.Coordinate.Latitude);
+                        Decimal longitude = Convert.ToDecimal(locationManager.Location.Coordinate.Longitude);
+                        if (responding && (lastLongitude != longitude && lastLatitude != latitude))
+                        {
+                            lastLatitude = latitude;
+                            lastLongitude = longitude;
+                            firehall.net_https.WebService1 responder = new firehall.net_https.WebService1();
+                            Console.WriteLine("Noticed change in location");
+                            var result = responder.Responding(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), latitude, longitude, (int)TimeToHall);
+                            Console.WriteLine(result);
+                            if (result.Result.ToString().Contains("AtHall"))
+                            {
+                                StopMonitoringLocationChanges();
+                                locationManager.StopUpdatingLocation();
+                            }
+                        }
+                    };
+                }
+                else
+                {
+                    Console.WriteLine("Location services not enabled, please enable this in your Settings");
+                }
+            }
 		}
 
 		public void StopMonitoringLocationChanges()
 		{
+            locationManager.StopUpdatingLocation();
 			locationManager.StopMonitoringSignificantLocationChanges();
 		}
 
 		public void StopListening()
 		{
+            StopMonitoringLocationChanges();
             responder.SetStatusNR(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString());
 		}
 
