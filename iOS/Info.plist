@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>Responder</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.06</string>
+	<string>1.08</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
@@ -38,9 +38,7 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleIdentifier</key>
 	<string>net.firehall.responder</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>To monitor progress to and from the firehall.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>To monitor progress to and from the firehall.</string>
 	<key>UIBackgroundModes</key>
 	<array>
@@ -49,5 +47,9 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>2.0</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>To monitor progress to and from the firehall.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To monitor progress to and from the firehall.</string>
 </dict>
 </plist>

@@ -113,17 +113,17 @@ namespace Responder
             VerticalOptions = LayoutOptions.FillAndExpand
         };
 
-        public class TimerState
-        {
-            public int counter = 0;
-            public Timer tmr;
-        }
+        //public class TimerState
+        //{
+        //    public int counter = 0;
+        //    public Timer tmr;
+        //}
 
 		public static bool responding = false;
         public static bool timerAlreadyStarted = false;
 		public GetLocationInterface LocationInterface = DependencyService.Get<GetLocationInterface>();
         public SettingsTabInterface SettingsInterface = DependencyService.Get<SettingsTabInterface>();
-        public TimerState s = new TimerState();
+        //public TimerState s = new TimerState();
 
         private const string URL = "https://firehall-fn.azurewebsites.net/api/SendPush";
         private static readonly HttpClient client = new HttpClient();
@@ -158,18 +158,25 @@ namespace Responder
 
 		private async void CallToHallButtonPressed(object sender, EventArgs e)
 		{
-            // trigger push notification
-            bool bSendNotification = await DisplayAlert("Are you sure?", "", "Send", "Cancel");
-
-            if (bSendNotification)
+            if (LocationInterface.HasNetworkConnectivity())
             {
-                var sData = "FireHall Incident - Please Respond";
-                GetPOSTResponse(URL, sData);
-                //LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
-                //PublishNotificationWithMessage("FireHall Alert", "FireHall Incident - Please Respond");
-                lblStatus.Text = "Call to Hall Sent";
+                // trigger push notification
+                bool bSendNotification = await DisplayAlert("Are you sure?", "", "Send", "Cancel");
+
+                if (bSendNotification)
+                {
+                    var sData = "FireHall Incident - Please Respond";
+                    GetPOSTResponse(URL, sData);
+                    //LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
+                    //PublishNotificationWithMessage("FireHall Alert", "FireHall Incident - Please Respond");
+                    lblStatus.Text = "Call to Hall Sent";
+                }
+                else
+                {
+                    lblStatus.Text = "Call to Hall Cancelled";
+                }
             } else {
-                lblStatus.Text = "Call to Hall Cancelled";
+                lblStatus.Text = "Check Internet Connection";
             }
 		}
 
@@ -229,41 +236,32 @@ namespace Responder
 
         void BtnNotResponding_Clicked(object sender, EventArgs e)
         {
-            // dispose of preexisting timer if there is one (there shouldnt be)
-            if (s.tmr != null)
-            {
-                s.tmr.Dispose();
-                s.tmr = null;
-            }
-            
-            responding = false;
-            activityIndicator.IsRunning = true;
-
             if (LocationInterface.HasNetworkConnectivity())
             {
+                responding = false;
                 LocationInterface.StopListening();
+                lblStatus.Text = "Not Responding";
+                ShowCancelButtonHideOthers();
+            } else {
+                lblStatus.Text = "Check Internet Connection";
             }
-
-            activityIndicator.IsRunning = false;
-            lblStatus.Text = "Not Responding";
-            ShowCancelButtonHideOthers();
         }
 
         private async void RespondingFirehallButtonPressed(object sender, EventArgs e)
         {
-			responding = true;
-            LocationInterface.SetResponding(true);
-            ShowCancelButtonHideOthers();
-            activityIndicator.IsRunning = true;
-
-			lblStatus.Text = "Responding";
-
             if (LocationInterface.HasNetworkConnectivity())
             {
                 if (LocationInterface.CheckAuthorizationStatus()) {
                     responding = true;
                     LocationInterface.StartListening();
                     LocationInterface.StartMonitoringLocationInBackground();
+
+                    responding = true;
+                    LocationInterface.SetResponding(true);
+                    ShowCancelButtonHideOthers();
+                    activityIndicator.IsRunning = true;
+
+                    lblStatus.Text = "Responding";
                 } else {
                     // show alert saying user doesn't have location services enabled.
                     responding = false;
@@ -307,6 +305,8 @@ namespace Responder
                 //        LocationInterface.LinkToSettings();
                 //    }
                 //}
+            } else {
+                lblStatus.Text = "Check Internet Connection";
             }
 
             activityIndicator.IsRunning = false;
@@ -334,22 +334,16 @@ namespace Responder
 
         private void BtnCancel_Pressed(object sender, EventArgs e)
         {
-            HideCancelButtonShowOthers();
-            if (responding && LocationInterface.HasNetworkConnectivity())
+            if (LocationInterface.HasNetworkConnectivity())
             {
+                HideCancelButtonShowOthers();
                 lblStatus.Text = "Stopped Responding";
                 LocationInterface.SetResponding(false);
                 LocationInterface.StopListening();
+                responding = false;
             } else
             {
-                lblStatus.Text = "Idle";
-            }
-            responding = false;
-
-            // dispose of preexisting timer if there is one (there shouldnt be)
-            if (s.tmr != null) {
-                s.tmr.Dispose();
-                s.tmr = null;
+                lblStatus.Text = "Check Internet Connection";
             }
 		}
 

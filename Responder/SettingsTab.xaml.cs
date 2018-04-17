@@ -196,17 +196,23 @@ namespace Responder
 
 		private void SubmitButtonPressed(object sender, EventArgs e)
 		{
-            if (txtHallID1.Text != "" && txtHallID2.Text != "" && txtHallID3.Text != "" && txtHallID4.Text != "" && txtHallID5.Text != ""
-               && txtHallID6.Text != "" && txtUserID1.Text != "" && txtUserID2.Text != "")
+            if (LocationInterface.HasNetworkConnectivity())
             {
-                string sFireHallID = txtHallID1.Text + txtHallID2.Text + txtHallID3.Text + txtHallID4.Text + txtHallID5.Text + txtHallID6.Text;
-                string sUserID = txtUserID1.Text + txtUserID2.Text;
-                string result = SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
-                if (result == "OK" || result == "Admin") {
-                    parentPage.SwitchToMainTab();
-                    LocationInterface.AskForLocationPermissions();
+                if (txtHallID1.Text != "" && txtHallID2.Text != "" && txtHallID3.Text != "" && txtHallID4.Text != "" && txtHallID5.Text != ""
+                   && txtHallID6.Text != "" && txtUserID1.Text != "" && txtUserID2.Text != "")
+                {
+                    string sFireHallID = txtHallID1.Text + txtHallID2.Text + txtHallID3.Text + txtHallID4.Text + txtHallID5.Text + txtHallID6.Text;
+                    string sUserID = txtUserID1.Text + txtUserID2.Text;
+                    string result = SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
+                    if (result == "OK" || result == "Admin")
+                    {
+                        parentPage.SwitchToMainTab();
+                        LocationInterface.AskForLocationPermissions();
+                    }
                 }
-			}
+            } else {
+                DisplayAlert("No Connection", "Make sure you are connected to wifi or cellular data is on.", "OK");
+            }
 		}
 
 		void Entry_TextChanged(object sender, TextChangedEventArgs e)

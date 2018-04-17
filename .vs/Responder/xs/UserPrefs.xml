@@ -1,20 +1,25 @@
-﻿<Properties StartupConfiguration="{BF0FF304-0639-4DC0-B5BB-DD5E9AA08DD4}|Default">
-  <MonoDevelop.Ide.ItemProperties.Responder.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.D5B485C7-7216-4184-BFA9-8956360CF6A3" automaticSigning="False" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Responder/MainTab.xaml.cs">
+﻿<Properties StartupConfiguration="{531F871B-2977-4076-B1AA-1AF6768945D5}|Default">
+  <MonoDevelop.Ide.ItemProperties.Responder.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" automaticSigning="False" />
+  <MonoDevelop.Ide.Workbench>
     <Files>
-      <File FileName="Responder/MainTab.xaml.cs" Line="199" Column="74" />
-      <File FileName="../../../../../../Library/Frameworks/Xamarin.iOS.framework/Versions/11.9.1.24/lib/msbuild/iOS/Xamarin.iOS.Common.targets" Line="1319" Column="3" />
-      <File FileName="iOS/AppDelegate.cs" Line="76" Column="1" />
-      <File FileName="Droid/MainActivity.cs" Line="166" Column="25" />
-      <File FileName="iOS/Main.cs" Line="33" Column="1" />
-      <File FileName="Responder/App.xaml.cs" Line="55" Column="26" />
-      <File FileName="Responder/GetLocationInterface.cs" Line="19" Column="41" />
+      <File FileName="Responder/MainTab.xaml.cs" Line="347" Column="14" />
+      <File FileName="Droid/MainActivity.cs" Line="443" Column="18" />
+      <File FileName="iOS/AppDelegate.cs" Line="4" Column="20" />
+      <File FileName="Responder/App.xaml.cs" Line="42" Column="13" />
+      <File FileName="Responder/GetLocationInterface.cs" Line="20" Column="30" />
+      <File FileName="iOS/Web References/firehall.net_https/Reference.cs" Line="144" Column="1" />
+      <File FileName="Responder/SettingsTab.xaml.cs" Line="214" Column="116" />
+      <File FileName="Responder/MainPage.xaml.cs" Line="80" Column="111" />
+      <File FileName="Responder/RespondingTab.xaml.cs" Line="236" Column="59" />
+      <File FileName="Droid/LocationTracker.cs" Line="129" Column="7" />
+      <File FileName="iOS/Info.plist" />
     </Files>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Responder.Droid PreferredExecutionTarget="Android.Android_Accelerated_x86" />
   <MultiItemStartupConfigurations />
 </Properties>

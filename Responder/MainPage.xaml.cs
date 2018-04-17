@@ -41,7 +41,10 @@ namespace Responder
 			var sFireHallID = aFireHallAndUserID.GetValue(0) as string;
 			var sUserID = aFireHallAndUserID.GetValue(1) as string;
 
-            SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
+            if (LocationInterface.HasNetworkConnectivity())
+            {
+                SettingsInterface.SubmitAccountInfo(sFireHallID, sUserID);
+            }
 			// J806X4 A1
 
 

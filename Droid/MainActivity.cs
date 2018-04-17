@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-
+using System.Threading;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -22,10 +22,6 @@ using Java.Interop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Plugin.Connectivity;
-using Amazon;
-using Amazon.SimpleNotificationService;
-using Amazon.SimpleNotificationService.Model;
-using Amazon.CognitoIdentity;
 using Android.Gms.Common;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
@@ -45,8 +41,16 @@ namespace Responder.Droid
 		Decimal? dHallLat = 0;
 		double TimeToHall = -1;
         private static readonly HttpClient client = new HttpClient();
-        AmazonSimpleNotificationServiceClient snsClient;
         bool responding = false;
+        public static bool timerAlreadyStarted = false;
+
+        public class TimerState
+        {
+            public int counter = 0;
+            public Timer tmr;
+        }
+
+        public TimerState s = new TimerState();
 
 		protected override void OnCreate(Bundle bundle)
 		{
@@ -56,8 +60,6 @@ namespace Responder.Droid
 			base.OnCreate(bundle);
 
 			global::Xamarin.Forms.Forms.Init(this, bundle);
-
-            snsClient = new AmazonSimpleNotificationServiceClient("AKIAJG5P2JQN2CRRM2IQ", "6mdlnDzPFC3wry1K78eC+9Gz15FnWDGFeO2tRFwt", RegionEndpoint.USWest2);
 
             LoadApplication(new App());
 		}
@@ -292,7 +294,26 @@ namespace Responder.Droid
 
 		public void StartMonitoringLocationInBackground()
 		{
+            string result = GetLocation();
+            if (!result.Contains("Location Services Not Enabled"))
+            {
+                // dispose of preexisting timer if there is one (there shouldnt be)
+                if (s.tmr != null)
+                {
+                    s.tmr.Dispose();
+                    s.tmr = null;
+                }
 
+                // instantiate new timer
+                TimerCallback timerDelegate = new TimerCallback(CheckStatus);
+                Timer timer = new Timer(timerDelegate, s, 10000, 10000);
+                s.tmr = timer;
+            }
+            else
+            { // show alert saying user doesn't have location services enabled.
+                responding = false;
+                timerAlreadyStarted = false;
+            }
 		}
 
 		public void StopMonitoringLocationChanges()
@@ -310,6 +331,7 @@ namespace Responder.Droid
 		{
             if (HasNetworkConnectivity())
             {
+                responding = false;
                 responder.SetStatusNR(0, 2, GetUniqueDeviceID());
             }
 		}
@@ -411,6 +433,32 @@ namespace Responder.Droid
         public void SetResponding(bool isResponding)
         {
             responding = isResponding;
+
+            if (!responding) {
+                // dispose of preexisting timer if there is one (there shouldnt be)
+                if (s.tmr != null)
+                {
+                    s.tmr.Dispose();
+                    s.tmr = null;
+                }
+            }
+        }
+
+        public void CheckStatus(Object state)
+        {
+            TimerState timerState = (TimerState)state;
+            if (responding)
+            {
+                string result = GetLocation();
+
+                // Returning true means you want to repeat this timer, false stops it.
+                if (result.Contains("AtHall"))
+                {
+                    responding = false;
+                    timerState.tmr.Dispose();
+                    timerState.tmr = null;
+                }
+            }
         }
 	}
 }

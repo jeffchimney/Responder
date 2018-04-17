@@ -137,99 +137,104 @@ namespace Responder
 
 		public void GetResponders()
 		{
-			// get all responders (user info is first result in list)
-			List<ResponderResult> results = LocationInterface.GetAllResponders();
-			ResponderResult myResult;
-			// assign first result and remove it from the list.
-			if (results != null && results.Count > 0)
-			{
-				myResult = results[0];
-				results.Remove(myResult);
-			}
-			else
-			{
-				myResult = new ResponderResult("N/A", "N/A");
-			}
+            if (LocationInterface.HasNetworkConnectivity())
+            {
+                // get all responders (user info is first result in list)
+                List<ResponderResult> results = LocationInterface.GetAllResponders();
+                ResponderResult myResult;
+                // assign first result and remove it from the list.
+                if (results != null && results.Count > 0)
+                {
+                    myResult = results[0];
+                    results.Remove(myResult);
+                }
+                else
+                {
+                    myResult = new ResponderResult("N/A", "N/A");
+                }
 
-			Image logo = new Image()
-			{
-				Source = "firehalllogo2.png",
-				Aspect = Aspect.AspectFill,
-				HorizontalOptions = LayoutOptions.Center
-			};
+                Image logo = new Image()
+                {
+                    Source = "firehalllogo2.png",
+                    Aspect = Aspect.AspectFill,
+                    HorizontalOptions = LayoutOptions.Center
+                };
 
-			var table = new TableView();
-			table.Intent = TableIntent.Settings;
+                var table = new TableView();
+                table.Intent = TableIntent.Settings;
 
-			List<ViewCell> CellList = AddResponders(table, results);
+                List<ViewCell> CellList = AddResponders(table, results);
 
-			var layout = new StackLayout()
-			{
-				Orientation = StackOrientation.Horizontal
-			};
+                var layout = new StackLayout()
+                {
+                    Orientation = StackOrientation.Horizontal
+                };
 
-			// set up layout of 'My Status' cell
-			layout.Children.Add(new Label()
-			{
-				Text = myResult.FullName,
-				TextColor = Color.FromHex("#f35e20"),
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.Start
-			});
+                // set up layout of 'My Status' cell
+                layout.Children.Add(new Label()
+                {
+                    Text = myResult.FullName,
+                    TextColor = Color.FromHex("#f35e20"),
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Start
+                });
 
-			layout.Children.Add(new Label()
-			{
-				Text = myResult.DistanceFromHall,
-				TextColor = Color.FromHex("#f35e20"),
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.CenterAndExpand,
-				WidthRequest = 50,
-				HorizontalTextAlignment = TextAlignment.End
-			});
+                layout.Children.Add(new Label()
+                {
+                    Text = myResult.DistanceFromHall,
+                    TextColor = Color.FromHex("#f35e20"),
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.CenterAndExpand,
+                    WidthRequest = 50,
+                    HorizontalTextAlignment = TextAlignment.End
+                });
 
-			string sTimeToHall = "";
-			if (myResult.TimeToHall == string.Empty)
-			{
-				sTimeToHall = "N/A";
-			}
-			else
-			{
-				sTimeToHall = myResult.TimeToHall;
-			}
+                string sTimeToHall = "";
+                if (myResult.TimeToHall == string.Empty)
+                {
+                    sTimeToHall = "N/A";
+                }
+                else
+                {
+                    sTimeToHall = myResult.TimeToHall;
+                }
 
-			layout.Children.Add(new Label()
-			{
-				Text = sTimeToHall,
-				TextColor = Color.FromHex("#f35e20"),
-				VerticalOptions = LayoutOptions.Center,
-				HorizontalOptions = LayoutOptions.End,
-				WidthRequest = 75,
-				HorizontalTextAlignment = TextAlignment.End
-			});
+                layout.Children.Add(new Label()
+                {
+                    Text = sTimeToHall,
+                    TextColor = Color.FromHex("#f35e20"),
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.End,
+                    WidthRequest = 75,
+                    HorizontalTextAlignment = TextAlignment.End
+                });
 
-			var respondersSection = new TableSection("Responders");
-			foreach (ViewCell cell in CellList)
-			{
-				respondersSection.Add(cell);
-			}
+                var respondersSection = new TableSection("Responders");
+                foreach (ViewCell cell in CellList)
+                {
+                    respondersSection.Add(cell);
+                }
 
-			table.Root = new TableRoot() {
-				new TableSection("My Status") {
-					new ViewCell() {View = layout}
-				},
-				respondersSection
-			};
+                table.Root = new TableRoot() {
+                new TableSection("My Status") {
+                    new ViewCell() {View = layout}
+                },
+                respondersSection
+            };
 
-			var VerticalLayout = new StackLayout()
-			{
-				Orientation = StackOrientation.Vertical
-			};
+                var VerticalLayout = new StackLayout()
+                {
+                    Orientation = StackOrientation.Vertical
+                };
 
-			VerticalLayout.Children.Add(logo);
-			VerticalLayout.Children.Add(table);
+                VerticalLayout.Children.Add(logo);
+                VerticalLayout.Children.Add(table);
 
-			Content = VerticalLayout;
-			Console.WriteLine("Getting all responders");
+                Content = VerticalLayout;
+                Console.WriteLine("Getting all responders");
+            } else {
+                Console.WriteLine("No network connectivity");
+            }
 		}
 	}
 }
