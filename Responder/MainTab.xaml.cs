@@ -6,10 +6,6 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
-using Amazon;
-using Amazon.SimpleNotificationService;
-using Amazon.SimpleNotificationService.Model;
-using Amazon.CognitoIdentity;
 using Newtonsoft.Json.Linq;
 using System.IO;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -23,6 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Plugin.Connectivity;
 using Android.Gms.Common;
+using WindowsAzure.Messaging;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MainActivity))]
 [assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
@@ -43,6 +45,8 @@ namespace Responder.Droid
         private static readonly HttpClient client = new HttpClient();
         bool responding = false;
         public static bool timerAlreadyStarted = false;
+        public const string TAG = "MainActivity";
+        NotificationHub hub;
 
         public class TimerState
         {
@@ -52,14 +56,33 @@ namespace Responder.Droid
 
         public TimerState s = new TimerState();
 
-		protected override void OnCreate(Bundle bundle)
+		protected override void OnCreate(Bundle savedInstanceState)
 		{
 			TabLayoutResource = Resource.Layout.Tabbar;
 			ToolbarResource = Resource.Layout.Toolbar;
 
-			base.OnCreate(bundle);
+			base.OnCreate(savedInstanceState);
 
-			global::Xamarin.Forms.Forms.Init(this, bundle);
+            string[] permissions = new string[1];
+
+            permissions[0] = Manifest.Permission.AccessFineLocation;
+            RequestPermissions(permissions, 1340);
+
+            //Task.Run(() => ReRegisterPushToken());
+
+            if (Intent.Extras != null)
+            {
+                foreach (var key in Intent.Extras.KeySet())
+                {
+                    if (key != null)
+                    {
+                        var value = Intent.Extras.GetString(key);
+                        Log.Debug(TAG, "Key: {0} Value: {1}", key, value);
+                    }
+                }
+            }
+
+			global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             LoadApplication(new App());
 		}
@@ -72,6 +95,29 @@ namespace Responder.Droid
 			locationTracker.LocationChanged += LocationTracker_LocationChanged;
             Location currentLocation = locationTracker.CurrentLocation;
 		}
+
+        void ReRegisterPushToken()
+        {
+            Task.Run(async () =>
+            {
+                hub = new NotificationHub(Constants.NotificationHubName,
+                                         Constants.ListenConnectionString, BaseContext);
+                var tags = new List<string>() { };
+                string sPushToken = GetPushToken();
+                if (sPushToken != string.Empty)
+                {
+                    string sFireHallAndUserID = GetAccountInfoFromUserDefaults();
+                    Array aFireHallAndUserID = sFireHallAndUserID.Split(":".ToCharArray());
+                    var sFireHallID = aFireHallAndUserID.GetValue(0) as string;
+                    if (sFireHallID != string.Empty)
+                    {
+                        tags.Add(sFireHallID);
+                    }
+
+                    hub.Register(sPushToken, tags.ToArray());
+                }
+            }).Wait();
+        }
 
 		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
 		{
@@ -133,6 +179,8 @@ namespace Responder.Droid
                     {
                         localSettings.Edit().PutBoolean("IsAdmin", false).Commit();
                     }
+                    // register push token with FirehallID tag.
+                    Task.Run(() => ReRegisterPushToken());
                 }
                 return result.Result.ToString();
             } else {
@@ -343,6 +391,14 @@ namespace Responder.Droid
 
 			return bIsAdmin;
 		}
+
+        public string GetPushToken()
+        {
+            var localSettings = Application.Context.GetSharedPreferences("Defaults", FileCreationMode.Private);
+            var sPushToken = localSettings.GetString("PushToken", "");
+
+            return sPushToken;
+        }
 
 		public string GetTimeToHall()
 		{

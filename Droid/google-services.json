@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "63709449563",
+    "firebase_url": "https://responder-8825b.firebaseio.com",
+    "project_id": "responder-8825b",
+    "storage_bucket": "responder-8825b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:63709449563:android:ee0eb9f36c8ef07b",
+        "android_client_info": {
+          "package_name": "com.jeffsapps.responder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "63709449563-cuio9hvi1tf6tbf7s36pctk5b43ibs6g.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "63709449563-h4ck9aop02ghk31aevgl036tuqnlgn67.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj12LxXzg5ZaIzXCWcR6Hn_u4w5FIMGNc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
