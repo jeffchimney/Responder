@@ -68,8 +68,6 @@ namespace Responder.Droid
             permissions[0] = Manifest.Permission.AccessFineLocation;
             RequestPermissions(permissions, 1340);
 
-            //Task.Run(() => ReRegisterPushToken());
-
             if (Intent.Extras != null)
             {
                 foreach (var key in Intent.Extras.KeySet())
@@ -95,29 +93,6 @@ namespace Responder.Droid
 			locationTracker.LocationChanged += LocationTracker_LocationChanged;
             Location currentLocation = locationTracker.CurrentLocation;
 		}
-
-        void ReRegisterPushToken()
-        {
-            Task.Run(async () =>
-            {
-                hub = new NotificationHub(Constants.NotificationHubName,
-                                         Constants.ListenConnectionString, BaseContext);
-                var tags = new List<string>() { };
-                string sPushToken = GetPushToken();
-                if (sPushToken != string.Empty)
-                {
-                    string sFireHallAndUserID = GetAccountInfoFromUserDefaults();
-                    Array aFireHallAndUserID = sFireHallAndUserID.Split(":".ToCharArray());
-                    var sFireHallID = aFireHallAndUserID.GetValue(0) as string;
-                    if (sFireHallID != string.Empty)
-                    {
-                        tags.Add(sFireHallID);
-                    }
-
-                    hub.Register(sPushToken, tags.ToArray());
-                }
-            }).Wait();
-        }
 
 		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
 		{
@@ -179,8 +154,21 @@ namespace Responder.Droid
                     {
                         localSettings.Edit().PutBoolean("IsAdmin", false).Commit();
                     }
+
+                    Context context = Android.App.Application.Context;
+                    hub = new NotificationHub(Constants.NotificationHubName, Constants.ListenConnectionString, context);
+
                     // register push token with FirehallID tag.
-                    Task.Run(() => ReRegisterPushToken());
+                    string[] aFirehallID = new string[1];
+                    aFirehallID[0] = sFirehallID;
+                    string pnsHandle = GetPushToken();
+                    if (pnsHandle != "")
+                    {
+                        Task.Run(async () =>
+                        {
+                            hub.Register(GetPushToken(), aFirehallID);
+                        }).Wait();
+                    }
                 }
                 return result.Result.ToString();
             } else {
