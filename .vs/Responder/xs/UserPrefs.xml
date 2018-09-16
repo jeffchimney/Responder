@@ -1,24 +1,33 @@
-﻿<Properties StartupConfiguration="{531F871B-2977-4076-B1AA-1AF6768945D5}|Default">
-  <MonoDevelop.Ide.ItemProperties.Responder.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.D5B485C7-7216-4184-BFA9-8956360CF6A3" automaticSigning="False" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Droid/MainActivity.cs">
+﻿<Properties StartupConfiguration="{BF0FF304-0639-4DC0-B5BB-DD5E9AA08DD4}|Default">
+  <MonoDevelop.Ide.ItemProperties.Responder.iOS PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.aea74d0ee0923957428f56e5c24c1f678828cca3" automaticSigning="False" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="iOS/Web References/firehall.net_https/Reference.cs">
     <Files>
-      <File FileName="Droid/MainActivity.cs" Line="165" Column="1" />
-      <File FileName="Droid/MyFirebaseIIDService.cs" Line="30" Column="79" />
-      <File FileName="Droid/MyFirebaseMessagingService.cs" Line="29" Column="84" />
-      <File FileName="Droid/MainApplication.cs" Line="1" Column="1" />
-      <File FileName="Responder/MainTab.xaml.cs" Line="8" Column="18" />
-      <File FileName="iOS/AppDelegate.cs" Line="4" Column="20" />
-      <File FileName="Droid/Properties/AndroidManifest.xml" Line="14" Column="79" />
-      <File FileName="Droid/Constants.cs" Line="10" Column="1" />
-      <File FileName="Droid/LocationTracker.cs" Line="97" Column="4" />
-      <File FileName="Responder/MainPage.xaml.cs" Line="2" Column="34" />
+      <File FileName="Responder/MainTab.xaml.cs" Line="214" Column="22" />
+      <File FileName="Droid/LocationTracker.cs" Line="85" Column="1" />
+      <File FileName="../../../../../../Library/Frameworks/Mono.framework/Versions/5.8.1/lib/mono/msbuild/15.0/bin/Microsoft.Common.CurrentVersion.targets" Line="2057" Column="5" />
+      <File FileName="iOS/Main.cs" Line="410" Column="15" />
+      <File FileName="Responder/GetLocationInterface.cs" Line="20" Column="47" />
+      <File FileName="Droid/Web References/firehall.net_https/Reference.cs" Line="107" Column="1" />
+      <File FileName="iOS/AppDelegate.cs" Line="60" Column="1" />
+      <File FileName="iOS/Web References/firehall.net_https/Reference.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/Droid/RegistrationIntentService.cs" relfile="Droid/RegistrationIntentService.cs" line="21" column="1" />
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/iOS/AppDelegate.cs" relfile="iOS/AppDelegate.cs" line="75" column="1" />
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/iOS/AppDelegate.cs" relfile="iOS/AppDelegate.cs" line="108" column="1" />
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/iOS/AppDelegate.cs" relfile="iOS/AppDelegate.cs" line="60" column="1" />
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/iOS/AppDelegate.cs" relfile="iOS/AppDelegate.cs" line="62" column="1" />
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/iOS/AppDelegate.cs" relfile="iOS/AppDelegate.cs" line="69" column="1" />
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/Responder/MainTab.xaml.cs" relfile="Responder/MainTab.xaml.cs" line="204" column="1" />
+      <Breakpoint file="/Users/jeffchimney/Projects/iOS/Responder/Responder/Responder/MainTab.xaml.cs" relfile="Responder/MainTab.xaml.cs" line="211" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.Responder.Droid PreferredExecutionTarget="Android.Android_Accelerated_x86" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="../../../Droid/MainActivity.cs" line="105" offsetX="437" offsetY="1560" expression="Build.VERSION.SdkInt" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+  <MonoDevelop.Ide.ItemProperties.Responder.Droid PreferredExecutionTarget="Android.HMHUEAA0027251E2484" />
   <MultiItemStartupConfigurations />
 </Properties>

@@ -407,6 +407,7 @@ namespace Responder.iOS
         public void CallToHall(string sTitle, string sMessage)
         {
             var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
+            responder.PushNotification(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), "Test Notification");
             //appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
         }
 

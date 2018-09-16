@@ -163,7 +163,7 @@ namespace Responder
                 {
                     var sData = "FireHall Incident - Please Respond";
                     GetPOSTResponse(URL, sData);
-                    //LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
+                    LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
                     //PublishNotificationWithMessage("FireHall Alert", "FireHall Incident - Please Respond");
                     lblStatus.Text = "Call to Hall Sent";
                 }
@@ -178,7 +178,6 @@ namespace Responder
 
         private void GetPOSTResponse(string sUri, string data)
         {
-
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(sUri);
             httpWebRequest.ContentType = "application/json; charset=utf-8";
             httpWebRequest.Method = "POST";

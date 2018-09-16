@@ -18,7 +18,7 @@ namespace Responder.iOS.firehall.net_https {
     
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="WebService1Soap", Namespace="http://tempuri.org/")]
@@ -321,7 +321,7 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -350,7 +350,7 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://tempuri.org/")]
     public enum WS_Result {
@@ -375,7 +375,7 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -393,11 +393,11 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     public delegate void TestCompletedEventHandler(object sender, TestCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class TestCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -419,11 +419,11 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     public delegate void RegisterCompletedEventHandler(object sender, RegisterCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class RegisterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -445,11 +445,11 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     public delegate void LoginCompletedEventHandler(object sender, LoginCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class LoginCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -471,11 +471,11 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     public delegate void RespondingCompletedEventHandler(object sender, RespondingCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class RespondingCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -497,11 +497,11 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     public delegate void GetResponsesCompletedEventHandler(object sender, GetResponsesCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetResponsesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -523,11 +523,11 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     public delegate void SetStatusNRCompletedEventHandler(object sender, SetStatusNRCompletedEventArgs e);
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SetStatusNRCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -549,6 +549,6 @@ namespace Responder.iOS.firehall.net_https {
     }
     
     /// CodeRemarks
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.3.0.799")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("XamarinStudio", "7.4.2.12")]
     public delegate void PushNotificationCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
 }

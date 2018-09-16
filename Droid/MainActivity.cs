@@ -47,6 +47,12 @@ namespace Responder.Droid
         public static bool timerAlreadyStarted = false;
         public const string TAG = "MainActivity";
         NotificationHub hub;
+        readonly string[] PermissionsLocation =
+        {
+          Manifest.Permission.AccessCoarseLocation,
+          Manifest.Permission.AccessFineLocation
+        };
+        const int RequestLocationId = 0;
 
         public class TimerState
         {
@@ -62,11 +68,6 @@ namespace Responder.Droid
 			ToolbarResource = Resource.Layout.Toolbar;
 
 			base.OnCreate(savedInstanceState);
-
-            string[] permissions = new string[1];
-
-            permissions[0] = Manifest.Permission.AccessFineLocation;
-            RequestPermissions(permissions, 1340);
 
             if (Intent.Extras != null)
             {
@@ -88,11 +89,42 @@ namespace Responder.Droid
 		protected override void OnResume()
 		{
 			base.OnResume();
-			locationTracker = new LocationTracker(this, false);
-			locationTracker.InitializeLocationManager(true);
-			locationTracker.LocationChanged += LocationTracker_LocationChanged;
+            locationTracker = new LocationTracker(this, false);
+            if (CanAccessLocation())
+            {
+                locationTracker.InitializeLocationManager(true);
+            }
+            locationTracker.LocationChanged += LocationTracker_LocationChanged;
             Location currentLocation = locationTracker.CurrentLocation;
 		}
+
+        public void InitializeLocationTracker() {
+            if (CanAccessLocation())
+            {
+                locationTracker = new LocationTracker(this, false);
+            }
+        }
+
+        public void GetLocationPermissionsIfNotGranted()
+        {
+            if (!CanAccessLocation())
+            {
+                if ((int)Build.VERSION.SdkInt > 22)
+                {
+                    //Explain to the user why we need to read the contacts
+                    var thisActivity = Xamarin.Forms.Forms.Context as Activity;
+                    ActivityCompat.RequestPermissions(thisActivity, PermissionsLocation, RequestLocationId);
+                }
+            }
+        }
+
+        private bool CanAccessLocation()
+        {
+            var thisActivity = Xamarin.Forms.Forms.Context as Activity;
+
+            return (ActivityCompat.CheckSelfPermission(thisActivity, Manifest.Permission.AccessFineLocation) == Permission.Granted)
+                || (ActivityCompat.CheckSelfPermission(thisActivity, Manifest.Permission.AccessCoarseLocation) == Permission.Granted);
+        }
 
 		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults)
 		{
@@ -164,6 +196,7 @@ namespace Responder.Droid
                     string pnsHandle = GetPushToken();
                     if (pnsHandle != "")
                     {
+
                         Task.Run(async () =>
                         {
                             hub.Register(GetPushToken(), aFirehallID);
@@ -207,88 +240,111 @@ namespace Responder.Droid
 
 		public string GetLocation()
 		{
-            if (HasNetworkConnectivity())
-            {
-                // pass in the provider (GPS), 
-                // the minimum time between updates (in seconds), 
-                // the minimum distance the user needs to move to generate an update (in meters),
-                // and an ILocationListener
-                //var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
-
-                Decimal lastLat = Decimal.Parse(GetLastLatitude());
-                Decimal lastLong = Decimal.Parse(GetLastLongitude());
-
-                // CALCULATE TRAVEL TIME
-
-                var response = responder.Responding(0, 2, GetUniqueDeviceID(), lastLat, lastLong, (int)TimeToHall);
-
-                dHallLat = response.HallLatitude;
-                dHallLong = response.HallLongitude;
-
-
-                if (GetLastLatitude() != "0" && GetLastLongitude() != "0")
+            if (CanAccessLocation()) {
+                //if (locationTracker == null) {
+                //    InitializeLocationTracker();
+                //}
+                if (HasNetworkConnectivity())
                 {
-                    CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
-                }
+                    // pass in the provider (GPS), 
+                    // the minimum time between updates (in seconds), 
+                    // the minimum distance the user needs to move to generate an update (in meters),
+                    // and an ILocationListener
+                    //var lastKnownLocation = locMgr.GetLastKnownLocation(LocationManager.GpsProvider);
 
-                return response.Result.ToString();
+                    Decimal lastLat = Decimal.Parse(GetLastLatitude());
+                    Decimal lastLong = Decimal.Parse(GetLastLongitude());
+
+                    // CALCULATE TRAVEL TIME
+
+                    var response = responder.Responding(0, 2, GetUniqueDeviceID(), lastLat, lastLong, (int)TimeToHall);
+
+                    dHallLat = response.HallLatitude;
+                    dHallLong = response.HallLongitude;
+
+
+                    if (GetLastLatitude() != "0" && GetLastLongitude() != "0")
+                    {
+                        CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
+                    }
+
+                    return response.Result.ToString();
+                }
+                else
+                {
+                    return "No Connection";
+                }
             } else {
-                return "No Connection";
+                GetLocationPermissionsIfNotGranted();
+                return "No Location Permissions";
             }
 		}
 
 		public List<ResponderResult> GetAllResponders()
 		{
-            if (HasNetworkConnectivity())
+            if (CanAccessLocation())
             {
-                var responderList = new List<ResponderResult>();
-
-                //GetLocation();
-                var response = responder.GetResponses(0, 2, GetUniqueDeviceID());
-
-                dHallLat = response.HallLatitude;
-                dHallLong = response.HallLongitude;
-
-                if (response.ErrorMessage == "Device not found")
+                //if (locationTracker == null)
+                //{
+                //    InitializeLocationTracker();
+                //}
+                if (HasNetworkConnectivity())
                 {
-                    return new List<ResponderResult>();
-                }
+                    var responderList = new List<ResponderResult>();
 
-                if (response != null)
-                {
-                    if (response.MyResponse != null)
+                    //GetLocation();
+                    var response = responder.GetResponses(0, 2, GetUniqueDeviceID());
+
+                    dHallLat = response.HallLatitude;
+                    dHallLong = response.HallLongitude;
+
+                    if (response.ErrorMessage == "Device not found")
                     {
-                        // calculate travel time to hall
-                        //var myCoordinates = new CLLocationCoordinate2D(latitude, longitude);
-                        //Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
-                        //var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
-                        //Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
-                        CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
+                        return new List<ResponderResult>();
+                    }
 
-                        var sTimeToHall = "";
-                        if ((int)TimeToHall != -1)
+                    if (response != null)
+                    {
+                        if (response.MyResponse != null)
                         {
-                            sTimeToHall = response.MyResponse.TimeToHall;
+                            // calculate travel time to hall
+                            //var myCoordinates = new CLLocationCoordinate2D(latitude, longitude);
+                            //Console.WriteLine("My Coordinates: " + myCoordinates.ToString());
+                            //var hallCoordinates = new CLLocationCoordinate2D((double)dHallLat, (double)dHallLong);
+                            //Console.WriteLine("Hall Coordinates: " + hallCoordinates.ToString());
+                            CalculateTravelTimeBetween(double.Parse(GetLastLatitude()), double.Parse(GetLastLongitude()), (double)dHallLat, (double)dHallLong);
+
+                            var sTimeToHall = "";
+                            if ((int)TimeToHall != -1)
+                            {
+                                sTimeToHall = response.MyResponse.TimeToHall;
+                            }
+
+                            var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall);
+                            //var myResponse = new ResponderResult(mySeparateResponse.MyResponse.FullName, mySeparateResponse.MyResponse.DistanceToHall, sTimeToHall);
+                            responderList.Add(myResponse);
+                        }
+                        else // add an empty response to show you are not currently responding.
+                        {
+                            var myResponse = new ResponderResult("Not Responding", " ", "N/R");
+                            responderList.Add(myResponse);
                         }
 
-                        var myResponse = new ResponderResult(response.MyResponse.FullName, response.MyResponse.DistanceToHall, response.MyResponse.TimeToHall);
-                        //var myResponse = new ResponderResult(mySeparateResponse.MyResponse.FullName, mySeparateResponse.MyResponse.DistanceToHall, sTimeToHall);
-                        responderList.Add(myResponse);
+                        foreach (firehall.net_https.WS_Response additionalResponse in response.Responses)
+                        {
+                            responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall));
+                        }
                     }
-                    else // add an empty response to show you are not currently responding.
-                    {
-                        var myResponse = new ResponderResult("Not Responding", " ", "N/R");
-                        responderList.Add(myResponse);
-                    }
-
-                    foreach (firehall.net_https.WS_Response additionalResponse in response.Responses)
-                    {
-                        responderList.Add(new ResponderResult(additionalResponse.FullName, additionalResponse.DistanceToHall, additionalResponse.TimeToHall));
-                    }
+                    return responderList;
                 }
-                return responderList;
+                else
+                {
+                    // no connection
+                    return new List<ResponderResult>();
+                }
             } else {
-                // no connection
+                // no permissions
+                GetLocationPermissionsIfNotGranted();
                 return new List<ResponderResult>();
             }
 		}

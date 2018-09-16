@@ -18,7 +18,7 @@
     <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodesignKey>iPhone Developer: Jeff Chimney (58WB24N4R5)</CodesignKey>
+    <CodesignKey>iPhone Developer: Todd Strilchuk (M2UH5VXUU9)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchFastDev>true</MtouchFastDev>
     <IOSDebuggerPort>10618</IOSDebuggerPort>
@@ -67,7 +67,7 @@
     <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodesignKey>iPhone Developer: Todd Strilchuk (M2UH5VXUU9)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <DeviceSpecificBuild>true</DeviceSpecificBuild>
     <MtouchDebug>true</MtouchDebug>
     <MtouchFastDev>false</MtouchFastDev>
@@ -200,11 +200,11 @@
     <Compile Include="Web References\firehall.net\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
+    <Compile Include="TabBarCustomRenderer.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Web References\firehall.net_https\Reference.cs">
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-    <Compile Include="TabBarCustomRenderer.cs" />
-    <Compile Include="Constants.cs" />
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References" />

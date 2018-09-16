@@ -28,6 +28,7 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+<AndroidTlsProvider>btls</AndroidTlsProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -257,6 +258,9 @@
     <AndroidResource Include="Resources\drawable\firehalllogo.png" />
     <AndroidResource Include="Resources\drawable\firehalllogo2.png" />
     <AndroidResource Include="Resources\drawable\ic_stat_ic_notification.png" />
+    <AndroidResource Include="Resources\drawable-hdpi\firehalllogo2.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\firehalllogo2.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\firehalllogo2.png" />
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References" />
