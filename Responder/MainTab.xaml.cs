@@ -163,8 +163,6 @@ namespace Responder
                 {
                     var sData = "FireHall Incident - Please Respond";
                     GetPOSTResponse(URL, sData);
-                    LocationInterface.CallToHall("FireHall Alert", "FireHall Incident - Please Respond");
-                    //PublishNotificationWithMessage("FireHall Alert", "FireHall Incident - Please Respond");
                     lblStatus.Text = "Call to Hall Sent";
                 }
                 else
@@ -179,6 +177,7 @@ namespace Responder
         private void GetPOSTResponse(string sUri, string data)
         {
             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(sUri);
+            httpWebRequest.Headers.Add("ServiceBusNotification-Tags", "J868X4");
             httpWebRequest.ContentType = "application/json; charset=utf-8";
             httpWebRequest.Method = "POST";
             string result = "";
@@ -221,12 +220,6 @@ namespace Responder
 
                 }
             }
-
-            //var responseString = await sUri
-            //    .PostUrlEncodedAsync(new { }) // message = data
-            //    .ReceiveString();
-
-            //Console.Out.WriteLine(responseString);
         }
 
         void BtnNotResponding_Clicked(object sender, EventArgs e)

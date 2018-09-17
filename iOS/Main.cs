@@ -10,6 +10,7 @@ using Amazon;
 using Amazon.SimpleNotificationService;
 using Amazon.CognitoIdentity;
 using Plugin.Connectivity;
+using WindowsAzure.Messaging;
 
 [assembly: Xamarin.Forms.Dependency(typeof(Application))]
 
@@ -407,7 +408,7 @@ namespace Responder.iOS
         public void CallToHall(string sTitle, string sMessage)
         {
             var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
-            responder.PushNotification(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), "Test Notification");
+            responder.PushNotificationAsync(0, 2, UIDevice.CurrentDevice.IdentifierForVendor.ToString(), "Test Notification");
             //appDelegate.PublishNotificationWithMessage(sTitle, sMessage);
         }
 
